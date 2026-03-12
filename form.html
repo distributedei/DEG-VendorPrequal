@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Prequalification — Distributed Energy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #375673;
+            --navy-dark: #1a2d42;
+            --green: #779d36;
+            --green-dark: #5f7e2b;
+            --green-light: #8fb844;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e2a36;
+            --text-muted: #6b7c8a;
+            --red: #c0392b;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+        .top-bar {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+            padding: 20px 24px;
+            text-align: center;
+            color: white;
+        }
+        .top-bar h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .top-bar h1 span { color: var(--green-light); }
+        .top-bar p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+
+        .container { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
+
+        .intro {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        .intro h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--navy); margin-bottom: 8px; }
+        .intro p { font-size: 13px; color: var(--text-muted); }
+        .intro ul { font-size: 13px; color: var(--text-muted); margin: 8px 0 0 20px; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            margin-left: 8px;
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label {
+            font-size: 11px; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group label .req { color: var(--red); }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+            font-size: 14px; font-family: inherit; color: var(--text);
+            transition: border-color 0.2s; background: white;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--green);
+            box-shadow: 0 0 0 2px rgba(119,157,54,0.12);
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0; }
+        .checkbox-group label {
+            display: flex; align-items: center; gap: 6px; font-size: 13px;
+            font-weight: 400; text-transform: none; letter-spacing: 0;
+            color: var(--text); cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--green); }
+
+        .tier-note {
+            background: rgba(119,157,54,0.06);
+            border: 1px solid rgba(119,157,54,0.2);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: var(--green-dark);
+            margin-bottom: 16px;
+        }
+
+        .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
+        .btn {
+            padding: 12px 36px; border-radius: 6px; font-size: 14px; font-weight: 700;
+            cursor: pointer; border: none; transition: all 0.2s; font-family: 'Barlow Condensed', sans-serif;
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .btn-primary { background: var(--green); color: white; }
+        .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .success-screen.show { display: block; }
+        .success-screen .check-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(119,157,54,0.1); display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 20px;
+        }
+        .success-screen .check-circle svg { width: 40px; height: 40px; color: var(--green); }
+        .success-screen h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: var(--navy); }
+        .success-screen p { font-size: 14px; color: var(--text-muted); margin-top: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+        .error-banner {
+            background: rgba(192,57,43,0.08);
+            border: 1px solid rgba(192,57,43,0.2);
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: var(--red);
+            margin-bottom: 16px;
+            display: none;
+        }
+        .error-banner.show { display: block; }
+
+        .progress-bar {
+            display: flex; gap: 0; margin-bottom: 24px;
+            background: white; border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .progress-step {
+            flex: 1; text-align: center; padding: 10px 8px;
+            font-size: 11px; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border-right: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .progress-step:last-child { border-right: none; }
+        .progress-step.active { background: rgba(119,157,54,0.08); color: var(--green-dark); }
+        .progress-step.done { background: var(--green); color: white; }
+        .progress-step .step-num {
+            display: inline-block; width: 20px; height: 20px;
+            border-radius: 50%; background: var(--border); color: white;
+            font-size: 10px; line-height: 20px; margin-right: 4px;
+        }
+        .progress-step.active .step-num { background: var(--green); }
+        .progress-step.done .step-num { background: rgba(255,255,255,0.3); }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+
+        .nav-row { display: flex; justify-content: space-between; margin-top: 20px; }
+        .btn-nav {
+            padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 600;
+            cursor: pointer; border: 1px solid var(--border); background: white;
+            color: var(--navy); font-family: inherit; transition: all 0.2s;
+        }
+        .btn-nav:hover { background: var(--bg); }
+        .btn-nav.primary { background: var(--navy); color: white; border-color: var(--navy); }
+        .btn-nav.primary:hover { background: var(--navy-dark); }
+
+        @media (max-width: 640px) {
+            .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+            .progress-step { font-size: 9px; padding: 8px 4px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h1>DISTRIBUTED <span>ENERGY</span></h1>
+    <p>Vendor Prequalification Application</p>
+</div>
+
+<div class="container" id="formContainer">
+
+    <div class="intro">
+        <h2>Welcome</h2>
+        <p>Thank you for your interest in working with Distributed Energy Group. Please complete all sections of this prequalification form. Required fields are marked with <span style="color:var(--red)">*</span>.</p>
+        <ul>
+            <li>Tier 1 (under $100K) — basic company and safety info</li>
+            <li>Tier 2 ($100K – $500K) — adds financial information</li>
+            <li>Tier 3 (over $500K) — full financial and bonding diligence</li>
+        </ul>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-step active" id="step1"><span class="step-num">1</span> Company</div>
+        <div class="progress-step" id="step2"><span class="step-num">2</span> Scope</div>
+        <div class="progress-step" id="step3"><span class="step-num">3</span> Insurance</div>
+        <div class="progress-step" id="step4"><span class="step-num">4</span> Financial</div>
+        <div class="progress-step" id="step5"><span class="step-num">5</span> References</div>
+    </div>
+
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- ═══ SECTION 1: Company ═══ -->
+    <div class="form-section active" id="sec1">
+        <div class="card">
+            <div class="card-title">Company Information</div>
+            <div class="form-grid">
+                <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
+                <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba" placeholder="If different from legal name"></div>
+                <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
+                <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
+                <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
+                <div class="form-group full"><label>Address <span class="req">*</span></label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
+                <div class="form-group"><label>Federal Tax ID (EIN) <span class="req">*</span></label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
+                <div class="form-group"><label>Years in Business</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 12"></div>
+            </div>
+        </div>
+        <div class="nav-row"><div></div><button class="btn-nav primary" onclick="goStep(2)">Continue →</button></div>
+    </div>
+
+    <!-- ═══ SECTION 2: Scope ═══ -->
+    <div class="form-section" id="sec2">
+        <div class="card">
+            <div class="card-title">Scope &amp; Classification</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Expected Contract Value <span class="req">*</span></label>
+                    <select id="f_tier" onchange="updateTierVisibility()">
+                        <option value="">Select tier...</option>
+                        <option value="Tier 1">Tier 1 — Under $100K</option>
+                        <option value="Tier 2">Tier 2 — $100K – $500K</option>
+                        <option value="Tier 3">Tier 3 — Over $500K</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>DEG Entity <span class="req">*</span></label>
+                    <select id="f_entity">
+                        <option value="">Select entity...</option>
+                        <option value="DEI">DEI</option>
+                        <option value="DER">DER</option>
+                        <option value="DEP">DEP</option>
+                        <option value="DES">DES</option>
+                        <option value="Mike EPC">Mike EPC</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Trade / Scope of Work <span class="req">*</span></label>
+                    <div class="checkbox-group" id="f_trades">
+                        <label><input type="checkbox" value="Electrical"> Electrical</label>
+                        <label><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label>
+                        <label><input type="checkbox" value="Structural / Racking"> Structural / Racking</label>
+                        <label><input type="checkbox" value="Mechanical"> Mechanical</label>
+                        <label><input type="checkbox" value="BESS Install"> BESS Install</label>
+                        <label><input type="checkbox" value="Commissioning"> Commissioning</label>
+                        <label><input type="checkbox" value="Trenching"> Trenching</label>
+                        <label><input type="checkbox" value="Fencing"> Fencing</label>
+                        <label><input type="checkbox" value="Testing / QC"> Testing / QC</label>
+                        <label><input type="checkbox" value="Other"> Other</label>
+                    </div>
+                </div>
+                <div class="form-group full"><label>Relevant Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional"></div>
+                <div class="form-group full"><label>OEM Certifications</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified, SMA Service Partner"></div>
+            </div>
+        </div>
+        <div class="nav-row"><button class="btn-nav" onclick="goStep(1)">← Back</button><button class="btn-nav primary" onclick="goStep(3)">Continue →</button></div>
+    </div>
+
+    <!-- ═══ SECTION 3: Insurance & Safety ═══ -->
+    <div class="form-section" id="sec3">
+        <div class="card">
+            <div class="card-title">Insurance &amp; Safety</div>
+            <div class="form-grid three">
+                <div class="form-group"><label>General Liability Limit <span class="req">*</span></label><input type="text" id="f_glLimit" placeholder="e.g. $2,000,000"></div>
+                <div class="form-group"><label>Workers Comp Carrier <span class="req">*</span></label><input type="text" id="f_wcCarrier" placeholder="Carrier name"></div>
+                <div class="form-group"><label>COI Expiration Date <span class="req">*</span></label><input type="date" id="f_coiExpiry"></div>
+                <div class="form-group"><label>EMR — Current Year <span class="req">*</span></label><input type="text" id="f_emrCurrent" placeholder="e.g. 0.85"></div>
+                <div class="form-group"><label>EMR — Prior Year</label><input type="text" id="f_emrPrior" placeholder="e.g. 0.90"></div>
+                <div class="form-group"><label>EMR — 2 Years Prior</label><input type="text" id="f_emr2Prior" placeholder="e.g. 0.92"></div>
+            </div>
+            <div class="form-grid" style="margin-top:16px;">
+                <div class="form-group"><label>Written Safety Program? <span class="req">*</span></label>
+                    <select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                </div>
+                <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
+            </div>
+        </div>
+        <div class="nav-row"><button class="btn-nav" onclick="goStep(2)">← Back</button><button class="btn-nav primary" onclick="goStep(4)">Continue →</button></div>
+    </div>
+
+    <!-- ═══ SECTION 4: Financial ═══ -->
+    <div class="form-section" id="sec4">
+        <div class="card">
+            <div class="card-title">Financial Information <span class="card-subtitle">Required for Tier 2 &amp; Tier 3</span></div>
+            <div class="tier-note" id="tierNote">Complete this section if your expected contract value exceeds $100K.</div>
+            <div class="form-grid">
+                <div class="form-group"><label>Annual Revenue (Approx.)</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
+                <div class="form-group"><label>D&amp;B DUNS Number</label><input type="text" id="f_duns" placeholder="9-digit DUNS number"></div>
+                <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate"></div>
+                <div class="form-group"><label>Banking Reference</label><input type="text" id="f_bankRef" placeholder="Bank name + contact"></div>
+            </div>
+        </div>
+        <div class="nav-row"><button class="btn-nav" onclick="goStep(3)">← Back</button><button class="btn-nav primary" onclick="goStep(5)">Continue →</button></div>
+    </div>
+
+    <!-- ═══ SECTION 5: References & Submit ═══ -->
+    <div class="form-section" id="sec5">
+        <div class="card">
+            <div class="card-title">Trade References</div>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Provide at least two references from general contractors or project owners you have worked with.</p>
+            <div class="form-grid three">
+                <div class="form-group"><label>Reference 1 — Company <span class="req">*</span></label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
+                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
+                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
+            </div>
+            <div class="form-grid three" style="margin-top:8px;">
+                <div class="form-group"><label>Reference 2 — Company <span class="req">*</span></label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
+                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
+                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
+            </div>
+            <div class="form-grid three" style="margin-top:8px;">
+                <div class="form-group"><label>Reference 3 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
+                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
+                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Additional Notes</div>
+            <div class="form-group full"><textarea id="f_notes" rows="4" placeholder="Any additional information, past project history with DEG entities, or relevant qualifications..."></textarea></div>
+        </div>
+        <div class="nav-row">
+            <button class="btn-nav" onclick="goStep(4)">← Back</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Prequalification</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ SUCCESS SCREEN ═══ -->
+<div class="container success-screen" id="successScreen">
+    <div class="check-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <h2>Application Submitted</h2>
+    <p>Your vendor prequalification application has been received. Our team will review your submission and you will be contacted regarding next steps. Typical review time is 3–5 business days.</p>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// CONFIG — Update webhookUrl with your Power Automate HTTP trigger
+// ══════════════════════════════════════════════════
+const WEBHOOK_URL = '%%POWER_AUTOMATE_WEBHOOK_URL%%';
+
+let currentStep = 1;
+
+function goStep(n) {
+    // Validate current step before advancing
+    if (n > currentStep && !validateStep(currentStep)) return;
+
+    currentStep = n;
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById(`sec${i}`).classList.toggle('active', i === n);
+        const step = document.getElementById(`step${i}`);
+        step.classList.remove('active', 'done');
+        if (i < n) step.classList.add('done');
+        else if (i === n) step.classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    hideError();
+}
+
+function validateStep(step) {
+    if (step === 1) {
+        const required = ['f_companyName', 'f_contact', 'f_email', 'f_phone', 'f_address', 'f_ein'];
+        for (const id of required) {
+            if (!val(id)) { showError('Please complete all required fields.'); focus(id); return false; }
+        }
+        if (!val('f_email').includes('@')) { showError('Please enter a valid email address.'); focus('f_email'); return false; }
+    }
+    if (step === 2) {
+        if (!val('f_tier') || !val('f_entity')) { showError('Please select a tier and entity.'); return false; }
+        const trades = getCheckedTrades();
+        if (trades.length === 0) { showError('Please select at least one trade/scope.'); return false; }
+    }
+    if (step === 3) {
+        if (!val('f_glLimit') || !val('f_wcCarrier') || !val('f_coiExpiry') || !val('f_emrCurrent') || !val('f_safetyProgram')) {
+            showError('Please complete all required insurance and safety fields.');
+            return false;
+        }
+    }
+    return true;
+}
+
+function getCheckedTrades() {
+    const trades = [];
+    document.querySelectorAll('#f_trades input:checked').forEach(cb => trades.push(cb.value));
+    return trades;
+}
+
+function updateTierVisibility() {
+    const tier = val('f_tier');
+    const note = document.getElementById('tierNote');
+    if (tier === 'Tier 1') note.textContent = 'Tier 1 selected — financial section is optional but recommended.';
+    else if (tier === 'Tier 2') note.textContent = 'Tier 2 selected — please provide financial details including revenue and D&B number.';
+    else if (tier === 'Tier 3') note.textContent = 'Tier 3 selected — full financial and bonding information required.';
+    else note.textContent = 'Complete this section if your expected contract value exceeds $100K.';
+}
+
+async function submitForm() {
+    if (!validateStep(currentStep)) return;
+
+    // Collect references
+    const refCompanies = document.querySelectorAll('.ref-company');
+    const refContacts = document.querySelectorAll('.ref-contact');
+    const refPhones = document.querySelectorAll('.ref-phone');
+    const refs = [];
+    refCompanies.forEach((el, i) => {
+        const co = el.value.trim();
+        if (co) refs.push(`${co} | ${refContacts[i]?.value.trim() || ''} | ${refPhones[i]?.value.trim() || ''}`);
+    });
+
+    if (refs.length < 2) {
+        showError('Please provide at least two trade references.');
+        return;
+    }
+
+    const payload = {
+        CompanyName: val('f_companyName'),
+        DBA: val('f_dba'),
+        PrimaryContact: val('f_contact'),
+        ContactTitle: val('f_contactTitle'),
+        Email: val('f_email'),
+        Phone: val('f_phone'),
+        Address: val('f_address'),
+        EIN: val('f_ein'),
+        YearsInBusiness: parseInt(val('f_yearsInBusiness')) || null,
+        Tier: val('f_tier'),
+        Entity: val('f_entity'),
+        Trades: getCheckedTrades().join(', '),
+        Licenses: val('f_licenses'),
+        OEMCerts: val('f_oemCerts'),
+        GL_Limit: val('f_glLimit'),
+        WC_Carrier: val('f_wcCarrier'),
+        COI_Expiry: val('f_coiExpiry') || null,
+        EMR_Current: val('f_emrCurrent'),
+        EMR_Prior: val('f_emrPrior'),
+        EMR_2Prior: val('f_emr2Prior'),
+        SafetyProgram: val('f_safetyProgram'),
+        OSHA_Incidents: parseInt(val('f_oshaIncidents')) || 0,
+        Revenue: val('f_revenue'),
+        DUNS: val('f_duns'),
+        BondCapacity: val('f_bondCapacity'),
+        BankRef: val('f_bankRef'),
+        Ref1: refs[0] || '',
+        Ref2: refs[1] || '',
+        Ref3: refs[2] || '',
+        Notes: val('f_notes'),
+        Status: 'Pending',
+        SubmittedDate: new Date().toISOString().split('T')[0]
+    };
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    try {
+        const resp = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+
+        // Show success
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('successScreen').classList.add('show');
+    } catch (err) {
+        showError('Submission failed. Please try again or contact us at procurement@distributedei.com. Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Submit Prequalification';
+    }
+}
+
+function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+function focus(id) { document.getElementById(id)?.focus(); }
+function showError(msg) {
+    const el = document.getElementById('errorBanner');
+    el.textContent = msg;
+    el.classList.add('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideError() { document.getElementById('errorBanner').classList.remove('show'); }
+</script>
+</body>
+</html>

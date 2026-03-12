@@ -161,6 +161,27 @@
         .cb { display: flex; align-items: center; gap: 12px; background: rgba(119,157,54,0.06); border: 1px solid rgba(119,157,54,0.2); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 20px; font-size: 13px; color: var(--green-dark); }
         .cb .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
+        .score-badge { display:inline-flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px; }
+        .score-badge.pass { background:rgba(119,157,54,0.12);color:#3d6b1e; }
+        .score-badge.conditional { background:#fff3dc;color:#8a6300; }
+        .score-badge.fail { background:rgba(192,57,43,0.1);color:#922b21; }
+        .score-badge.none { background:var(--bg);color:var(--text-light);font-weight:500; }
+
+        .score-bar-wrap { margin:12px 0; }
+        .score-bar { height:8px;border-radius:4px;background:var(--border);overflow:hidden;position:relative; }
+        .score-bar-fill { height:100%;border-radius:4px;transition:width 0.5s ease; }
+        .score-bar-labels { display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:4px; }
+
+        .ai-analysis { background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;max-height:200px;overflow-y:auto;margin-top:8px; }
+
+        .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:250;display:none;align-items:center;justify-content:center; }
+        .modal-overlay.open { display:flex; }
+        .modal { background:white;border-radius:var(--radius);padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15); }
+        .modal h3 { font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--navy);margin-bottom:12px; }
+        .modal p { font-size:13px;color:var(--text-muted);margin-bottom:16px; }
+        .modal input { width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:monospace;margin-bottom:12px; }
+        .modal .modal-btns { display:flex;gap:8px;justify-content:flex-end; }
+
         @media (max-width: 900px) {
             .sidebar { display: none; }
             .main-area { margin-left: 0; max-width: 100%; }
@@ -211,6 +232,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 List Setup
             </div>
+            <div class="sb-item" onclick="openApiKeyModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/><circle cx="12" cy="14" r="1.5"/></svg>
+                AI API Key
+            </div>
         </div>
         <div class="sb-spacer"></div>
         <div class="sb-user">
@@ -222,7 +247,7 @@
 
     <div class="main-area">
         <div id="dashView">
-            <div class="page-header"><h2>Vendor <span>Dashboard</span></h2><button class="btn btn-secondary btn-sm" onclick="loadVendors()">↻ Refresh</button></div>
+            <div class="page-header"><h2>Vendor <span>Dashboard</span></h2><div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="scoreAllPending()" id="scoreAllBtn">⚡ Score All Pending</button><button class="btn btn-secondary btn-sm" onclick="loadVendors()">↻ Refresh</button></div></div>
             <div class="cb" id="cbBanner" style="display:none"><div class="dot"></div> Connected to SharePoint list <strong style="margin-left:4px;">DEG-VendorPrequal</strong></div>
             <div class="stats-row">
                 <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Vendors</div></div>
@@ -247,11 +272,12 @@
                             <th onclick="sortTable('Trades')">Trades</th>
                             <th onclick="sortTable('Status')">Status <span class="sort-arrow" id="sort-Status"></span></th>
                             <th onclick="sortTable('EMR_Current')">EMR</th>
+                            <th onclick="sortTable('AIScore')">AI Score <span class="sort-arrow" id="sort-AIScore"></span></th>
                             <th onclick="sortTable('COI_Expiry')">COI Exp <span class="sort-arrow" id="sort-COI_Expiry"></span></th>
                             <th onclick="sortTable('SubmittedDate')">Submitted <span class="sort-arrow" id="sort-SubmittedDate"></span></th>
                             <th>Actions</th>
                         </tr></thead>
-                        <tbody id="vendorTableBody"><tr class="loading-row"><td colspan="9"><div class="spinner"></div> Loading vendors...</td></tr></tbody>
+                        <tbody id="vendorTableBody"><tr class="loading-row"><td colspan="10"><div class="spinner"></div> Loading vendors...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -355,6 +381,18 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<div class="modal-overlay" id="apiKeyModal">
+    <div class="modal">
+        <h3>Claude API Key</h3>
+        <p>Enter your Anthropic API key to enable AI scoring. The key is stored in your browser session only and never sent to SharePoint.</p>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
+        <div class="modal-btns">
+            <button class="btn btn-secondary btn-sm" onclick="closeApiKeyModal()">Cancel</button>
+            <button class="btn btn-primary btn-sm" onclick="saveApiKey()">Save Key</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const CONFIG = {
     clientId: '613928f8-0497-47ea-bb0f-c1725a1f156a',
@@ -401,6 +439,9 @@ const LIST_COLUMNS = [
     { display:'Submitted Date', name:'SubmittedDate', type:'dateTime', required:false },
     { display:'Review Date', name:'ReviewDate', type:'dateTime', required:false },
     { display:'Submitted By', name:'SubmittedBy', type:'text', required:false },
+    { display:'AI Score', name:'AIScore', type:'number', required:false, notes:'1-100 automated score' },
+    { display:'AI Rating', name:'AIRating', type:'choice', required:false, choices:['Pass','Conditional','Fail'], notes:'Automated rating' },
+    { display:'AI Analysis', name:'AIAnalysis', type:'note', required:false, notes:'Detailed AI assessment' },
 ];
 
 let msalInstance=null, accessToken=null, currentUser=null, vendors=[], filteredVendors=[], listId=null, sortCol='SubmittedDate', sortDir='desc';
@@ -478,13 +519,14 @@ function sortTable(c){if(sortCol===c)sortDir=sortDir==='asc'?'desc':'asc';else{s
 
 function renderTable(){
     const tb=document.getElementById('vendorTableBody');
-    if(!filteredVendors.length){tb.innerHTML='<tr class="loading-row"><td colspan="9">No vendors match your filters.</td></tr>';return;}
+    if(!filteredVendors.length){tb.innerHTML='<tr class="loading-row"><td colspan="10">No vendors match your filters.</td></tr>';return;}
     tb.innerHTML=filteredVendors.map(v=>`<tr>
         <td><strong>${esc(v.CompanyName||'')}</strong><br><span style="font-size:11px;color:var(--text-light)">${esc(v.PrimaryContact||'')}</span></td>
         <td>${tierBadge(v.Tier)}</td><td>${esc(v.Entity||'')}</td>
         <td style="max-width:180px;font-size:12px;">${esc(v.Trades||'')}</td>
         <td>${statusBadge(v.Status)}</td>
         <td style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'—')}</td>
+        <td>${aiScoreBadge(v.AIScore,v.AIRating)}</td>
         <td>${formatDate(v.COI_Expiry)}</td><td>${formatDate(v.SubmittedDate)}</td>
         <td><button class="btn btn-secondary btn-sm" onclick="openDetail('${v.id}')">Review</button></td>
     </tr>`).join('');
@@ -544,6 +586,24 @@ function openDetail(id){
         </div>
         ${v.Ref1?`<div class="dp-section"><h4>References</h4><div style="font-size:13px;">${v.Ref1?`<div style="padding:4px 0;">${esc(v.Ref1)}</div>`:''}${v.Ref2?`<div style="padding:4px 0;">${esc(v.Ref2)}</div>`:''}${v.Ref3?`<div style="padding:4px 0;">${esc(v.Ref3)}</div>`:''}</div></div>`:''}
         ${v.Notes?`<div class="dp-section"><h4>Vendor Notes</h4><p style="font-size:13px;">${esc(v.Notes)}</p></div>`:''}
+        <div class="dp-section"><h4>AI Assessment</h4>
+            ${v.AIScore ? `
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                    ${aiScoreBadge(v.AIScore,v.AIRating)}
+                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:${v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)'}">${v.AIScore}</span>
+                    <span style="font-size:12px;color:var(--text-light)">/100</span>
+                </div>
+                <div class="score-bar-wrap">
+                    <div class="score-bar"><div class="score-bar-fill" style="width:${v.AIScore}%;background:${v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)'}"></div></div>
+                    <div class="score-bar-labels"><span>0 — Fail</span><span>40 — Conditional</span><span>70 — Pass</span><span>100</span></div>
+                </div>
+                ${v.AIAnalysis?`<div class="ai-analysis">${esc(v.AIAnalysis)}</div>`:''}
+                <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="scoreVendor('${v.id}')">⚡ Re-Score</button>
+            ` : `
+                <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">No AI assessment yet.</p>
+                <button class="btn btn-primary btn-sm" onclick="scoreVendor('${v.id}')">⚡ Run AI Score</button>
+            `}
+        </div>
         <div class="dp-section"><h4>Reviewer Notes</h4><textarea id="dp_reviewNotes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;">${esc(v.ReviewerNotes||'')}</textarea></div>
         <div class="dp-section"><h4>Update Status</h4><select id="dp_status" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100%;">${['Pending','Under Review','Approved','Rejected','Expired'].map(s=>`<option value="${s}" ${v.Status===s?'selected':''}>${s}</option>`).join('')}</select></div>
         <div class="dp-actions"><button class="btn btn-primary" onclick="saveReview('${v.id}')">Save Review</button><button class="btn btn-secondary" onclick="closeDetail()">Cancel</button></div>`;
@@ -575,6 +635,156 @@ function statusBadge(s){const m={'Approved':'approved','Pending':'pending','Unde
 function tierBadge(t){const n=t==='Tier 1'?'1':t==='Tier 2'?'2':'3';return `<span class="badge-tier badge-tier-${n}">${esc(t||'')}</span>`;}
 function clearForm(){document.querySelectorAll('#formView input,#formView select,#formView textarea').forEach(e=>{if(e.type==='checkbox')e.checked=false;else e.value='';});}
 function showToast(m,t=''){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',3500);}
+
+// ══════════════════════════════════════════════════
+// AI SCORING
+// ══════════════════════════════════════════════════
+let claudeApiKey = sessionStorage.getItem('claudeApiKey') || '';
+
+function aiScoreBadge(score, rating) {
+    if (!score && !rating) return '<span class="score-badge none">—</span>';
+    const r = (rating || '').toLowerCase();
+    const cls = r === 'pass' ? 'pass' : r === 'conditional' ? 'conditional' : r === 'fail' ? 'fail' : 'none';
+    return `<span class="score-badge ${cls}">${score || '—'} ${rating || ''}</span>`;
+}
+
+function openApiKeyModal() {
+    document.getElementById('apiKeyInput').value = claudeApiKey;
+    document.getElementById('apiKeyModal').classList.add('open');
+}
+function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('open'); }
+function saveApiKey() {
+    claudeApiKey = document.getElementById('apiKeyInput').value.trim();
+    sessionStorage.setItem('claudeApiKey', claudeApiKey);
+    closeApiKeyModal();
+    showToast(claudeApiKey ? 'API key saved for this session.' : 'API key cleared.', 'success');
+}
+
+function buildScoringPrompt(v) {
+    return `You are an expert construction subcontractor prequalification analyst for a commercial solar and battery energy storage EPC company. Evaluate this vendor application and provide a risk-weighted score.
+
+VENDOR APPLICATION DATA:
+Company: ${v.CompanyName || 'N/A'}
+Tier: ${v.Tier || 'N/A'} (Tier 1: <$100K, Tier 2: $100K-$500K, Tier 3: >$500K)
+Entity: ${v.Entity || 'N/A'}
+Years in Business: ${v.YearsInBusiness || 'N/A'}
+Trades: ${v.Trades || 'N/A'}
+Licenses: ${v.Licenses || 'None provided'}
+OEM Certifications: ${v.OEMCerts || 'None provided'}
+
+INSURANCE & SAFETY:
+GL Limit: ${v.GL_Limit || 'Not provided'}
+Workers Comp Carrier: ${v.WC_Carrier || 'Not provided'}
+COI Expiry: ${v.COI_Expiry || 'Not provided'}
+EMR Current: ${v.EMR_Current || 'Not provided'}
+EMR Prior Year: ${v.EMR_Prior || 'Not provided'}
+EMR 2yr Prior: ${v.EMR_2Prior || 'Not provided'}
+Safety Program: ${v.SafetyProgram || 'Not provided'}
+OSHA Incidents (3yr): ${v.OSHA_Incidents !== undefined ? v.OSHA_Incidents : 'Not provided'}
+
+FINANCIAL (Tier 2/3):
+Annual Revenue: ${v.Revenue || 'Not provided'}
+DUNS Number: ${v.DUNS || 'Not provided'}
+Bonding Capacity: ${v.BondCapacity || 'Not provided'}
+Bank Reference: ${v.BankRef || 'Not provided'}
+
+REFERENCES:
+Ref 1: ${v.Ref1 || 'None'}
+Ref 2: ${v.Ref2 || 'None'}
+Ref 3: ${v.Ref3 || 'None'}
+
+Notes: ${v.Notes || 'None'}
+
+SCORING CRITERIA (weighted):
+1. EMR & Safety (35%): EMR under 1.0 is good, under 0.85 is excellent. EMR over 1.0 is a red flag. Written safety program required. Zero OSHA incidents preferred.
+2. Insurance Compliance (30%): COI must be current (not expired). GL limits should meet industry standard ($1M+ per occurrence, $2M+ aggregate). WC carrier must be provided.
+3. Financial Stability (25%): For Tier 2/3 only. Revenue should support contract size. DUNS number shows established credit. Bonding capacity important for Tier 3. For Tier 1, give full marks if basic info provided.
+4. Completeness & References (10%): All required fields filled. At least 2 references from GCs/owners.
+
+RESPOND WITH ONLY THIS JSON FORMAT (no markdown, no backticks):
+{"score": <number 1-100>, "rating": "<Pass|Conditional|Fail>", "analysis": "<2-3 paragraph assessment covering each scoring category, specific risks identified, and recommendation>"}
+
+RATING THRESHOLDS: Pass = 70+, Conditional = 40-69, Fail = below 40`;
+}
+
+async function scoreVendor(id) {
+    if (!claudeApiKey) { openApiKeyModal(); showToast('Set your Claude API key first.', 'error'); return; }
+
+    const v = vendors.find(x => x.id === id);
+    if (!v) return;
+
+    showToast(`Scoring ${v.CompanyName}...`);
+
+    try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': claudeApiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1024,
+                messages: [{ role: 'user', content: buildScoringPrompt(v) }]
+            })
+        });
+
+        if (!resp.ok) {
+            const errText = await resp.text();
+            throw new Error(`API ${resp.status}: ${errText}`);
+        }
+
+        const data = await resp.json();
+        const text = data.content.map(c => c.text || '').join('');
+        const clean = text.replace(/```json|```/g, '').trim();
+        const result = JSON.parse(clean);
+
+        // Write score back to SharePoint
+        await graphPatch(`/sites/${CONFIG.siteId}/lists/${listId}/items/${id}/fields`, {
+            AIScore: result.score,
+            AIRating: result.rating,
+            AIAnalysis: result.analysis
+        });
+
+        showToast(`${v.CompanyName}: ${result.score}/100 — ${result.rating}`, 'success');
+        await loadVendors();
+
+        // Re-open detail panel with updated data
+        openDetail(id);
+
+    } catch (err) {
+        showToast('Scoring error: ' + err.message, 'error');
+    }
+}
+
+async function scoreAllPending() {
+    if (!claudeApiKey) { openApiKeyModal(); showToast('Set your Claude API key first.', 'error'); return; }
+
+    const pending = vendors.filter(v => !v.AIScore && (v.Status === 'Pending' || v.Status === 'Under Review'));
+    if (pending.length === 0) { showToast('No unscored pending vendors.'); return; }
+
+    const btn = document.getElementById('scoreAllBtn');
+    btn.disabled = true;
+
+    let scored = 0;
+    for (const v of pending) {
+        btn.textContent = `⚡ Scoring ${scored + 1}/${pending.length}...`;
+        try {
+            await scoreVendor(v.id);
+            scored++;
+            // Brief delay to respect rate limits
+            await new Promise(r => setTimeout(r, 1500));
+        } catch (err) {
+            console.error(`Failed to score ${v.CompanyName}:`, err);
+        }
+    }
+
+    btn.disabled = false;
+    btn.textContent = '⚡ Score All Pending';
+    showToast(`Scored ${scored} of ${pending.length} vendors.`, 'success');
+}
 
 initMsal();
 </script>
