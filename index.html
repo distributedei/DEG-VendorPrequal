@@ -3,1353 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEG Vendor Prequalification</title>
+    <title>DEI Project Truth — Vendor Prequal</title>
     <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --navy: #375673;
-            --navy-dark: #2a4259;
+            --navy-dark: #1a2d42;
+            --navy-deeper: #0f1e2e;
             --navy-light: #4a6d8c;
             --green: #779d36;
             --green-dark: #5f7e2b;
             --green-light: #8fb844;
-            --bg: #f4f6f8;
+            --bg: #f5f7fa;
             --card: #ffffff;
-            --border: #dde3ea;
+            --border: #e2e8f0;
             --text: #1e2a36;
-            --text-muted: #6b7d8e;
+            --text-muted: #6b7c8a;
+            --text-light: #8a9baa;
             --red: #c0392b;
             --amber: #d4870e;
-            --radius: 6px;
-            --shadow: 0 1px 3px rgba(55,86,115,0.08), 0 1px 2px rgba(55,86,115,0.06);
-            --shadow-lg: 0 4px 12px rgba(55,86,115,0.12);
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+            --sidebar-w: 240px;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
 
-        body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-        }
+        .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg); }
+        .login-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+        .login-logo { width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--navy), var(--navy-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .login-logo svg { width: 32px; height: 32px; }
+        .login-wordmark { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 1px; color: var(--navy); }
+        .login-wordmark span { color: var(--green); }
+        .login-tagline { font-size: 11px; color: var(--text-light); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; }
+        .login-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--green), transparent); margin: 24px 0; }
+        .login-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--navy); color: white; border: none; padding: 12px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .login-btn:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+        .login-btn svg { width: 20px; height: 20px; }
+        .login-footer { margin-top: 24px; font-size: 11px; color: var(--text-light); }
+        .login-footer .dot { color: var(--green); }
 
-        /* ── Header ── */
-        .header {
-            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-            color: white;
-            padding: 0 24px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .header h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.3px; }
-        .header h1 span { color: var(--green-light); font-weight: 700; }
-        .header-user { font-size: 13px; opacity: 0.85; }
-        .btn-sign-in {
-            background: var(--green);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-sign-in:hover { background: var(--green-dark); }
+        .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh; background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-deeper) 100%); color: white; display: flex; flex-direction: column; z-index: 100; overflow-y: auto; }
+        .sb-brand { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sb-brand-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; }
+        .sb-brand-title span { color: var(--green-light); }
+        .sb-brand-sub { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+        .sb-section { padding: 16px 12px 8px; }
+        .sb-section-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; padding: 0 8px; margin-bottom: 6px; }
+        .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s; user-select: none; }
+        .sb-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+        .sb-item.active { background: linear-gradient(135deg, rgba(119,157,54,0.15), rgba(55,86,115,0.1)); color: var(--green-light); }
+        .sb-item svg { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+        .sb-item.active svg { opacity: 1; }
+        .sb-item .sb-badge { margin-left: auto; background: var(--green); color: white; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 10px; }
+        .sb-spacer { flex: 1; }
+        .sb-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sb-user-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
+        .sb-user-email { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sb-signout { margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.3); cursor: pointer; transition: color 0.2s; }
+        .sb-signout:hover { color: rgba(255,255,255,0.7); }
 
-        /* ── Tabs ── */
-        .tab-bar {
-            background: white;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            padding: 0 24px;
-            gap: 0;
-        }
-        .tab {
-            padding: 12px 24px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-            user-select: none;
-        }
-        .tab:hover { color: var(--navy); }
-        .tab.active {
-            color: var(--navy);
-            border-bottom-color: var(--green);
-        }
+        .app-layout { display: none; }
+        .app-layout.show { display: flex; }
+        .main-area { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; padding: 24px 28px; max-width: calc(100% - var(--sidebar-w)); }
 
-        /* ── Main Layout ── */
-        .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .page-header h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--navy); }
+        .page-header h2 span { color: var(--green); font-weight: 800; }
 
-        /* ── Cards ── */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--navy);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px; }
+        .card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 
-        /* ── Form Elements ── */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
         .form-group { display: flex; flex-direction: column; gap: 4px; }
         .form-group.full { grid-column: 1 / -1; }
-        .form-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
+        .form-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group label .req { color: var(--red); }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-family: inherit;
-            color: var(--text);
-            transition: border-color 0.2s;
-            background: white;
-        }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--navy-light);
-            box-shadow: 0 0 0 2px rgba(55,86,115,0.1);
-        }
+        .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; color: var(--text); transition: border-color 0.2s; background: white; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 2px rgba(119,157,54,0.12); }
         .form-group textarea { resize: vertical; min-height: 80px; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0; }
+        .checkbox-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text); cursor: pointer; }
+        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--green); }
 
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 4px 0;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
-            color: var(--text);
-            cursor: pointer;
-        }
-        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--navy); }
-
-        /* ── Buttons ── */
         .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
-        .btn {
-            padding: 10px 24px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
+        .btn { padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-family: inherit; }
         .btn-primary { background: var(--green); color: white; border-color: var(--green); }
         .btn-primary:hover { background: var(--green-dark); }
         .btn-secondary { background: white; color: var(--navy); border-color: var(--border); }
         .btn-secondary:hover { background: var(--bg); }
-        .btn-danger { background: var(--red); color: white; }
-        .btn-danger:hover { background: #a93226; }
         .btn-sm { padding: 5px 12px; font-size: 12px; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ── Dashboard ── */
         .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
-        .stat-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-        .stat-card .stat-val {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--navy);
-        }
-        .stat-card .stat-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
+        .stat-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+        .stat-card .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1; }
+        .stat-card .stat-label { font-size: 10px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 4px; }
         .stat-card.green .stat-val { color: var(--green); }
         .stat-card.amber .stat-val { color: var(--amber); }
         .stat-card.red .stat-val { color: var(--red); }
 
-        .filter-bar {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .filter-bar input,
-        .filter-bar select {
-            padding: 7px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-family: inherit;
-            background: white;
-        }
+        .filter-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+        .filter-bar input, .filter-bar select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; background: white; }
         .filter-bar input { width: 260px; }
-        .filter-bar input:focus,
-        .filter-bar select:focus { outline: none; border-color: var(--navy-light); }
+        .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--green); }
 
-        /* ── Table ── */
         .table-wrap { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        thead th {
-            text-align: left;
-            padding: 10px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            border-bottom: 2px solid var(--border);
-            cursor: pointer;
-            user-select: none;
-            white-space: nowrap;
-        }
+        thead th { text-align: left; padding: 10px 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-light); border-bottom: 2px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
         thead th:hover { color: var(--navy); }
         thead th .sort-arrow { margin-left: 4px; font-size: 10px; }
         tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
         tbody tr:hover { background: #f8fafc; }
         tbody td { padding: 10px 12px; }
 
-        /* ── Badges ── */
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .badge-approved { background: #e8f5e1; color: #3d6b1e; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-approved { background: rgba(119,157,54,0.12); color: #3d6b1e; }
         .badge-pending { background: #fff3dc; color: #8a6300; }
-        .badge-review { background: #e1ecf5; color: #2a5a8c; }
-        .badge-rejected { background: #fde8e6; color: #922b21; }
+        .badge-review { background: rgba(55,86,115,0.1); color: var(--navy); }
+        .badge-rejected { background: rgba(192,57,43,0.1); color: #922b21; }
         .badge-expired { background: #eee; color: #666; }
-
-        .badge-tier {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .badge-tier-1 { background: #e8f5e1; color: #3d6b1e; }
+        .badge-tier { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; }
+        .badge-tier-1 { background: rgba(119,157,54,0.12); color: #3d6b1e; }
         .badge-tier-2 { background: #fff3dc; color: #8a6300; }
-        .badge-tier-3 { background: #fde8e6; color: #922b21; }
+        .badge-tier-3 { background: rgba(192,57,43,0.1); color: #922b21; }
 
-        /* ── Detail Panel ── */
-        .detail-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 200;
-            display: none;
-            justify-content: flex-end;
-        }
+        .detail-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; justify-content: flex-end; }
         .detail-overlay.open { display: flex; }
-        .detail-panel {
-            width: 560px;
-            max-width: 90vw;
-            background: white;
-            height: 100%;
-            overflow-y: auto;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-            padding: 24px;
-        }
-        .detail-panel .dp-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-        .detail-panel .dp-header h2 { font-size: 18px; color: var(--navy); }
-        .dp-close {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 4px 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: var(--text-muted);
-        }
+        .detail-panel { width: 560px; max-width: 90vw; background: white; height: 100%; overflow-y: auto; box-shadow: -4px 0 24px rgba(0,0,0,0.12); padding: 24px; }
+        .detail-panel .dp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .detail-panel .dp-header h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+        .dp-close { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 16px; color: var(--text-muted); }
         .dp-close:hover { background: var(--bg); }
         .dp-section { margin-bottom: 16px; }
-        .dp-section h4 {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
+        .dp-section h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .dp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .dp-field label { font-size: 11px; color: var(--text-muted); display: block; }
+        .dp-field label { font-size: 11px; color: var(--text-light); display: block; }
         .dp-field span { font-size: 13px; font-weight: 500; }
         .dp-actions { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 0;
-            font-size: 13px;
-        }
+        .checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; }
         .checklist-item .check { font-size: 16px; }
         .checklist-item .check.yes { color: var(--green); }
         .checklist-item .check.no { color: var(--red); }
 
-        /* ── Toast ── */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--navy);
-            color: white;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            box-shadow: var(--shadow-lg);
-            z-index: 300;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy); color: white; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; box-shadow: var(--shadow-lg); z-index: 300; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.error { background: var(--red); }
         .toast.success { background: var(--green-dark); }
 
-        /* ── Auth Screen ── */
-        .auth-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            gap: 16px;
-        }
-        .auth-screen h2 { color: var(--navy); font-size: 20px; }
-        .auth-screen p { color: var(--text-muted); font-size: 14px; }
-
-        /* ── Loading ── */
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border);
-            border-top-color: var(--navy);
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .loading-row td { text-align: center; padding: 40px; color: var(--text-muted); }
 
-        /* ── Responsive ── */
-        @media (max-width: 768px) {
+        .cb { display: flex; align-items: center; gap: 12px; background: rgba(119,157,54,0.06); border: 1px solid rgba(119,157,54,0.2); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 20px; font-size: 13px; color: var(--green-dark); }
+        .cb .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-area { margin-left: 0; max-width: 100%; }
             .form-grid, .form-grid.three { grid-template-columns: 1fr; }
             .stats-row { grid-template-columns: repeat(3, 1fr); }
-            .main { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ═══════════════════ HEADER ═══════════════════ -->
-<div class="header">
-    <div class="header-left">
-        <h1>DEG <span>Vendor Prequal</span></h1>
-    </div>
-    <div id="headerRight">
-        <button class="btn-sign-in" onclick="signIn()">Sign In with Microsoft</button>
-    </div>
-</div>
-
-<!-- ═══════════════════ TABS ═══════════════════ -->
-<div class="tab-bar" id="tabBar" style="display:none;">
-    <div class="tab active" data-tab="form" onclick="switchTab('form')">+ New Vendor</div>
-    <div class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</div>
-    <div class="tab" data-tab="schema" onclick="switchTab('schema')">List Setup</div>
-</div>
-
-<!-- ═══════════════════ AUTH SCREEN ═══════════════════ -->
-<div class="main" id="authScreen">
-    <div class="auth-screen">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#375673" stroke-width="1.5"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="16" r="1.5"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <h2>Vendor Prequalification Portal</h2>
-        <p>Sign in with your Microsoft account to access the prequal system.</p>
-    </div>
-</div>
-
-<!-- ═══════════════════ FORM VIEW ═══════════════════ -->
-<div class="main" id="formView" style="display:none;">
-
-    <div class="card">
-        <div class="card-title">Company Information</div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Company Name <span class="req">*</span></label>
-                <input type="text" id="f_companyName" placeholder="Legal entity name">
-            </div>
-            <div class="form-group">
-                <label>DBA / Trade Name</label>
-                <input type="text" id="f_dba" placeholder="If different from legal name">
-            </div>
-            <div class="form-group">
-                <label>Primary Contact <span class="req">*</span></label>
-                <input type="text" id="f_contact" placeholder="Full name">
-            </div>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="f_contactTitle" placeholder="e.g. VP Operations">
-            </div>
-            <div class="form-group">
-                <label>Email <span class="req">*</span></label>
-                <input type="email" id="f_email" placeholder="email@company.com">
-            </div>
-            <div class="form-group">
-                <label>Phone <span class="req">*</span></label>
-                <input type="tel" id="f_phone" placeholder="(555) 555-5555">
-            </div>
-            <div class="form-group full">
-                <label>Address</label>
-                <input type="text" id="f_address" placeholder="Street, City, State, ZIP">
-            </div>
-            <div class="form-group">
-                <label>Federal Tax ID (EIN)</label>
-                <input type="text" id="f_ein" placeholder="XX-XXXXXXX">
-            </div>
-            <div class="form-group">
-                <label>Years in Business</label>
-                <input type="number" id="f_yearsInBusiness" placeholder="e.g. 12">
-            </div>
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <div class="login-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
         </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">Scope &amp; Tier Classification</div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Expected Contract Value Range <span class="req">*</span></label>
-                <select id="f_tier">
-                    <option value="">Select tier...</option>
-                    <option value="Tier 1">Tier 1 — Under $100K</option>
-                    <option value="Tier 2">Tier 2 — $100K – $500K</option>
-                    <option value="Tier 3">Tier 3 — Over $500K</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>DEG Entity <span class="req">*</span></label>
-                <select id="f_entity">
-                    <option value="">Select entity...</option>
-                    <option value="DEI">DEI</option>
-                    <option value="DER">DER</option>
-                    <option value="DEP">DEP</option>
-                    <option value="DES">DES</option>
-                    <option value="Mike EPC">Mike EPC</option>
-                </select>
-            </div>
-            <div class="form-group full">
-                <label>Trade / Scope of Work <span class="req">*</span></label>
-                <div class="checkbox-group" id="f_trades">
-                    <label><input type="checkbox" value="Electrical"> Electrical</label>
-                    <label><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label>
-                    <label><input type="checkbox" value="Structural / Racking"> Structural / Racking</label>
-                    <label><input type="checkbox" value="Mechanical"> Mechanical</label>
-                    <label><input type="checkbox" value="BESS Install"> BESS Install</label>
-                    <label><input type="checkbox" value="Commissioning"> Commissioning</label>
-                    <label><input type="checkbox" value="Trenching"> Trenching</label>
-                    <label><input type="checkbox" value="Fencing"> Fencing</label>
-                    <label><input type="checkbox" value="Testing / QC"> Testing / QC</label>
-                    <label><input type="checkbox" value="Other"> Other</label>
-                </div>
-            </div>
-            <div class="form-group full">
-                <label>Relevant Licenses / Certifications</label>
-                <input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional">
-            </div>
-            <div class="form-group full">
-                <label>OEM Certifications (if applicable)</label>
-                <input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified Installer, SMA Service Partner">
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">Insurance &amp; Safety</div>
-        <div class="form-grid three">
-            <div class="form-group">
-                <label>General Liability Limit</label>
-                <input type="text" id="f_glLimit" placeholder="e.g. $2,000,000">
-            </div>
-            <div class="form-group">
-                <label>Workers Comp Carrier</label>
-                <input type="text" id="f_wcCarrier" placeholder="Carrier name">
-            </div>
-            <div class="form-group">
-                <label>COI Expiration Date</label>
-                <input type="date" id="f_coiExpiry">
-            </div>
-            <div class="form-group">
-                <label>EMR (Current Year)</label>
-                <input type="text" id="f_emrCurrent" placeholder="e.g. 0.85">
-            </div>
-            <div class="form-group">
-                <label>EMR (Prior Year)</label>
-                <input type="text" id="f_emrPrior" placeholder="e.g. 0.90">
-            </div>
-            <div class="form-group">
-                <label>EMR (2 Years Prior)</label>
-                <input type="text" id="f_emr2Prior" placeholder="e.g. 0.92">
-            </div>
-        </div>
-        <div class="form-grid" style="margin-top: 16px;">
-            <div class="form-group">
-                <label>Has Written Safety Program?</label>
-                <select id="f_safetyProgram">
-                    <option value="">Select...</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>OSHA Recordable Incidents (3yr)</label>
-                <input type="number" id="f_oshaIncidents" placeholder="e.g. 0">
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">Financial (Tier 2 &amp; 3 Only)</div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Annual Revenue (Approx.)</label>
-                <input type="text" id="f_revenue" placeholder="e.g. $5,000,000">
-            </div>
-            <div class="form-group">
-                <label>D&amp;B Number</label>
-                <input type="text" id="f_duns" placeholder="DUNS number">
-            </div>
-            <div class="form-group">
-                <label>Bonding Capacity</label>
-                <input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate">
-            </div>
-            <div class="form-group">
-                <label>Banking Reference</label>
-                <input type="text" id="f_bankRef" placeholder="Bank name + contact">
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">References</div>
-        <div id="refsContainer">
-            <div class="form-grid three ref-row" data-idx="1">
-                <div class="form-group">
-                    <label>Reference 1 — Company</label>
-                    <input type="text" class="ref-company" placeholder="GC or Owner name">
-                </div>
-                <div class="form-group">
-                    <label>Contact Name</label>
-                    <input type="text" class="ref-contact" placeholder="Full name">
-                </div>
-                <div class="form-group">
-                    <label>Phone / Email</label>
-                    <input type="text" class="ref-phone" placeholder="Contact info">
-                </div>
-            </div>
-            <div class="form-grid three ref-row" data-idx="2" style="margin-top:8px;">
-                <div class="form-group">
-                    <label>Reference 2 — Company</label>
-                    <input type="text" class="ref-company" placeholder="GC or Owner name">
-                </div>
-                <div class="form-group">
-                    <label>Contact Name</label>
-                    <input type="text" class="ref-contact" placeholder="Full name">
-                </div>
-                <div class="form-group">
-                    <label>Phone / Email</label>
-                    <input type="text" class="ref-phone" placeholder="Contact info">
-                </div>
-            </div>
-            <div class="form-grid three ref-row" data-idx="3" style="margin-top:8px;">
-                <div class="form-group">
-                    <label>Reference 3 — Company</label>
-                    <input type="text" class="ref-company" placeholder="GC or Owner name">
-                </div>
-                <div class="form-group">
-                    <label>Contact Name</label>
-                    <input type="text" class="ref-contact" placeholder="Full name">
-                </div>
-                <div class="form-group">
-                    <label>Phone / Email</label>
-                    <input type="text" class="ref-phone" placeholder="Contact info">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">Additional Notes</div>
-        <div class="form-group">
-            <textarea id="f_notes" rows="4" placeholder="Any additional information, project history with DEG entities, or notes for the reviewer..."></textarea>
-        </div>
-    </div>
-
-    <div class="btn-row">
-        <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
-        <button class="btn btn-primary" id="submitBtn" onclick="submitPrequal()">Submit Prequalification</button>
-    </div>
-</div>
-
-<!-- ═══════════════════ DASHBOARD VIEW ═══════════════════ -->
-<div class="main" id="dashView" style="display:none;">
-
-    <div class="stats-row" id="statsRow">
-        <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Vendors</div></div>
-        <div class="stat-card green"><div class="stat-val" id="stat-approved">—</div><div class="stat-label">Approved</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-review">—</div><div class="stat-label">Under Review</div></div>
-        <div class="stat-card amber"><div class="stat-val" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
-        <div class="stat-card red"><div class="stat-val" id="stat-expired">—</div><div class="stat-label">Expired / Rejected</div></div>
-    </div>
-
-    <div class="card">
-        <div class="filter-bar">
-            <input type="text" id="filterSearch" placeholder="Search company name, trade, contact..." oninput="applyFilters()">
-            <select id="filterStatus" onchange="applyFilters()">
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Under Review">Under Review</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Expired">Expired</option>
-            </select>
-            <select id="filterTier" onchange="applyFilters()">
-                <option value="">All Tiers</option>
-                <option value="Tier 1">Tier 1</option>
-                <option value="Tier 2">Tier 2</option>
-                <option value="Tier 3">Tier 3</option>
-            </select>
-            <select id="filterEntity" onchange="applyFilters()">
-                <option value="">All Entities</option>
-                <option value="DEI">DEI</option>
-                <option value="DER">DER</option>
-                <option value="DEP">DEP</option>
-                <option value="DES">DES</option>
-                <option value="Mike EPC">Mike EPC</option>
-            </select>
-            <button class="btn btn-secondary btn-sm" onclick="loadVendors()">
-                ↻ Refresh
-            </button>
-        </div>
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th onclick="sortTable('CompanyName')">Company <span class="sort-arrow" id="sort-CompanyName"></span></th>
-                        <th onclick="sortTable('Tier')">Tier <span class="sort-arrow" id="sort-Tier"></span></th>
-                        <th onclick="sortTable('Entity')">Entity <span class="sort-arrow" id="sort-Entity"></span></th>
-                        <th onclick="sortTable('Trades')">Trades</th>
-                        <th onclick="sortTable('Status')">Status <span class="sort-arrow" id="sort-Status"></span></th>
-                        <th onclick="sortTable('EMR_Current')">EMR</th>
-                        <th onclick="sortTable('COI_Expiry')">COI Exp <span class="sort-arrow" id="sort-COI_Expiry"></span></th>
-                        <th onclick="sortTable('SubmittedDate')">Submitted <span class="sort-arrow" id="sort-SubmittedDate"></span></th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="vendorTableBody">
-                    <tr class="loading-row"><td colspan="9"><div class="spinner"></div> Loading vendors...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════ SCHEMA / SETUP VIEW ═══════════════════ -->
-<div class="main" id="schemaView" style="display:none;">
-    <div class="card">
-        <div class="card-title">SharePoint List Schema — DEG-VendorPrequal</div>
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
-            Create a SharePoint list named <strong>DEG-VendorPrequal</strong> on your existing DEI site.
-            The button below will auto-create the list with all required columns via Graph API.
-            Alternatively, reference the column definitions below to create it manually.
-        </p>
-        <button class="btn btn-primary" id="createListBtn" onclick="createSharePointList()">
-            Auto-Create List via Graph API
+        <div class="login-wordmark">PROJECT <span>TRUTH</span></div>
+        <div class="login-tagline">Vendor Prequalification</div>
+        <div class="login-divider"></div>
+        <button class="login-btn" onclick="signIn()">
+            <svg viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+            Sign in with Microsoft
         </button>
-        <div style="margin-top:20px;">
-            <table>
-                <thead>
-                    <tr><th>Column Name</th><th>Internal Name</th><th>Type</th><th>Required</th><th>Notes</th></tr>
-                </thead>
-                <tbody id="schemaTableBody"></tbody>
-            </table>
+        <div class="login-footer"><span class="dot">●</span> Connected to SharePoint</div>
+    </div>
+</div>
+
+<div class="app-layout" id="appLayout">
+    <div class="sidebar">
+        <div class="sb-brand">
+            <div class="sb-brand-title">PROJECT <span>TRUTH</span></div>
+            <div class="sb-brand-sub">Vendor Prequal</div>
+        </div>
+        <div class="sb-section">
+            <div class="sb-section-label">Vendor Mgmt</div>
+            <div class="sb-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+                <span class="sb-badge" id="sbPendingCount">0</span>
+            </div>
+            <div class="sb-item" data-tab="form" onclick="switchTab('form')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                New Vendor
+            </div>
+        </div>
+        <div class="sb-section">
+            <div class="sb-section-label">Admin</div>
+            <div class="sb-item" data-tab="schema" onclick="switchTab('schema')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                List Setup
+            </div>
+        </div>
+        <div class="sb-spacer"></div>
+        <div class="sb-user">
+            <div class="sb-user-name" id="sbUserName">—</div>
+            <div class="sb-user-email" id="sbUserEmail">—</div>
+            <div class="sb-signout" onclick="signOut()">Sign out</div>
+        </div>
+    </div>
+
+    <div class="main-area">
+        <div id="dashView">
+            <div class="page-header"><h2>Vendor <span>Dashboard</span></h2><button class="btn btn-secondary btn-sm" onclick="loadVendors()">↻ Refresh</button></div>
+            <div class="cb" id="cbBanner" style="display:none"><div class="dot"></div> Connected to SharePoint list <strong style="margin-left:4px;">DEG-VendorPrequal</strong></div>
+            <div class="stats-row">
+                <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Vendors</div></div>
+                <div class="stat-card green"><div class="stat-val" id="stat-approved">—</div><div class="stat-label">Approved</div></div>
+                <div class="stat-card"><div class="stat-val" id="stat-review">—</div><div class="stat-label">Under Review</div></div>
+                <div class="stat-card amber"><div class="stat-val" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
+                <div class="stat-card red"><div class="stat-val" id="stat-expired">—</div><div class="stat-label">Expired / Rejected</div></div>
+            </div>
+            <div class="card">
+                <div class="filter-bar">
+                    <input type="text" id="filterSearch" placeholder="Search company, trade, contact..." oninput="applyFilters()">
+                    <select id="filterStatus" onchange="applyFilters()"><option value="">All Statuses</option><option value="Pending">Pending</option><option value="Under Review">Under Review</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option><option value="Expired">Expired</option></select>
+                    <select id="filterTier" onchange="applyFilters()"><option value="">All Tiers</option><option value="Tier 1">Tier 1</option><option value="Tier 2">Tier 2</option><option value="Tier 3">Tier 3</option></select>
+                    <select id="filterEntity" onchange="applyFilters()"><option value="">All Entities</option><option value="DEI">DEI</option><option value="DER">DER</option><option value="DEP">DEP</option><option value="DES">DES</option><option value="Mike EPC">Mike EPC</option></select>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th onclick="sortTable('CompanyName')">Company <span class="sort-arrow" id="sort-CompanyName"></span></th>
+                            <th onclick="sortTable('Tier')">Tier <span class="sort-arrow" id="sort-Tier"></span></th>
+                            <th onclick="sortTable('Entity')">Entity <span class="sort-arrow" id="sort-Entity"></span></th>
+                            <th onclick="sortTable('Trades')">Trades</th>
+                            <th onclick="sortTable('Status')">Status <span class="sort-arrow" id="sort-Status"></span></th>
+                            <th onclick="sortTable('EMR_Current')">EMR</th>
+                            <th onclick="sortTable('COI_Expiry')">COI Exp <span class="sort-arrow" id="sort-COI_Expiry"></span></th>
+                            <th onclick="sortTable('SubmittedDate')">Submitted <span class="sort-arrow" id="sort-SubmittedDate"></span></th>
+                            <th>Actions</th>
+                        </tr></thead>
+                        <tbody id="vendorTableBody"><tr class="loading-row"><td colspan="9"><div class="spinner"></div> Loading vendors...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="formView" style="display:none;">
+            <div class="page-header"><h2>New <span>Vendor Submission</span></h2></div>
+            <div class="card">
+                <div class="card-title">Company Information</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
+                    <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba" placeholder="If different from legal name"></div>
+                    <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
+                    <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
+                    <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
+                    <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
+                    <div class="form-group full"><label>Address</label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
+                    <div class="form-group"><label>Federal Tax ID (EIN)</label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
+                    <div class="form-group"><label>Years in Business</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 12"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Scope &amp; Tier Classification</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Expected Contract Value Range <span class="req">*</span></label><select id="f_tier"><option value="">Select tier...</option><option value="Tier 1">Tier 1 — Under $100K</option><option value="Tier 2">Tier 2 — $100K – $500K</option><option value="Tier 3">Tier 3 — Over $500K</option></select></div>
+                    <div class="form-group"><label>DEG Entity <span class="req">*</span></label><select id="f_entity"><option value="">Select entity...</option><option value="DEI">DEI</option><option value="DER">DER</option><option value="DEP">DEP</option><option value="DES">DES</option><option value="Mike EPC">Mike EPC</option></select></div>
+                    <div class="form-group full"><label>Trade / Scope of Work <span class="req">*</span></label>
+                        <div class="checkbox-group" id="f_trades">
+                            <label><input type="checkbox" value="Electrical"> Electrical</label>
+                            <label><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label>
+                            <label><input type="checkbox" value="Structural / Racking"> Structural / Racking</label>
+                            <label><input type="checkbox" value="Mechanical"> Mechanical</label>
+                            <label><input type="checkbox" value="BESS Install"> BESS Install</label>
+                            <label><input type="checkbox" value="Commissioning"> Commissioning</label>
+                            <label><input type="checkbox" value="Trenching"> Trenching</label>
+                            <label><input type="checkbox" value="Fencing"> Fencing</label>
+                            <label><input type="checkbox" value="Testing / QC"> Testing / QC</label>
+                            <label><input type="checkbox" value="Other"> Other</label>
+                        </div>
+                    </div>
+                    <div class="form-group full"><label>Relevant Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional"></div>
+                    <div class="form-group full"><label>OEM Certifications (if applicable)</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified Installer, SMA Service Partner"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Insurance &amp; Safety</div>
+                <div class="form-grid three">
+                    <div class="form-group"><label>General Liability Limit</label><input type="text" id="f_glLimit" placeholder="e.g. $2,000,000"></div>
+                    <div class="form-group"><label>Workers Comp Carrier</label><input type="text" id="f_wcCarrier" placeholder="Carrier name"></div>
+                    <div class="form-group"><label>COI Expiration Date</label><input type="date" id="f_coiExpiry"></div>
+                    <div class="form-group"><label>EMR (Current Year)</label><input type="text" id="f_emrCurrent" placeholder="e.g. 0.85"></div>
+                    <div class="form-group"><label>EMR (Prior Year)</label><input type="text" id="f_emrPrior" placeholder="e.g. 0.90"></div>
+                    <div class="form-group"><label>EMR (2 Years Prior)</label><input type="text" id="f_emr2Prior" placeholder="e.g. 0.92"></div>
+                </div>
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group"><label>Has Written Safety Program?</label><select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                    <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Financial (Tier 2 &amp; 3 Only)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Annual Revenue (Approx.)</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
+                    <div class="form-group"><label>D&amp;B Number</label><input type="text" id="f_duns" placeholder="DUNS number"></div>
+                    <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate"></div>
+                    <div class="form-group"><label>Banking Reference</label><input type="text" id="f_bankRef" placeholder="Bank name + contact"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">References</div>
+                <div id="refsContainer">
+                    <div class="form-grid three ref-row" data-idx="1"><div class="form-group"><label>Reference 1 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                    <div class="form-grid three ref-row" data-idx="2" style="margin-top:8px;"><div class="form-group"><label>Reference 2 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                    <div class="form-grid three ref-row" data-idx="3" style="margin-top:8px;"><div class="form-group"><label>Reference 3 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Additional Notes</div>
+                <div class="form-group"><textarea id="f_notes" rows="4" placeholder="Any additional information, project history with DEG entities, or notes for the reviewer..."></textarea></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitPrequal()">Submit Prequalification</button>
+            </div>
+        </div>
+
+        <div id="schemaView" style="display:none;">
+            <div class="page-header"><h2>SharePoint <span>List Setup</span></h2></div>
+            <div class="card">
+                <div class="card-title">DEG-VendorPrequal List Schema</div>
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Create a SharePoint list named <strong>DEG-VendorPrequal</strong> on your existing DEI site. The button below will auto-create the list with all required columns via Graph API.</p>
+                <button class="btn btn-primary" id="createListBtn" onclick="createSharePointList()">Auto-Create List via Graph API</button>
+                <div style="margin-top:20px;"><table><thead><tr><th>Column Name</th><th>Internal Name</th><th>Type</th><th>Required</th><th>Notes</th></tr></thead><tbody id="schemaTableBody"></tbody></table></div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ═══════════════════ DETAIL PANEL ═══════════════════ -->
 <div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
     <div class="detail-panel" id="detailPanel" onclick="event.stopPropagation()"></div>
 </div>
-
-<!-- ═══════════════════ TOAST ═══════════════════ -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════════════════
 const CONFIG = {
     clientId: '613928f8-0497-47ea-bb0f-c1725a1f156a',
     tenantId: 'ec357a32-5b85-438d-a765-ae33c8eb13b7',
-    siteId: 'distributedei.sharepoint.com',
-    listName: 'Vendors',
+    siteId: '8103997e-0688-4832-a5b4-bf18de7f96f5',
+    listName: 'DEG-VendorPrequal',
     redirectUri: window.location.origin + window.location.pathname,
     scopes: ['Sites.ReadWrite.All']
 };
 
-// ══════════════════════════════════════════════════
-// SCHEMA DEFINITION
-// ══════════════════════════════════════════════════
 const LIST_COLUMNS = [
-    { display: 'Company Name', name: 'CompanyName', type: 'text', required: true },
-    { display: 'DBA / Trade Name', name: 'DBA', type: 'text', required: false },
-    { display: 'Primary Contact', name: 'PrimaryContact', type: 'text', required: true },
-    { display: 'Contact Title', name: 'ContactTitle', type: 'text', required: false },
-    { display: 'Email', name: 'Email', type: 'text', required: true },
-    { display: 'Phone', name: 'Phone', type: 'text', required: true },
-    { display: 'Address', name: 'Address', type: 'text', required: false },
-    { display: 'EIN', name: 'EIN', type: 'text', required: false },
-    { display: 'Years in Business', name: 'YearsInBusiness', type: 'number', required: false },
-    { display: 'Tier', name: 'Tier', type: 'choice', required: true, choices: ['Tier 1','Tier 2','Tier 3'] },
-    { display: 'DEG Entity', name: 'Entity', type: 'choice', required: true, choices: ['DEI','DER','DEP','DES','Mike EPC'] },
-    { display: 'Trades', name: 'Trades', type: 'text', required: true, notes: 'Comma-separated' },
-    { display: 'Licenses', name: 'Licenses', type: 'text', required: false },
-    { display: 'OEM Certifications', name: 'OEMCerts', type: 'text', required: false },
-    { display: 'GL Limit', name: 'GL_Limit', type: 'text', required: false },
-    { display: 'WC Carrier', name: 'WC_Carrier', type: 'text', required: false },
-    { display: 'COI Expiry', name: 'COI_Expiry', type: 'dateTime', required: false },
-    { display: 'EMR Current', name: 'EMR_Current', type: 'text', required: false },
-    { display: 'EMR Prior', name: 'EMR_Prior', type: 'text', required: false },
-    { display: 'EMR 2yr Prior', name: 'EMR_2Prior', type: 'text', required: false },
-    { display: 'Safety Program', name: 'SafetyProgram', type: 'choice', required: false, choices: ['Yes','No'] },
-    { display: 'OSHA Incidents (3yr)', name: 'OSHA_Incidents', type: 'number', required: false },
-    { display: 'Annual Revenue', name: 'Revenue', type: 'text', required: false },
-    { display: 'DUNS Number', name: 'DUNS', type: 'text', required: false },
-    { display: 'Bonding Capacity', name: 'BondCapacity', type: 'text', required: false },
-    { display: 'Bank Reference', name: 'BankRef', type: 'text', required: false },
-    { display: 'Reference 1', name: 'Ref1', type: 'text', required: false },
-    { display: 'Reference 2', name: 'Ref2', type: 'text', required: false },
-    { display: 'Reference 3', name: 'Ref3', type: 'text', required: false },
-    { display: 'Notes', name: 'Notes', type: 'note', required: false },
-    { display: 'Status', name: 'Status', type: 'choice', required: false, choices: ['Pending','Under Review','Approved','Rejected','Expired'], defaultValue: 'Pending' },
-    { display: 'Reviewer Notes', name: 'ReviewerNotes', type: 'note', required: false },
-    { display: 'Submitted Date', name: 'SubmittedDate', type: 'dateTime', required: false },
-    { display: 'Review Date', name: 'ReviewDate', type: 'dateTime', required: false },
-    { display: 'Submitted By', name: 'SubmittedBy', type: 'text', required: false },
+    { display:'Company Name', name:'CompanyName', type:'text', required:true },
+    { display:'DBA / Trade Name', name:'DBA', type:'text', required:false },
+    { display:'Primary Contact', name:'PrimaryContact', type:'text', required:true },
+    { display:'Contact Title', name:'ContactTitle', type:'text', required:false },
+    { display:'Email', name:'Email', type:'text', required:true },
+    { display:'Phone', name:'Phone', type:'text', required:true },
+    { display:'Address', name:'Address', type:'text', required:false },
+    { display:'EIN', name:'EIN', type:'text', required:false },
+    { display:'Years in Business', name:'YearsInBusiness', type:'number', required:false },
+    { display:'Tier', name:'Tier', type:'choice', required:true, choices:['Tier 1','Tier 2','Tier 3'] },
+    { display:'DEG Entity', name:'Entity', type:'choice', required:true, choices:['DEI','DER','DEP','DES','Mike EPC'] },
+    { display:'Trades', name:'Trades', type:'text', required:true, notes:'Comma-separated' },
+    { display:'Licenses', name:'Licenses', type:'text', required:false },
+    { display:'OEM Certifications', name:'OEMCerts', type:'text', required:false },
+    { display:'GL Limit', name:'GL_Limit', type:'text', required:false },
+    { display:'WC Carrier', name:'WC_Carrier', type:'text', required:false },
+    { display:'COI Expiry', name:'COI_Expiry', type:'dateTime', required:false },
+    { display:'EMR Current', name:'EMR_Current', type:'text', required:false },
+    { display:'EMR Prior', name:'EMR_Prior', type:'text', required:false },
+    { display:'EMR 2yr Prior', name:'EMR_2Prior', type:'text', required:false },
+    { display:'Safety Program', name:'SafetyProgram', type:'choice', required:false, choices:['Yes','No'] },
+    { display:'OSHA Incidents (3yr)', name:'OSHA_Incidents', type:'number', required:false },
+    { display:'Annual Revenue', name:'Revenue', type:'text', required:false },
+    { display:'DUNS Number', name:'DUNS', type:'text', required:false },
+    { display:'Bonding Capacity', name:'BondCapacity', type:'text', required:false },
+    { display:'Bank Reference', name:'BankRef', type:'text', required:false },
+    { display:'Reference 1', name:'Ref1', type:'text', required:false },
+    { display:'Reference 2', name:'Ref2', type:'text', required:false },
+    { display:'Reference 3', name:'Ref3', type:'text', required:false },
+    { display:'Notes', name:'Notes', type:'note', required:false },
+    { display:'Status', name:'Status', type:'choice', required:false, choices:['Pending','Under Review','Approved','Rejected','Expired'], defaultValue:'Pending' },
+    { display:'Reviewer Notes', name:'ReviewerNotes', type:'note', required:false },
+    { display:'Submitted Date', name:'SubmittedDate', type:'dateTime', required:false },
+    { display:'Review Date', name:'ReviewDate', type:'dateTime', required:false },
+    { display:'Submitted By', name:'SubmittedBy', type:'text', required:false },
 ];
 
-// ══════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════
-let msalInstance = null;
-let accessToken = null;
-let currentUser = null;
-let vendors = [];
-let filteredVendors = [];
-let listId = null;
-let sortCol = 'SubmittedDate';
-let sortDir = 'desc';
+let msalInstance=null, accessToken=null, currentUser=null, vendors=[], filteredVendors=[], listId=null, sortCol='SubmittedDate', sortDir='desc';
 
-// ══════════════════════════════════════════════════
-// MSAL INIT
-// ══════════════════════════════════════════════════
-async function initMsal() {
-    const msalConfig = {
-        auth: {
-            clientId: CONFIG.clientId,
-            authority: `https://login.microsoftonline.com/${CONFIG.tenantId}`,
-            redirectUri: CONFIG.redirectUri
-        },
-        cache: { cacheLocation: 'sessionStorage' }
-    };
-    msalInstance = new msal.PublicClientApplication(msalConfig);
+async function initMsal(){
+    msalInstance = new msal.PublicClientApplication({auth:{clientId:CONFIG.clientId,authority:`https://login.microsoftonline.com/${CONFIG.tenantId}`,redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'sessionStorage'}});
     await msalInstance.initialize();
-
-    // Handle redirect response first
-    const redirectResp = await msalInstance.handleRedirectPromise();
-    if (redirectResp) {
-        msalInstance.setActiveAccount(redirectResp.account);
-        await acquireToken();
-        return;
-    }
-
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-        msalInstance.setActiveAccount(accounts[0]);
-        await acquireToken();
-    }
+    const rr = await msalInstance.handleRedirectPromise();
+    if(rr){msalInstance.setActiveAccount(rr.account);await acquireToken();return;}
+    const accts = msalInstance.getAllAccounts();
+    if(accts.length>0){msalInstance.setActiveAccount(accts[0]);await acquireToken();}
+}
+async function signIn(){await msalInstance.loginRedirect({scopes:CONFIG.scopes});}
+async function signOut(){await msalInstance.logoutRedirect();}
+async function acquireToken(){
+    try{const r=await msalInstance.acquireTokenSilent({scopes:CONFIG.scopes});accessToken=r.accessToken;currentUser=r.account;onAuthenticated();}
+    catch(e){await msalInstance.acquireTokenRedirect({scopes:CONFIG.scopes});}
+}
+function onAuthenticated(){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appLayout').classList.add('show');
+    document.getElementById('sbUserName').textContent=currentUser.name||currentUser.username;
+    document.getElementById('sbUserEmail').textContent=currentUser.username||'';
+    switchTab('dashboard');resolveListId();
 }
 
-async function signIn() {
-    // Use redirect flow instead of popup to avoid nested popup issues
-    await msalInstance.loginRedirect({ scopes: CONFIG.scopes });
-}
+async function graphGet(u){const r=await fetch(`https://graph.microsoft.com/v1.0${u}`,{headers:{Authorization:`Bearer ${accessToken}`}});if(!r.ok)throw new Error(`GET ${r.status}: ${await r.text()}`);return r.json();}
+async function graphPost(u,b){const r=await fetch(`https://graph.microsoft.com/v1.0${u}`,{method:'POST',headers:{Authorization:`Bearer ${accessToken}`,'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error(`POST ${r.status}: ${await r.text()}`);return r.json();}
+async function graphPatch(u,b){const r=await fetch(`https://graph.microsoft.com/v1.0${u}`,{method:'PATCH',headers:{Authorization:`Bearer ${accessToken}`,'Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok)throw new Error(`PATCH ${r.status}: ${await r.text()}`);return r.json();}
 
-async function acquireToken() {
-    try {
-        const resp = await msalInstance.acquireTokenSilent({ scopes: CONFIG.scopes });
-        accessToken = resp.accessToken;
-        currentUser = resp.account;
-        onAuthenticated();
-    } catch (err) {
-        // Fall back to redirect if silent fails
-        await msalInstance.acquireTokenRedirect({ scopes: CONFIG.scopes });
-    }
-}
-
-function onAuthenticated() {
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('tabBar').style.display = 'flex';
-    document.getElementById('headerRight').innerHTML =
-        `<span class="header-user">${currentUser.name || currentUser.username}</span>`;
-    switchTab('dashboard');
-    resolveListId();
-}
-
-// ══════════════════════════════════════════════════
-// GRAPH HELPERS
-// ══════════════════════════════════════════════════
-async function graphGet(url) {
-    const r = await fetch(`https://graph.microsoft.com/v1.0${url}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    if (!r.ok) throw new Error(`Graph GET ${r.status}: ${await r.text()}`);
-    return r.json();
-}
-async function graphPost(url, body) {
-    const r = await fetch(`https://graph.microsoft.com/v1.0${url}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!r.ok) throw new Error(`Graph POST ${r.status}: ${await r.text()}`);
-    return r.json();
-}
-async function graphPatch(url, body) {
-    const r = await fetch(`https://graph.microsoft.com/v1.0${url}`, {
-        method: 'PATCH',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!r.ok) throw new Error(`Graph PATCH ${r.status}: ${await r.text()}`);
-    return r.json();
-}
-
-// ══════════════════════════════════════════════════
-// LIST RESOLUTION
-// ══════════════════════════════════════════════════
-async function resolveListId() {
-    try {
-        const data = await graphGet(`/sites/${CONFIG.siteId}/lists?$filter=displayName eq '${CONFIG.listName}'`);
-        if (data.value && data.value.length > 0) {
-            listId = data.value[0].id;
-            loadVendors();
-        }
-    } catch (err) {
-        console.log('List not found yet — use Setup tab to create it.');
-    }
+async function resolveListId(){
+    try{const d=await graphGet(`/sites/${CONFIG.siteId}/lists?$filter=displayName eq '${CONFIG.listName}'`);if(d.value&&d.value.length>0){listId=d.value[0].id;document.getElementById('cbBanner').style.display='flex';loadVendors();}}
+    catch(e){console.log('List not found yet.');}
     populateSchemaTable();
 }
 
-// ══════════════════════════════════════════════════
-// AUTO-CREATE LIST
-// ══════════════════════════════════════════════════
-async function createSharePointList() {
-    const btn = document.getElementById('createListBtn');
-    btn.disabled = true;
-    btn.textContent = 'Creating...';
-    try {
-        // Create list
-        const listDef = {
-            displayName: CONFIG.listName,
-            list: { template: 'genericList' }
-        };
-        const newList = await graphPost(`/sites/${CONFIG.siteId}/lists`, listDef);
-        listId = newList.id;
-
-        // Add columns
-        for (const col of LIST_COLUMNS) {
-            if (col.name === 'Title') continue; // built-in
-            let colDef = { name: col.name, displayName: col.display };
-            if (col.type === 'text') colDef.text = { maxLength: 255 };
-            else if (col.type === 'number') colDef.number = {};
-            else if (col.type === 'note') colDef.text = { maxLength: 10000, allowMultipleLines: true };
-            else if (col.type === 'dateTime') colDef.dateTime = { format: 'dateOnly' };
-            else if (col.type === 'choice') colDef.choice = { choices: col.choices, displayAs: 'dropDownMenu' };
-
-            try {
-                await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/columns`, colDef);
-            } catch (e) {
-                console.warn(`Column ${col.name}: ${e.message}`);
-            }
+async function createSharePointList(){
+    const btn=document.getElementById('createListBtn');btn.disabled=true;btn.textContent='Creating...';
+    try{
+        const nl=await graphPost(`/sites/${CONFIG.siteId}/lists`,{displayName:CONFIG.listName,list:{template:'genericList'}});listId=nl.id;
+        for(const col of LIST_COLUMNS){if(col.name==='Title')continue;let cd={name:col.name,displayName:col.display};
+            if(col.type==='text')cd.text={maxLength:255};else if(col.type==='number')cd.number={};else if(col.type==='note')cd.text={maxLength:10000,allowMultipleLines:true};else if(col.type==='dateTime')cd.dateTime={format:'dateOnly'};else if(col.type==='choice')cd.choice={choices:col.choices,displayAs:'dropDownMenu'};
+            try{await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/columns`,cd);}catch(e){console.warn(`Col ${col.name}: ${e.message}`);}
         }
-
-        showToast('List created successfully!', 'success');
-        btn.textContent = 'List Created ✓';
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Auto-Create List via Graph API';
-    }
+        showToast('SharePoint list created!','success');btn.textContent='List Created ✓';document.getElementById('cbBanner').style.display='flex';
+    }catch(e){showToast('Error: '+e.message,'error');btn.disabled=false;btn.textContent='Auto-Create List via Graph API';}
 }
 
-// ══════════════════════════════════════════════════
-// LOAD VENDORS
-// ══════════════════════════════════════════════════
-async function loadVendors() {
-    if (!listId) {
-        document.getElementById('vendorTableBody').innerHTML =
-            '<tr class="loading-row"><td colspan="9">No list found. Use the <strong>List Setup</strong> tab to create the SharePoint list.</td></tr>';
-        return;
-    }
-    try {
-        const data = await graphGet(`/sites/${CONFIG.siteId}/lists/${listId}/items?$expand=fields&$top=500`);
-        vendors = (data.value || []).map(item => ({
-            id: item.id,
-            ...item.fields
-        }));
-        applyFilters();
-        updateStats();
-    } catch (err) {
-        showToast('Error loading vendors: ' + err.message, 'error');
-    }
+async function loadVendors(){
+    if(!listId){document.getElementById('vendorTableBody').innerHTML='<tr class="loading-row"><td colspan="9">No list found. Use <strong>List Setup</strong> to create it.</td></tr>';return;}
+    try{const d=await graphGet(`/sites/${CONFIG.siteId}/lists/${listId}/items?$expand=fields&$top=500`);vendors=(d.value||[]).map(i=>({id:i.id,...i.fields}));applyFilters();updateStats();}
+    catch(e){showToast('Error loading: '+e.message,'error');}
 }
 
-// ══════════════════════════════════════════════════
-// SUBMIT FORM
-// ══════════════════════════════════════════════════
-async function submitPrequal() {
-    const btn = document.getElementById('submitBtn');
-    const companyName = val('f_companyName');
-    const tier = val('f_tier');
-    const entity = val('f_entity');
-    const contact = val('f_contact');
-    const email = val('f_email');
-    const phone = val('f_phone');
-
-    // Validation
-    if (!companyName || !tier || !entity || !contact || !email || !phone) {
-        showToast('Please fill in all required fields.', 'error');
-        return;
-    }
-
-    const trades = [];
-    document.querySelectorAll('#f_trades input:checked').forEach(cb => trades.push(cb.value));
-    if (trades.length === 0) {
-        showToast('Select at least one trade/scope.', 'error');
-        return;
-    }
-
-    if (!listId) {
-        showToast('SharePoint list not found. Create it from the List Setup tab first.', 'error');
-        return;
-    }
-
-    // Collect refs
-    const refs = [];
-    document.querySelectorAll('.ref-row').forEach(row => {
-        const co = row.querySelector('.ref-company').value.trim();
-        const ct = row.querySelector('.ref-contact').value.trim();
-        const ph = row.querySelector('.ref-phone').value.trim();
-        if (co) refs.push(`${co} | ${ct} | ${ph}`);
-    });
-
-    const fields = {
-        Title: companyName,
-        CompanyName: companyName,
-        DBA: val('f_dba'),
-        PrimaryContact: contact,
-        ContactTitle: val('f_contactTitle'),
-        Email: email,
-        Phone: phone,
-        Address: val('f_address'),
-        EIN: val('f_ein'),
-        YearsInBusiness: numVal('f_yearsInBusiness'),
-        Tier: tier,
-        Entity: entity,
-        Trades: trades.join(', '),
-        Licenses: val('f_licenses'),
-        OEMCerts: val('f_oemCerts'),
-        GL_Limit: val('f_glLimit'),
-        WC_Carrier: val('f_wcCarrier'),
-        COI_Expiry: val('f_coiExpiry') || null,
-        EMR_Current: val('f_emrCurrent'),
-        EMR_Prior: val('f_emrPrior'),
-        EMR_2Prior: val('f_emr2Prior'),
-        SafetyProgram: val('f_safetyProgram') || null,
-        OSHA_Incidents: numVal('f_oshaIncidents'),
-        Revenue: val('f_revenue'),
-        DUNS: val('f_duns'),
-        BondCapacity: val('f_bondCapacity'),
-        BankRef: val('f_bankRef'),
-        Ref1: refs[0] || '',
-        Ref2: refs[1] || '',
-        Ref3: refs[2] || '',
-        Notes: val('f_notes'),
-        Status: 'Pending',
-        SubmittedDate: new Date().toISOString().split('T')[0],
-        SubmittedBy: currentUser.name || currentUser.username
-    };
-
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
-    try {
-        await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/items`, { fields });
-        showToast('Vendor prequal submitted successfully!', 'success');
-        clearForm();
-        switchTab('dashboard');
-        loadVendors();
-    } catch (err) {
-        showToast('Submit error: ' + err.message, 'error');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Submit Prequalification';
-    }
+async function submitPrequal(){
+    const btn=document.getElementById('submitBtn'),cn=val('f_companyName'),ti=val('f_tier'),en=val('f_entity'),co=val('f_contact'),em=val('f_email'),ph=val('f_phone');
+    if(!cn||!ti||!en||!co||!em||!ph){showToast('Please fill all required fields.','error');return;}
+    const trades=[];document.querySelectorAll('#f_trades input:checked').forEach(c=>trades.push(c.value));
+    if(!trades.length){showToast('Select at least one trade.','error');return;}
+    if(!listId){showToast('Create the SharePoint list first.','error');return;}
+    const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
+    const fields={Title:cn,CompanyName:cn,DBA:val('f_dba'),PrimaryContact:co,ContactTitle:val('f_contactTitle'),Email:em,Phone:ph,Address:val('f_address'),EIN:val('f_ein'),YearsInBusiness:numVal('f_yearsInBusiness'),Tier:ti,Entity:en,Trades:trades.join(', '),Licenses:val('f_licenses'),OEMCerts:val('f_oemCerts'),GL_Limit:val('f_glLimit'),WC_Carrier:val('f_wcCarrier'),COI_Expiry:val('f_coiExpiry')||null,EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior'),SafetyProgram:val('f_safetyProgram')||null,OSHA_Incidents:numVal('f_oshaIncidents'),Revenue:val('f_revenue'),DUNS:val('f_duns'),BondCapacity:val('f_bondCapacity'),BankRef:val('f_bankRef'),Ref1:refs[0]||'',Ref2:refs[1]||'',Ref3:refs[2]||'',Notes:val('f_notes'),Status:'Pending',SubmittedDate:new Date().toISOString().split('T')[0],SubmittedBy:currentUser.name||currentUser.username};
+    btn.disabled=true;btn.textContent='Submitting...';
+    try{await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/items`,{fields});showToast('Vendor submitted!','success');clearForm();switchTab('dashboard');loadVendors();}
+    catch(e){showToast('Error: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Submit Prequalification';}
 }
 
-// ══════════════════════════════════════════════════
-// DASHBOARD LOGIC
-// ══════════════════════════════════════════════════
-function applyFilters() {
-    const search = document.getElementById('filterSearch').value.toLowerCase();
-    const status = document.getElementById('filterStatus').value;
-    const tier = document.getElementById('filterTier').value;
-    const entity = document.getElementById('filterEntity').value;
-
-    filteredVendors = vendors.filter(v => {
-        if (status && v.Status !== status) return false;
-        if (tier && v.Tier !== tier) return false;
-        if (entity && v.Entity !== entity) return false;
-        if (search) {
-            const hay = [v.CompanyName, v.Trades, v.PrimaryContact, v.Email, v.Entity].join(' ').toLowerCase();
-            if (!hay.includes(search)) return false;
-        }
-        return true;
-    });
-
-    // Sort
-    filteredVendors.sort((a, b) => {
-        let aVal = a[sortCol] || '';
-        let bVal = b[sortCol] || '';
-        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
-        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
-        if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortDir === 'asc' ? 1 : -1;
-        return 0;
-    });
-
+function applyFilters(){
+    const s=document.getElementById('filterSearch').value.toLowerCase(),st=document.getElementById('filterStatus').value,ti=document.getElementById('filterTier').value,en=document.getElementById('filterEntity').value;
+    filteredVendors=vendors.filter(v=>{if(st&&v.Status!==st)return false;if(ti&&v.Tier!==ti)return false;if(en&&v.Entity!==en)return false;if(s){const h=[v.CompanyName,v.Trades,v.PrimaryContact,v.Email,v.Entity].join(' ').toLowerCase();if(!h.includes(s))return false;}return true;});
+    filteredVendors.sort((a,b)=>{let av=a[sortCol]||'',bv=b[sortCol]||'';if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});
     renderTable();
 }
+function sortTable(c){if(sortCol===c)sortDir=sortDir==='asc'?'desc':'asc';else{sortCol=c;sortDir='asc';}document.querySelectorAll('.sort-arrow').forEach(e=>e.textContent='');const a=document.getElementById(`sort-${c}`);if(a)a.textContent=sortDir==='asc'?'▲':'▼';applyFilters();}
 
-function sortTable(col) {
-    if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-    else { sortCol = col; sortDir = 'asc'; }
-
-    document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
-    const arrow = document.getElementById(`sort-${col}`);
-    if (arrow) arrow.textContent = sortDir === 'asc' ? '▲' : '▼';
-    applyFilters();
+function renderTable(){
+    const tb=document.getElementById('vendorTableBody');
+    if(!filteredVendors.length){tb.innerHTML='<tr class="loading-row"><td colspan="9">No vendors match your filters.</td></tr>';return;}
+    tb.innerHTML=filteredVendors.map(v=>`<tr>
+        <td><strong>${esc(v.CompanyName||'')}</strong><br><span style="font-size:11px;color:var(--text-light)">${esc(v.PrimaryContact||'')}</span></td>
+        <td>${tierBadge(v.Tier)}</td><td>${esc(v.Entity||'')}</td>
+        <td style="max-width:180px;font-size:12px;">${esc(v.Trades||'')}</td>
+        <td>${statusBadge(v.Status)}</td>
+        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'—')}</td>
+        <td>${formatDate(v.COI_Expiry)}</td><td>${formatDate(v.SubmittedDate)}</td>
+        <td><button class="btn btn-secondary btn-sm" onclick="openDetail('${v.id}')">Review</button></td>
+    </tr>`).join('');
 }
 
-function renderTable() {
-    const tbody = document.getElementById('vendorTableBody');
-    if (filteredVendors.length === 0) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="9">No vendors match your filters.</td></tr>';
-        return;
-    }
-    tbody.innerHTML = filteredVendors.map(v => `
-        <tr>
-            <td><strong>${esc(v.CompanyName || '')}</strong><br><span style="font-size:11px;color:var(--text-muted)">${esc(v.PrimaryContact || '')}</span></td>
-            <td>${tierBadge(v.Tier)}</td>
-            <td>${esc(v.Entity || '')}</td>
-            <td style="max-width:180px;font-size:12px;">${esc(v.Trades || '')}</td>
-            <td>${statusBadge(v.Status)}</td>
-            <td>${esc(v.EMR_Current || '—')}</td>
-            <td>${formatDate(v.COI_Expiry)}</td>
-            <td>${formatDate(v.SubmittedDate)}</td>
-            <td><button class="btn btn-secondary btn-sm" onclick="openDetail('${v.id}')">Review</button></td>
-        </tr>
-    `).join('');
+function updateStats(){
+    const p=vendors.filter(v=>v.Status==='Pending').length;
+    document.getElementById('stat-total').textContent=vendors.length;
+    document.getElementById('stat-approved').textContent=vendors.filter(v=>v.Status==='Approved').length;
+    document.getElementById('stat-review').textContent=vendors.filter(v=>v.Status==='Under Review').length;
+    document.getElementById('stat-pending').textContent=p;
+    document.getElementById('stat-expired').textContent=vendors.filter(v=>v.Status==='Expired'||v.Status==='Rejected').length;
+    document.getElementById('sbPendingCount').textContent=p;
 }
 
-function updateStats() {
-    document.getElementById('stat-total').textContent = vendors.length;
-    document.getElementById('stat-approved').textContent = vendors.filter(v => v.Status === 'Approved').length;
-    document.getElementById('stat-review').textContent = vendors.filter(v => v.Status === 'Under Review').length;
-    document.getElementById('stat-pending').textContent = vendors.filter(v => v.Status === 'Pending').length;
-    document.getElementById('stat-expired').textContent = vendors.filter(v => v.Status === 'Expired' || v.Status === 'Rejected').length;
-}
-
-// ══════════════════════════════════════════════════
-// DETAIL PANEL
-// ══════════════════════════════════════════════════
-function openDetail(id) {
-    const v = vendors.find(x => x.id === id);
-    if (!v) return;
-    const panel = document.getElementById('detailPanel');
-
-    const coiStatus = v.COI_Expiry
-        ? (new Date(v.COI_Expiry) < new Date() ? '<span style="color:var(--red)">EXPIRED</span>' : '<span style="color:var(--green)">Active</span>')
-        : '—';
-
-    const emrAvg = (() => {
-        const vals = [v.EMR_Current, v.EMR_Prior, v.EMR_2Prior].map(parseFloat).filter(n => !isNaN(n));
-        return vals.length > 0 ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : '—';
-    })();
-
-    const checkItem = (label, val) => {
-        const has = val && val !== 'No' && val !== '—';
-        return `<div class="checklist-item"><span class="check ${has ? 'yes' : 'no'}">${has ? '✓' : '✗'}</span> ${label}</div>`;
-    };
-
-    panel.innerHTML = `
-        <div class="dp-header">
-            <div>
-                <h2>${esc(v.CompanyName || '')}</h2>
-                <span style="font-size:13px;color:var(--text-muted)">${esc(v.DBA || '')}</span>
-            </div>
-            <button class="dp-close" onclick="closeDetail()">✕</button>
+function openDetail(id){
+    const v=vendors.find(x=>x.id===id);if(!v)return;const panel=document.getElementById('detailPanel');
+    const coiOk=v.COI_Expiry&&new Date(v.COI_Expiry)>new Date();
+    const coiStatus=v.COI_Expiry?(coiOk?'<span style="color:var(--green)">Active</span>':'<span style="color:var(--red)">EXPIRED</span>'):'—';
+    const vals=[v.EMR_Current,v.EMR_Prior,v.EMR_2Prior].map(parseFloat).filter(n=>!isNaN(n));
+    const emrAvg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'—';
+    const ci=(l,val)=>{const h=val&&val!=='No'&&val!=='—';return `<div class="checklist-item"><span class="check ${h?'yes':'no'}">${h?'✓':'✗'}</span> ${l}</div>`;};
+    panel.innerHTML=`
+        <div class="dp-header"><div><h2>${esc(v.CompanyName||'')}</h2><span style="font-size:13px;color:var(--text-light)">${esc(v.DBA||'')}</span></div><button class="dp-close" onclick="closeDetail()">✕</button></div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;">${tierBadge(v.Tier)} ${statusBadge(v.Status)}<span style="font-size:12px;color:var(--text-light);align-self:center;margin-left:auto;">ID: ${v.id}</span></div>
+        <div class="dp-section"><h4>Contact</h4><div class="dp-grid">
+            <div class="dp-field"><label>Name</label><span>${esc(v.PrimaryContact||'')}</span></div>
+            <div class="dp-field"><label>Title</label><span>${esc(v.ContactTitle||'—')}</span></div>
+            <div class="dp-field"><label>Email</label><span>${esc(v.Email||'')}</span></div>
+            <div class="dp-field"><label>Phone</label><span>${esc(v.Phone||'')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>${esc(v.Address||'—')}</span></div>
+        </div></div>
+        <div class="dp-section"><h4>Scope</h4><div class="dp-grid">
+            <div class="dp-field"><label>Entity</label><span>${esc(v.Entity||'')}</span></div>
+            <div class="dp-field"><label>Years in Business</label><span>${v.YearsInBusiness||'—'}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Trades</label><span>${esc(v.Trades||'')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Licenses</label><span>${esc(v.Licenses||'—')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>OEM Certs</label><span>${esc(v.OEMCerts||'—')}</span></div>
+        </div></div>
+        <div class="dp-section"><h4>Insurance &amp; Safety</h4><div class="dp-grid">
+            <div class="dp-field"><label>GL Limit</label><span>${esc(v.GL_Limit||'—')}</span></div>
+            <div class="dp-field"><label>WC Carrier</label><span>${esc(v.WC_Carrier||'—')}</span></div>
+            <div class="dp-field"><label>COI Expiry</label><span>${formatDate(v.COI_Expiry)} ${coiStatus}</span></div>
+            <div class="dp-field"><label>EMR (3yr avg)</label><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:${emrAvg!=='—'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)'}">${emrAvg}</span></div>
+            <div class="dp-field"><label>EMR Current</label><span>${esc(v.EMR_Current||'—')}</span></div>
+            <div class="dp-field"><label>EMR Prior</label><span>${esc(v.EMR_Prior||'—')}</span></div>
+        </div></div>
+        <div class="dp-section"><h4>Prequal Checklist</h4>
+            ${ci('W-9 / EIN on file',v.EIN)}
+            ${ci('COI current',coiOk?'Yes':'')}
+            ${ci('EMR under 1.0',v.EMR_Current&&parseFloat(v.EMR_Current)<1?'Yes':'')}
+            ${ci('Written safety program',v.SafetyProgram)}
+            ${ci('Zero OSHA incidents (3yr)',v.OSHA_Incidents!==undefined&&v.OSHA_Incidents===0?'Yes':'')}
+            ${ci('Trade references provided',v.Ref1)}
+            ${v.Tier!=='Tier 1'?ci('Financial info (Tier 2/3)',v.Revenue||v.DUNS):''}
+            ${v.Tier==='Tier 3'?ci('Bonding capacity (Tier 3)',v.BondCapacity):''}
         </div>
-
-        <div style="display:flex;gap:8px;margin-bottom:16px;">
-            ${tierBadge(v.Tier)} ${statusBadge(v.Status)}
-            <span style="font-size:12px;color:var(--text-muted);align-self:center;margin-left:auto;">ID: ${v.id}</span>
-        </div>
-
-        <div class="dp-section">
-            <h4>Contact</h4>
-            <div class="dp-grid">
-                <div class="dp-field"><label>Name</label><span>${esc(v.PrimaryContact || '')}</span></div>
-                <div class="dp-field"><label>Title</label><span>${esc(v.ContactTitle || '—')}</span></div>
-                <div class="dp-field"><label>Email</label><span>${esc(v.Email || '')}</span></div>
-                <div class="dp-field"><label>Phone</label><span>${esc(v.Phone || '')}</span></div>
-                <div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>${esc(v.Address || '—')}</span></div>
-            </div>
-        </div>
-
-        <div class="dp-section">
-            <h4>Scope</h4>
-            <div class="dp-grid">
-                <div class="dp-field"><label>Entity</label><span>${esc(v.Entity || '')}</span></div>
-                <div class="dp-field"><label>Years in Business</label><span>${v.YearsInBusiness || '—'}</span></div>
-                <div class="dp-field" style="grid-column:1/-1"><label>Trades</label><span>${esc(v.Trades || '')}</span></div>
-                <div class="dp-field" style="grid-column:1/-1"><label>Licenses</label><span>${esc(v.Licenses || '—')}</span></div>
-                <div class="dp-field" style="grid-column:1/-1"><label>OEM Certs</label><span>${esc(v.OEMCerts || '—')}</span></div>
-            </div>
-        </div>
-
-        <div class="dp-section">
-            <h4>Insurance &amp; Safety</h4>
-            <div class="dp-grid">
-                <div class="dp-field"><label>GL Limit</label><span>${esc(v.GL_Limit || '—')}</span></div>
-                <div class="dp-field"><label>WC Carrier</label><span>${esc(v.WC_Carrier || '—')}</span></div>
-                <div class="dp-field"><label>COI Expiry</label><span>${formatDate(v.COI_Expiry)} ${coiStatus}</span></div>
-                <div class="dp-field"><label>EMR (3yr avg)</label><span>${emrAvg}</span></div>
-                <div class="dp-field"><label>EMR Current</label><span>${esc(v.EMR_Current || '—')}</span></div>
-                <div class="dp-field"><label>EMR Prior</label><span>${esc(v.EMR_Prior || '—')}</span></div>
-            </div>
-        </div>
-
-        <div class="dp-section">
-            <h4>Prequal Checklist</h4>
-            ${checkItem('W-9 / EIN on file', v.EIN)}
-            ${checkItem('COI current', v.COI_Expiry && new Date(v.COI_Expiry) > new Date() ? 'Yes' : '')}
-            ${checkItem('EMR under 1.0', v.EMR_Current && parseFloat(v.EMR_Current) < 1.0 ? 'Yes' : '')}
-            ${checkItem('Written safety program', v.SafetyProgram)}
-            ${checkItem('Zero OSHA incidents (3yr)', v.OSHA_Incidents !== undefined && v.OSHA_Incidents === 0 ? 'Yes' : '')}
-            ${checkItem('Trade references provided', v.Ref1)}
-            ${v.Tier !== 'Tier 1' ? checkItem('Financial info provided (Tier 2/3)', v.Revenue || v.DUNS) : ''}
-            ${v.Tier === 'Tier 3' ? checkItem('Bonding capacity confirmed (Tier 3)', v.BondCapacity) : ''}
-        </div>
-
-        ${v.Ref1 ? `
-        <div class="dp-section">
-            <h4>References</h4>
-            <div style="font-size:13px;">
-                ${v.Ref1 ? `<div style="padding:4px 0;">${esc(v.Ref1)}</div>` : ''}
-                ${v.Ref2 ? `<div style="padding:4px 0;">${esc(v.Ref2)}</div>` : ''}
-                ${v.Ref3 ? `<div style="padding:4px 0;">${esc(v.Ref3)}</div>` : ''}
-            </div>
-        </div>` : ''}
-
-        ${v.Notes ? `
-        <div class="dp-section">
-            <h4>Vendor Notes</h4>
-            <p style="font-size:13px;">${esc(v.Notes)}</p>
-        </div>` : ''}
-
-        <div class="dp-section">
-            <h4>Reviewer Notes</h4>
-            <textarea id="dp_reviewNotes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;">${esc(v.ReviewerNotes || '')}</textarea>
-        </div>
-
-        <div class="dp-section">
-            <h4>Update Status</h4>
-            <select id="dp_status" style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;width:100%;">
-                ${['Pending','Under Review','Approved','Rejected','Expired'].map(s =>
-                    `<option value="${s}" ${v.Status === s ? 'selected' : ''}>${s}</option>`
-                ).join('')}
-            </select>
-        </div>
-
-        <div class="dp-actions">
-            <button class="btn btn-primary" onclick="saveReview('${v.id}')">Save Review</button>
-            <button class="btn btn-secondary" onclick="closeDetail()">Cancel</button>
-        </div>
-    `;
-
+        ${v.Ref1?`<div class="dp-section"><h4>References</h4><div style="font-size:13px;">${v.Ref1?`<div style="padding:4px 0;">${esc(v.Ref1)}</div>`:''}${v.Ref2?`<div style="padding:4px 0;">${esc(v.Ref2)}</div>`:''}${v.Ref3?`<div style="padding:4px 0;">${esc(v.Ref3)}</div>`:''}</div></div>`:''}
+        ${v.Notes?`<div class="dp-section"><h4>Vendor Notes</h4><p style="font-size:13px;">${esc(v.Notes)}</p></div>`:''}
+        <div class="dp-section"><h4>Reviewer Notes</h4><textarea id="dp_reviewNotes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;">${esc(v.ReviewerNotes||'')}</textarea></div>
+        <div class="dp-section"><h4>Update Status</h4><select id="dp_status" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;width:100%;">${['Pending','Under Review','Approved','Rejected','Expired'].map(s=>`<option value="${s}" ${v.Status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="dp-actions"><button class="btn btn-primary" onclick="saveReview('${v.id}')">Save Review</button><button class="btn btn-secondary" onclick="closeDetail()">Cancel</button></div>`;
     document.getElementById('detailOverlay').classList.add('open');
 }
-
-function closeDetail(event) {
-    if (event && event.target !== document.getElementById('detailOverlay')) return;
-    document.getElementById('detailOverlay').classList.remove('open');
+function closeDetail(e){if(e&&e.target!==document.getElementById('detailOverlay'))return;document.getElementById('detailOverlay').classList.remove('open');}
+async function saveReview(id){
+    try{await graphPatch(`/sites/${CONFIG.siteId}/lists/${listId}/items/${id}/fields`,{Status:document.getElementById('dp_status').value,ReviewerNotes:document.getElementById('dp_reviewNotes').value,ReviewDate:new Date().toISOString().split('T')[0]});showToast('Review saved.','success');closeDetail();loadVendors();}
+    catch(e){showToast('Save error: '+e.message,'error');}
 }
 
-async function saveReview(id) {
-    const status = document.getElementById('dp_status').value;
-    const notes = document.getElementById('dp_reviewNotes').value;
-    try {
-        await graphPatch(`/sites/${CONFIG.siteId}/lists/${listId}/items/${id}/fields`, {
-            Status: status,
-            ReviewerNotes: notes,
-            ReviewDate: new Date().toISOString().split('T')[0]
-        });
-        showToast('Review saved.', 'success');
-        closeDetail();
-        loadVendors();
-    } catch (err) {
-        showToast('Save error: ' + err.message, 'error');
-    }
+function populateSchemaTable(){
+    document.getElementById('schemaTableBody').innerHTML=LIST_COLUMNS.map(c=>`<tr><td>${esc(c.display)}</td><td style="font-family:monospace;font-size:12px;">${esc(c.name)}</td><td>${esc(c.type)}${c.choices?` [${c.choices.join(', ')}]`:''}</td><td>${c.required?'✓':''}</td><td style="font-size:12px;color:var(--text-light)">${esc(c.notes||(c.defaultValue?`Default: ${c.defaultValue}`:''))}</td></tr>`).join('');
 }
 
-// ══════════════════════════════════════════════════
-// SCHEMA TABLE
-// ══════════════════════════════════════════════════
-function populateSchemaTable() {
-    const tbody = document.getElementById('schemaTableBody');
-    tbody.innerHTML = LIST_COLUMNS.map(col => `
-        <tr>
-            <td>${esc(col.display)}</td>
-            <td style="font-family:monospace;font-size:12px;">${esc(col.name)}</td>
-            <td>${esc(col.type)}${col.choices ? ` [${col.choices.join(', ')}]` : ''}</td>
-            <td>${col.required ? '✓' : ''}</td>
-            <td style="font-size:12px;color:var(--text-muted)">${esc(col.notes || col.defaultValue ? `Default: ${col.defaultValue}` : '')}</td>
-        </tr>
-    `).join('');
+function switchTab(t){
+    document.querySelectorAll('.sb-item[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
+    document.getElementById('formView').style.display=t==='form'?'block':'none';
+    document.getElementById('dashView').style.display=t==='dashboard'?'block':'none';
+    document.getElementById('schemaView').style.display=t==='schema'?'block':'none';
+    if(t==='dashboard'&&listId)loadVendors();
 }
 
-// ══════════════════════════════════════════════════
-// TAB NAV
-// ══════════════════════════════════════════════════
-function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-    document.getElementById('formView').style.display = tab === 'form' ? 'block' : 'none';
-    document.getElementById('dashView').style.display = tab === 'dashboard' ? 'block' : 'none';
-    document.getElementById('schemaView').style.display = tab === 'schema' ? 'block' : 'none';
-    if (tab === 'dashboard' && listId) loadVendors();
-}
+function val(id){return document.getElementById(id)?.value?.trim()||'';}
+function numVal(id){const n=parseFloat(val(id));return isNaN(n)?null:n;}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function formatDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
+function statusBadge(s){const m={'Approved':'approved','Pending':'pending','Under Review':'review','Rejected':'rejected','Expired':'expired'};return `<span class="badge badge-${m[s]||'pending'}">${esc(s||'Pending')}</span>`;}
+function tierBadge(t){const n=t==='Tier 1'?'1':t==='Tier 2'?'2':'3';return `<span class="badge-tier badge-tier-${n}">${esc(t||'')}</span>`;}
+function clearForm(){document.querySelectorAll('#formView input,#formView select,#formView textarea').forEach(e=>{if(e.type==='checkbox')e.checked=false;else e.value='';});}
+function showToast(m,t=''){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',3500);}
 
-// ══════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════
-function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
-function numVal(id) { const n = parseFloat(val(id)); return isNaN(n) ? null : n; }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-function formatDate(d) {
-    if (!d) return '—';
-    try { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-    catch { return d; }
-}
-
-function statusBadge(s) {
-    const map = { 'Approved':'approved', 'Pending':'pending', 'Under Review':'review', 'Rejected':'rejected', 'Expired':'expired' };
-    return `<span class="badge badge-${map[s] || 'pending'}">${esc(s || 'Pending')}</span>`;
-}
-
-function tierBadge(t) {
-    const n = t === 'Tier 1' ? '1' : t === 'Tier 2' ? '2' : '3';
-    return `<span class="badge-tier badge-tier-${n}">${esc(t || '')}</span>`;
-}
-
-function clearForm() {
-    document.querySelectorAll('#formView input, #formView select, #formView textarea').forEach(el => {
-        if (el.type === 'checkbox') el.checked = false;
-        else el.value = '';
-    });
-}
-
-function showToast(msg, type = '') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show ' + type;
-    setTimeout(() => t.className = 'toast', 3500);
-}
-
-// ══════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════
 initMsal();
 </script>
 </body>
