@@ -313,6 +313,64 @@
                 </div>
                 <div class="form-group full"><label>Relevant Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional"></div>
                 <div class="form-group full"><label>OEM Certifications</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified, SMA Service Partner"></div>
+                <div class="form-group full">
+                    <label>Service Region — States <span class="req">*</span></label>
+                    <div class="checkbox-group" id="f_states">
+                        <label><input type="checkbox" value="AL"> AL</label>
+                        <label><input type="checkbox" value="AK"> AK</label>
+                        <label><input type="checkbox" value="AZ"> AZ</label>
+                        <label><input type="checkbox" value="AR"> AR</label>
+                        <label><input type="checkbox" value="CA"> CA</label>
+                        <label><input type="checkbox" value="CO"> CO</label>
+                        <label><input type="checkbox" value="CT"> CT</label>
+                        <label><input type="checkbox" value="DE"> DE</label>
+                        <label><input type="checkbox" value="FL"> FL</label>
+                        <label><input type="checkbox" value="GA"> GA</label>
+                        <label><input type="checkbox" value="HI"> HI</label>
+                        <label><input type="checkbox" value="ID"> ID</label>
+                        <label><input type="checkbox" value="IL"> IL</label>
+                        <label><input type="checkbox" value="IN"> IN</label>
+                        <label><input type="checkbox" value="IA"> IA</label>
+                        <label><input type="checkbox" value="KS"> KS</label>
+                        <label><input type="checkbox" value="KY"> KY</label>
+                        <label><input type="checkbox" value="LA"> LA</label>
+                        <label><input type="checkbox" value="ME"> ME</label>
+                        <label><input type="checkbox" value="MD"> MD</label>
+                        <label><input type="checkbox" value="MA"> MA</label>
+                        <label><input type="checkbox" value="MI"> MI</label>
+                        <label><input type="checkbox" value="MN"> MN</label>
+                        <label><input type="checkbox" value="MS"> MS</label>
+                        <label><input type="checkbox" value="MO"> MO</label>
+                        <label><input type="checkbox" value="MT"> MT</label>
+                        <label><input type="checkbox" value="NE"> NE</label>
+                        <label><input type="checkbox" value="NV"> NV</label>
+                        <label><input type="checkbox" value="NH"> NH</label>
+                        <label><input type="checkbox" value="NJ"> NJ</label>
+                        <label><input type="checkbox" value="NM"> NM</label>
+                        <label><input type="checkbox" value="NY"> NY</label>
+                        <label><input type="checkbox" value="NC"> NC</label>
+                        <label><input type="checkbox" value="ND"> ND</label>
+                        <label><input type="checkbox" value="OH"> OH</label>
+                        <label><input type="checkbox" value="OK"> OK</label>
+                        <label><input type="checkbox" value="OR"> OR</label>
+                        <label><input type="checkbox" value="PA"> PA</label>
+                        <label><input type="checkbox" value="RI"> RI</label>
+                        <label><input type="checkbox" value="SC"> SC</label>
+                        <label><input type="checkbox" value="SD"> SD</label>
+                        <label><input type="checkbox" value="TN"> TN</label>
+                        <label><input type="checkbox" value="TX"> TX</label>
+                        <label><input type="checkbox" value="UT"> UT</label>
+                        <label><input type="checkbox" value="VT"> VT</label>
+                        <label><input type="checkbox" value="VA"> VA</label>
+                        <label><input type="checkbox" value="WA"> WA</label>
+                        <label><input type="checkbox" value="WV"> WV</label>
+                        <label><input type="checkbox" value="WI"> WI</label>
+                        <label><input type="checkbox" value="WY"> WY</label>
+                        <label><input type="checkbox" value="DC"> DC</label>
+                        <label><input type="checkbox" value="PR"> PR</label>
+                        <label><input type="checkbox" value="Nationwide"> Nationwide</label>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="nav-row"><button class="btn-nav" onclick="goStep(1)">← Back</button><button class="btn-nav primary" onclick="goStep(3)">Continue →</button></div>
@@ -429,6 +487,7 @@ function validateStep(step) {
     if (step === 2) {
         if (!val('f_tier') || !val('f_entity')) { showError('Please select a tier and entity.'); return false; }
         if (getCheckedTrades().length === 0) { showError('Please select at least one trade/scope.'); return false; }
+        if (getCheckedStates().length === 0) { showError('Please select at least one state for service region.'); return false; }
     }
     if (step === 3) {
         if (!val('f_glLimit') || !val('f_wcCarrier') || !val('f_coiExpiry') || !val('f_emrCurrent') || !val('f_safetyProgram')) {
@@ -442,6 +501,12 @@ function getCheckedTrades() {
     const trades = [];
     document.querySelectorAll('#f_trades input:checked').forEach(cb => trades.push(cb.value));
     return trades;
+}
+
+function getCheckedStates() {
+    const states = [];
+    document.querySelectorAll('#f_states input:checked').forEach(cb => states.push(cb.value));
+    return states;
 }
 
 function updateTierVisibility() {
@@ -484,6 +549,7 @@ async function submitForm() {
         Tier: val('f_tier'),
         Entity: val('f_entity'),
         Trades: getCheckedTrades().join(', '),
+        ServiceRegion: getCheckedStates().join(', '),
         Licenses: val('f_licenses'),
         OEMCerts: val('f_oemCerts'),
         GL_Limit: val('f_glLimit'),
