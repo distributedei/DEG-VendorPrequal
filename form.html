@@ -579,7 +579,7 @@ async function submitForm() {
     btn.textContent = 'Submitting...';
 
     try {
-        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
         const sent = navigator.sendBeacon(WEBHOOK_URL, blob);
         if (sent) {
             document.getElementById('formContainer').style.display = 'none';
