@@ -6,603 +6,202 @@
     <title>Vendor Prequalification — Distributed Energy</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --navy: #375673;
-            --navy-dark: #1a2d42;
-            --green: #779d36;
-            --green-dark: #5f7e2b;
-            --green-light: #8fb844;
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --border: #e2e8f0;
-            --text: #1e2a36;
-            --text-muted: #6b7c8a;
-            --red: #c0392b;
-            --radius: 8px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
-
-        .top-bar {
-            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
-            padding: 20px 24px;
-            text-align: center;
-            color: white;
-        }
-        .top-bar h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-        .top-bar h1 span { color: var(--green-light); }
-        .top-bar p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
-
-        .container { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
-
-        .intro {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
-        }
-        .intro h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--navy); margin-bottom: 8px; }
-        .intro p { font-size: 13px; color: var(--text-muted); }
-        .intro ul { font-size: 13px; color: var(--text-muted); margin: 8px 0 0 20px; }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--navy);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-        .card-subtitle {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 0;
-            margin-left: 8px;
-        }
-
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group.full { grid-column: 1 / -1; }
-        .form-group label {
-            font-size: 11px; font-weight: 600; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .form-group label .req { color: var(--red); }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
-            font-size: 14px; font-family: inherit; color: var(--text);
-            transition: border-color 0.2s; background: white;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--green);
-            box-shadow: 0 0 0 2px rgba(119,157,54,0.12);
-        }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0; }
-        .checkbox-group label {
-            display: flex; align-items: center; gap: 6px; font-size: 13px;
-            font-weight: 400; text-transform: none; letter-spacing: 0;
-            color: var(--text); cursor: pointer;
-        }
-        .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--green); }
-
-        .tier-note {
-            background: rgba(119,157,54,0.06);
-            border: 1px solid rgba(119,157,54,0.2);
-            border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 12px;
-            color: var(--green-dark);
-            margin-bottom: 16px;
-        }
-
-        .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
-        .btn {
-            padding: 12px 36px; border-radius: 6px; font-size: 14px; font-weight: 700;
-            cursor: pointer; border: none; transition: all 0.2s; font-family: 'Barlow Condensed', sans-serif;
-            letter-spacing: 0.5px; text-transform: uppercase;
-        }
-        .btn-primary { background: var(--green); color: white; }
-        .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .success-screen {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .success-screen.show { display: block; }
-        .success-screen .check-circle {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: rgba(119,157,54,0.1); display: flex;
-            align-items: center; justify-content: center; margin: 0 auto 20px;
-        }
-        .success-screen .check-circle svg { width: 40px; height: 40px; color: var(--green); }
-        .success-screen h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; color: var(--navy); }
-        .success-screen p { font-size: 14px; color: var(--text-muted); margin-top: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
-
-        .error-banner {
-            background: rgba(192,57,43,0.08);
-            border: 1px solid rgba(192,57,43,0.2);
-            border-radius: 6px;
-            padding: 10px 16px;
-            font-size: 13px;
-            color: var(--red);
-            margin-bottom: 16px;
-            display: none;
-        }
-        .error-banner.show { display: block; }
-
-        .login-gate {
-            display: flex; align-items: center; justify-content: center;
-            min-height: 60vh; flex-direction: column; gap: 16px; padding: 40px 20px;
-        }
-        .login-gate .login-icon {
-            width: 64px; height: 64px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
-            display: flex; align-items: center; justify-content: center;
-        }
-        .login-gate h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; color: var(--navy); }
-        .login-gate p { font-size: 13px; color: var(--text-muted); max-width: 400px; text-align: center; }
-        .login-gate .login-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            background: var(--navy); color: white; border: none;
-            padding: 12px 28px; border-radius: var(--radius);
-            font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .login-gate .login-btn:hover { background: var(--navy-dark); transform: translateY(-1px); }
-        .login-gate .login-btn svg { width: 20px; height: 20px; }
-        .user-bar {
-            background: white; border-bottom: 1px solid var(--border);
-            padding: 8px 24px; font-size: 12px; color: var(--text-muted);
-            display: none; text-align: right;
-        }
-        .user-bar.show { display: block; }
-        .user-bar strong { color: var(--navy); }
-
-        .progress-bar {
-            display: flex; gap: 0; margin-bottom: 24px;
-            background: white; border: 1px solid var(--border);
-            border-radius: var(--radius); overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-        .progress-step {
-            flex: 1; text-align: center; padding: 10px 8px;
-            font-size: 11px; font-weight: 600; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.5px;
-            border-right: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-        .progress-step:last-child { border-right: none; }
-        .progress-step.active { background: rgba(119,157,54,0.08); color: var(--green-dark); }
-        .progress-step.done { background: var(--green); color: white; }
-        .progress-step .step-num {
-            display: inline-block; width: 20px; height: 20px;
-            border-radius: 50%; background: var(--border); color: white;
-            font-size: 10px; line-height: 20px; margin-right: 4px;
-        }
-        .progress-step.active .step-num { background: var(--green); }
-        .progress-step.done .step-num { background: rgba(255,255,255,0.3); }
-
-        .form-section { display: none; }
-        .form-section.active { display: block; }
-
-        .nav-row { display: flex; justify-content: space-between; margin-top: 20px; }
-        .btn-nav {
-            padding: 10px 24px; border-radius: 6px; font-size: 13px; font-weight: 600;
-            cursor: pointer; border: 1px solid var(--border); background: white;
-            color: var(--navy); font-family: inherit; transition: all 0.2s;
-        }
-        .btn-nav:hover { background: var(--bg); }
-        .btn-nav.primary { background: var(--navy); color: white; border-color: var(--navy); }
-        .btn-nav.primary:hover { background: var(--navy-dark); }
-
-        @media (max-width: 640px) {
-            .form-grid, .form-grid.three { grid-template-columns: 1fr; }
-            .progress-step { font-size: 9px; padding: 8px 4px; }
-        }
+        :root{--navy:#375673;--navy-dark:#1a2d42;--green:#779d36;--green-dark:#5f7e2b;--green-light:#8fb844;--bg:#f5f7fa;--card:#fff;--border:#e2e8f0;--text:#1e2a36;--text-muted:#6b7c8a;--red:#c0392b;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,0.04)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+        .top-bar{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:20px 24px;text-align:center;color:#fff}
+        .top-bar h1{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;letter-spacing:1px}
+        .top-bar h1 span{color:var(--green-light)}
+        .top-bar p{font-size:13px;opacity:.7;margin-top:4px}
+        .container{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+        .card-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .form-grid.three{grid-template-columns:1fr 1fr 1fr}
+        .form-group{display:flex;flex-direction:column;gap:4px}
+        .form-group.full{grid-column:1/-1}
+        .form-group label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+        .form-group label .req{color:var(--red)}
+        .form-group input,.form-group select,.form-group textarea{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;transition:border-color .2s}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(119,157,54,.12)}
+        .form-group textarea{resize:vertical;min-height:80px}
+        .checkbox-group{display:flex;flex-wrap:wrap;gap:12px;padding:4px 0}
+        .checkbox-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer}
+        .checkbox-group input[type="checkbox"]{width:16px;height:16px;accent-color:var(--green)}
+        .section-vendor,.section-sub{display:none}
+        .btn-row{display:flex;gap:12px;justify-content:center;margin-top:24px}
+        .btn{padding:12px 36px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;text-transform:uppercase}
+        .btn-primary{background:var(--green);color:#fff}
+        .btn-primary:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+        .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .error-banner{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:6px;padding:10px 16px;font-size:13px;color:var(--red);margin-bottom:16px;display:none}
+        .error-banner.show{display:block}
+        .success-screen{display:none;text-align:center;padding:60px 20px}
+        .success-screen.show{display:block}
+        .success-screen .check-circle{width:80px;height:80px;border-radius:50%;background:rgba(119,157,54,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+        .success-screen .check-circle svg{width:40px;height:40px;color:var(--green)}
+        .success-screen h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--navy)}
+        .success-screen p{font-size:14px;color:var(--text-muted);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto}
+        @media(max-width:640px){.form-grid,.form-grid.three{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
-
-<div class="top-bar">
-    <h1>DISTRIBUTED <span>ENERGY</span></h1>
-    <p>Vendor Prequalification Application</p>
-</div>
-
+<div class="top-bar"><h1>DISTRIBUTED <span>ENERGY</span></h1><p>Vendor Prequalification Application</p></div>
 <div class="container" id="formContainer">
-
-    <div class="intro">
-        <h2>Welcome</h2>
-        <p>Thank you for your interest in working with Distributed Energy Group. Please complete all sections of this prequalification form. Required fields are marked with <span style="color:var(--red)">*</span>.</p>
-        <ul>
-            <li>Tier 1 (under $100K) — basic company and safety info</li>
-            <li>Tier 2 ($100K – $500K) — adds financial information</li>
-            <li>Tier 3 (over $500K) — full financial and bonding diligence</li>
-        </ul>
-    </div>
-
-    <div class="progress-bar">
-        <div class="progress-step active" id="step1"><span class="step-num">1</span> Company</div>
-        <div class="progress-step" id="step2"><span class="step-num">2</span> Scope</div>
-        <div class="progress-step" id="step3"><span class="step-num">3</span> Insurance</div>
-        <div class="progress-step" id="step4"><span class="step-num">4</span> Financial</div>
-        <div class="progress-step" id="step5"><span class="step-num">5</span> References</div>
-    </div>
-
     <div class="error-banner" id="errorBanner"></div>
 
-    <!-- ═══ SECTION 1: Company ═══ -->
-    <div class="form-section active" id="sec1">
-        <div class="card">
-            <div class="card-title">Company Information</div>
-            <div class="form-grid">
-                <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
-                <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba" placeholder="If different from legal name"></div>
-                <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
-                <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
-                <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
-                <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
-                <div class="form-group full"><label>Address <span class="req">*</span></label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
-                <div class="form-group"><label>Federal Tax ID (EIN) <span class="req">*</span></label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
-                <div class="form-group"><label>Years in Business</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 12"></div>
-                <div class="form-group full"><label>Website</label><input type="text" id="f_website" placeholder="www.company.com"></div>
-            </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(55,86,115,.03),rgba(119,157,54,.03))">
+        <div class="card-title">Submission Type</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Type <span class="req">*</span></label><select id="f_vendorType" onchange="toggleType()"><option value="">Select type...</option><option value="Subcontractor">Subcontractor (Field Labor / Installation)</option><option value="Vendor">Vendor (Supplier / Manufacturer / Service Provider)</option></select></div>
+            <div class="form-group"><label>DEG Entity <span class="req">*</span></label><select id="f_entity"><option value="">Select entity...</option><option value="DEI">DEI</option><option value="DER">DER</option></select></div>
         </div>
-        <div class="nav-row"><div></div><button class="btn-nav primary" onclick="goStep(2)">Continue →</button></div>
     </div>
 
-    <!-- ═══ SECTION 2: Scope ═══ -->
-    <div class="form-section" id="sec2">
-        <div class="card">
-            <div class="card-title">Scope &amp; Classification</div>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Expected Contract Value <span class="req">*</span></label>
-                    <select id="f_tier" onchange="updateTierVisibility()">
-                        <option value="">Select tier...</option>
-                        <option value="Tier 1">Tier 1 — Under $100K</option>
-                        <option value="Tier 2">Tier 2 — $100K – $500K</option>
-                        <option value="Tier 3">Tier 3 — Over $500K</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>DEG Entity <span class="req">*</span></label>
-                    <select id="f_entity">
-                        <option value="">Select entity...</option>
-                        <option value="DEI">DEI</option>
-                        <option value="DER">DER</option>
-                    </select>
-                </div>
-                <div class="form-group full">
-                    <label>Trade / Scope of Work <span class="req">*</span></label>
-                    <div class="checkbox-group" id="f_trades">
-                        <label><input type="checkbox" value="Electrical"> Electrical</label>
-                        <label><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label>
-                        <label><input type="checkbox" value="Structural / Racking"> Structural / Racking</label>
-                        <label><input type="checkbox" value="Mechanical"> Mechanical</label>
-                        <label><input type="checkbox" value="BESS Install"> BESS Install</label>
-                        <label><input type="checkbox" value="Commissioning"> Commissioning</label>
-                        <label><input type="checkbox" value="Trenching"> Trenching</label>
-                        <label><input type="checkbox" value="Fencing"> Fencing</label>
-                        <label><input type="checkbox" value="Testing / QC"> Testing / QC</label>
-                        <label><input type="checkbox" value="Other"> Other</label>
-                    </div>
-                </div>
-                <div class="form-group full"><label>Relevant Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional"></div>
-                <div class="form-group full"><label>OEM Certifications</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified, SMA Service Partner"></div>
-                <div class="form-group full">
-                    <label>Service Region — States <span class="req">*</span></label>
-                    <div class="checkbox-group" id="f_states">
-                        <label><input type="checkbox" value="AL"> AL</label>
-                        <label><input type="checkbox" value="AK"> AK</label>
-                        <label><input type="checkbox" value="AZ"> AZ</label>
-                        <label><input type="checkbox" value="AR"> AR</label>
-                        <label><input type="checkbox" value="CA"> CA</label>
-                        <label><input type="checkbox" value="CO"> CO</label>
-                        <label><input type="checkbox" value="CT"> CT</label>
-                        <label><input type="checkbox" value="DE"> DE</label>
-                        <label><input type="checkbox" value="FL"> FL</label>
-                        <label><input type="checkbox" value="GA"> GA</label>
-                        <label><input type="checkbox" value="HI"> HI</label>
-                        <label><input type="checkbox" value="ID"> ID</label>
-                        <label><input type="checkbox" value="IL"> IL</label>
-                        <label><input type="checkbox" value="IN"> IN</label>
-                        <label><input type="checkbox" value="IA"> IA</label>
-                        <label><input type="checkbox" value="KS"> KS</label>
-                        <label><input type="checkbox" value="KY"> KY</label>
-                        <label><input type="checkbox" value="LA"> LA</label>
-                        <label><input type="checkbox" value="ME"> ME</label>
-                        <label><input type="checkbox" value="MD"> MD</label>
-                        <label><input type="checkbox" value="MA"> MA</label>
-                        <label><input type="checkbox" value="MI"> MI</label>
-                        <label><input type="checkbox" value="MN"> MN</label>
-                        <label><input type="checkbox" value="MS"> MS</label>
-                        <label><input type="checkbox" value="MO"> MO</label>
-                        <label><input type="checkbox" value="MT"> MT</label>
-                        <label><input type="checkbox" value="NE"> NE</label>
-                        <label><input type="checkbox" value="NV"> NV</label>
-                        <label><input type="checkbox" value="NH"> NH</label>
-                        <label><input type="checkbox" value="NJ"> NJ</label>
-                        <label><input type="checkbox" value="NM"> NM</label>
-                        <label><input type="checkbox" value="NY"> NY</label>
-                        <label><input type="checkbox" value="NC"> NC</label>
-                        <label><input type="checkbox" value="ND"> ND</label>
-                        <label><input type="checkbox" value="OH"> OH</label>
-                        <label><input type="checkbox" value="OK"> OK</label>
-                        <label><input type="checkbox" value="OR"> OR</label>
-                        <label><input type="checkbox" value="PA"> PA</label>
-                        <label><input type="checkbox" value="RI"> RI</label>
-                        <label><input type="checkbox" value="SC"> SC</label>
-                        <label><input type="checkbox" value="SD"> SD</label>
-                        <label><input type="checkbox" value="TN"> TN</label>
-                        <label><input type="checkbox" value="TX"> TX</label>
-                        <label><input type="checkbox" value="UT"> UT</label>
-                        <label><input type="checkbox" value="VT"> VT</label>
-                        <label><input type="checkbox" value="VA"> VA</label>
-                        <label><input type="checkbox" value="WA"> WA</label>
-                        <label><input type="checkbox" value="WV"> WV</label>
-                        <label><input type="checkbox" value="WI"> WI</label>
-                        <label><input type="checkbox" value="WY"> WY</label>
-                        <label><input type="checkbox" value="DC"> DC</label>
-                        <label><input type="checkbox" value="PR"> PR</label>
-                        <label><input type="checkbox" value="Nationwide"> Nationwide</label>
-                    </div>
-                </div>
-            </div>
+    <div class="card"><div class="card-title">Basic Company Information</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
+            <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba"></div>
+            <div class="form-group"><label>Year Established</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 2015"></div>
+            <div class="form-group"><label>Website</label><input type="url" id="f_website" placeholder="https://www.example.com"></div>
+            <div class="form-group"><label>Core Functions <span class="req">*</span></label><input type="text" id="f_coreFunctions" placeholder="e.g. Full Mechanical Installation, Racking Mfg"></div>
+            <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
+            <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
+            <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
+            <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
+            <div class="form-group full"><label>Address</label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
         </div>
-        <div class="nav-row"><button class="btn-nav" onclick="goStep(1)">← Back</button><button class="btn-nav primary" onclick="goStep(3)">Continue →</button></div>
+        <div class="form-grid" style="margin-top:16px">
+            <div class="form-group"><label>Expected Contract Value <span class="req">*</span></label><select id="f_tier"><option value="">Select tier...</option><option value="Tier 1">Tier 1 — Under $100K</option><option value="Tier 2">Tier 2 — $100K – $500K</option><option value="Tier 3">Tier 3 — Over $500K</option></select></div>
+            <div class="form-group full"><label>Trade / Scope of Work <span class="req">*</span></label><div class="checkbox-group" id="f_trades"><label><input type="checkbox" value="Electrical"> Electrical</label><label><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label><label><input type="checkbox" value="Structural / Racking"> Structural / Racking</label><label><input type="checkbox" value="Mechanical"> Mechanical</label><label><input type="checkbox" value="BESS Install"> BESS Install</label><label><input type="checkbox" value="Commissioning"> Commissioning</label><label><input type="checkbox" value="Trenching"> Trenching</label><label><input type="checkbox" value="Fencing"> Fencing</label><label><input type="checkbox" value="Testing / QC"> Testing / QC</label><label><input type="checkbox" value="Other"> Other</label></div></div>
+            <div class="form-group full"><label>Service Region — States <span class="req">*</span></label><div class="checkbox-group" id="f_states"><label><input type="checkbox" value="AL"> AL</label><label><input type="checkbox" value="AK"> AK</label><label><input type="checkbox" value="AZ"> AZ</label><label><input type="checkbox" value="AR"> AR</label><label><input type="checkbox" value="CA"> CA</label><label><input type="checkbox" value="CO"> CO</label><label><input type="checkbox" value="CT"> CT</label><label><input type="checkbox" value="DE"> DE</label><label><input type="checkbox" value="FL"> FL</label><label><input type="checkbox" value="GA"> GA</label><label><input type="checkbox" value="HI"> HI</label><label><input type="checkbox" value="ID"> ID</label><label><input type="checkbox" value="IL"> IL</label><label><input type="checkbox" value="IN"> IN</label><label><input type="checkbox" value="IA"> IA</label><label><input type="checkbox" value="KS"> KS</label><label><input type="checkbox" value="KY"> KY</label><label><input type="checkbox" value="LA"> LA</label><label><input type="checkbox" value="ME"> ME</label><label><input type="checkbox" value="MD"> MD</label><label><input type="checkbox" value="MA"> MA</label><label><input type="checkbox" value="MI"> MI</label><label><input type="checkbox" value="MN"> MN</label><label><input type="checkbox" value="MS"> MS</label><label><input type="checkbox" value="MO"> MO</label><label><input type="checkbox" value="MT"> MT</label><label><input type="checkbox" value="NE"> NE</label><label><input type="checkbox" value="NV"> NV</label><label><input type="checkbox" value="NH"> NH</label><label><input type="checkbox" value="NJ"> NJ</label><label><input type="checkbox" value="NM"> NM</label><label><input type="checkbox" value="NY"> NY</label><label><input type="checkbox" value="NC"> NC</label><label><input type="checkbox" value="ND"> ND</label><label><input type="checkbox" value="OH"> OH</label><label><input type="checkbox" value="OK"> OK</label><label><input type="checkbox" value="OR"> OR</label><label><input type="checkbox" value="PA"> PA</label><label><input type="checkbox" value="RI"> RI</label><label><input type="checkbox" value="SC"> SC</label><label><input type="checkbox" value="SD"> SD</label><label><input type="checkbox" value="TN"> TN</label><label><input type="checkbox" value="TX"> TX</label><label><input type="checkbox" value="UT"> UT</label><label><input type="checkbox" value="VT"> VT</label><label><input type="checkbox" value="VA"> VA</label><label><input type="checkbox" value="WA"> WA</label><label><input type="checkbox" value="WV"> WV</label><label><input type="checkbox" value="WI"> WI</label><label><input type="checkbox" value="WY"> WY</label><label><input type="checkbox" value="DC"> DC</label><label><input type="checkbox" value="PR"> PR</label><label><input type="checkbox" value="Nationwide"> Nationwide</label></div></div>
+            <div class="form-group full"><label>Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP"></div>
+            <div class="form-group full"><label>OEM Certifications</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified"></div>
+        </div>
     </div>
 
-    <!-- ═══ SECTION 3: Insurance & Safety ═══ -->
-    <div class="form-section" id="sec3">
-        <div class="card">
-            <div class="card-title">Insurance &amp; Safety</div>
-            <div class="form-grid three">
-                <div class="form-group"><label>General Liability Limit <span class="req">*</span></label><input type="text" id="f_glLimit" placeholder="e.g. $2,000,000"></div>
-                <div class="form-group"><label>Workers Comp Carrier <span class="req">*</span></label><input type="text" id="f_wcCarrier" placeholder="Carrier name"></div>
-                <div class="form-group"><label>COI Expiration Date <span class="req">*</span></label><input type="date" id="f_coiExpiry"></div>
-                <div class="form-group"><label>EMR — Current Year <span class="req">*</span></label><input type="text" id="f_emrCurrent" placeholder="e.g. 0.85"></div>
-                <div class="form-group"><label>EMR — Prior Year</label><input type="text" id="f_emrPrior" placeholder="e.g. 0.90"></div>
-                <div class="form-group"><label>EMR — 2 Years Prior</label><input type="text" id="f_emr2Prior" placeholder="e.g. 0.92"></div>
-            </div>
-            <div class="form-grid" style="margin-top:16px;">
-                <div class="form-group"><label>Written Safety Program? <span class="req">*</span></label>
-                    <select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select>
-                </div>
-                <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
-            </div>
+    <div class="card"><div class="card-title">1. Financial Stability</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Federal Tax ID (EIN)</label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
+            <div class="form-group"><label>Annual Revenue</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
+            <div class="form-group full"><label>Documentation on File</label><div class="checkbox-group" id="f_docsOnFile"><label><input type="checkbox" value="W-9"> W-9</label><label><input type="checkbox" value="NDA"> NDA</label><label><input type="checkbox" value="COI"> COI</label><label><input type="checkbox" value="Business Registration"> Business Reg</label><label><input type="checkbox" value="Licenses"> Licenses</label></div></div>
+            <div class="form-group"><label>Audited Financials</label><select id="f_auditedFinancials"><option value="">Select...</option><option value="Yes - 3yr">Yes — 3 Years</option><option value="Partial">Partial</option><option value="No">No</option></select></div>
+            <div class="form-group"><label>D&amp;B / DUNS Number</label><input type="text" id="f_duns"></div>
         </div>
-        <div class="nav-row"><button class="btn-nav" onclick="goStep(2)">← Back</button><button class="btn-nav primary" onclick="goStep(4)">Continue →</button></div>
+        <div class="form-grid three" style="margin-top:16px">
+            <div class="form-group"><label>GL Limit</label><input type="text" id="f_glLimit" placeholder="e.g. $2,000,000"></div>
+            <div class="form-group"><label>Professional Liability</label><input type="text" id="f_profLiability" placeholder="e.g. $1,000,000"></div>
+            <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity"></div>
+            <div class="form-group"><label>WC Carrier</label><input type="text" id="f_wcCarrier"></div>
+            <div class="form-group"><label>COI Expiry</label><input type="date" id="f_coiExpiry"></div>
+            <div class="form-group"><label>Bank Reference</label><input type="text" id="f_bankRef"></div>
+        </div>
     </div>
 
-    <!-- ═══ SECTION 4: Financial ═══ -->
-    <div class="form-section" id="sec4">
-        <div class="card">
-            <div class="card-title">Financial Information <span class="card-subtitle">Required for Tier 2 &amp; Tier 3</span></div>
-            <div class="tier-note" id="tierNote">Complete this section if your expected contract value exceeds $100K.</div>
-            <div class="form-grid">
-                <div class="form-group"><label>Annual Revenue (Approx.)</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
-                <div class="form-group"><label>D&amp;B DUNS Number</label><input type="text" id="f_duns" placeholder="9-digit DUNS number"></div>
-                <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate"></div>
-                <div class="form-group"><label>Banking Reference</label><input type="text" id="f_bankRef" placeholder="Bank name + contact"></div>
-            </div>
+    <div class="card"><div class="card-title">2. Customer Support &amp; Communication</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Avg Response Time</label><select id="f_responseTime"><option value="">Select...</option><option value="Under 1 hour">Under 1 hour</option><option value="1-4 hours">1-4 hours</option><option value="Same day">Same day</option><option value="1-2 days">1-2 days</option><option value="3+ days">3+ days</option></select></div>
+            <div class="form-group"><label>Emergency Response</label><select id="f_emergencyResponse"><option value="">Select...</option><option value="24/7">24/7</option><option value="Extended hours">Extended hours</option><option value="Business hours only">Business hours</option><option value="None">None</option></select></div>
+            <div class="form-group full"><label>Support Channels</label><div class="checkbox-group" id="f_supportChannels"><label><input type="checkbox" value="Phone"> Phone</label><label><input type="checkbox" value="Email"> Email</label><label><input type="checkbox" value="Chat/Portal"> Chat/Portal</label><label><input type="checkbox" value="Dedicated Rep"> Dedicated Rep</label><label><input type="checkbox" value="Field Support"> Field Support</label></div></div>
+            <div class="form-group"><label>SLAs</label><select id="f_slas"><option value="">Select...</option><option value="Formal SLAs">Formal SLAs</option><option value="Informal">Informal</option><option value="None">None</option></select></div>
+            <div class="form-group"><label>Escalation Process</label><select id="f_escalation"><option value="">Select...</option><option value="Documented">Documented</option><option value="Informal">Informal</option><option value="None">None</option></select></div>
+            <div class="form-group full"><label>Training / Onboarding Support</label><input type="text" id="f_trainingSupport"></div>
+            <div class="form-group full"><label>Technical Expertise</label><input type="text" id="f_techExpertise" placeholder="e.g. NABCEP, OEM certs, PE on staff"></div>
         </div>
-        <div class="nav-row"><button class="btn-nav" onclick="goStep(3)">← Back</button><button class="btn-nav primary" onclick="goStep(5)">Continue →</button></div>
     </div>
 
-    <!-- ═══ SECTION 5: References & Submit ═══ -->
-    <div class="form-section" id="sec5">
-        <div class="card">
-            <div class="card-title">Trade References</div>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Provide at least two references from general contractors or project owners you have worked with.</p>
-            <div class="form-grid three">
-                <div class="form-group"><label>Reference 1 — Company <span class="req">*</span></label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
-                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
-                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
-            </div>
-            <div class="form-grid three" style="margin-top:8px;">
-                <div class="form-group"><label>Reference 2 — Company <span class="req">*</span></label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
-                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
-                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
-            </div>
-            <div class="form-grid three" style="margin-top:8px;">
-                <div class="form-group"><label>Reference 3 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div>
-                <div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div>
-                <div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-title">Additional Notes</div>
-            <div class="form-group full"><textarea id="f_notes" rows="4" placeholder="Any additional information, past project history with DEG entities, or relevant qualifications..."></textarea></div>
-        </div>
-        <div class="nav-row">
-            <button class="btn-nav" onclick="goStep(4)">← Back</button>
-            <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Prequalification</button>
-        </div>
+    <div class="card section-vendor"><div class="card-title">3. Innovation &amp; Value Added</div><div class="form-grid"><div class="form-group"><label>Continuous Improvement</label><input type="text" id="f_contImprovement"></div><div class="form-group"><label>Tech / Automation</label><input type="text" id="f_techAdvancement"></div><div class="form-group"><label>R&amp;D</label><input type="text" id="f_rAndD"></div><div class="form-group"><label>Industry Leadership</label><input type="text" id="f_industryLeadership"></div><div class="form-group full"><label>Custom Solutions</label><input type="text" id="f_customSolutions"></div><div class="form-group full"><label>Cost Optimization</label><input type="text" id="f_costOptimization"></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">3. Capital Equipment</div><div class="form-grid"><div class="form-group"><label>Equipment Ownership</label><select id="f_equipOwnership"><option value="">Select...</option><option value="Owns all">Owns all</option><option value="Mix own/lease">Mix own/lease</option><option value="Partner equipment">Partner equipment</option><option value="Leases all">Leases all</option></select></div><div class="form-group"><label>Contingency Plan</label><select id="f_equipContingency"><option value="">Select...</option><option value="Strong">Strong</option><option value="Moderate">Moderate</option><option value="Weak">Weak</option></select></div></div><div class="form-grid three" style="margin-top:16px"><div class="form-group"><label># Pile Drivers</label><input type="number" id="f_pileDrivers" placeholder="0"></div><div class="form-group"><label># Drills</label><input type="number" id="f_drills" placeholder="0"></div><div class="form-group"><label># Skid Steers</label><input type="number" id="f_skidSteers" placeholder="0"></div><div class="form-group"><label># Trucks/UTVs</label><input type="number" id="f_trucks" placeholder="0"></div><div class="form-group"><label>Office/Storage</label><select id="f_officeStorage"><option value="">Select...</option><option value="Yes - owned">Owned</option><option value="Yes - leased">Leased</option><option value="No">No</option></select></div></div></div>
+
+    <div class="card section-vendor"><div class="card-title">4. Quality of Product / Services</div><div class="form-grid"><div class="form-group"><label>Reliability</label><select id="f_reliability"><option value="">Select...</option><option value="Excellent">Excellent</option><option value="Good">Good</option><option value="Average">Average</option><option value="Below average">Below average</option></select></div><div class="form-group"><label>Defect Rate</label><select id="f_defectRate"><option value="">Select...</option><option value="<1%">&lt;1%</option><option value="1-3%">1-3%</option><option value="3-5%">3-5%</option><option value=">5%">&gt;5%</option><option value="Unknown">Unknown</option></select></div><div class="form-group full"><label>Quality Certifications</label><input type="text" id="f_qualityCerts" placeholder="e.g. ISO 9001, Six Sigma"></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">4. Technology &amp; Tools</div><div class="form-grid"><div class="form-group full"><label>Automation</label><input type="text" id="f_automation"></div><div class="form-group full"><label>Digital Platforms</label><input type="text" id="f_digitalPlatforms"></div><div class="form-group"><label>3D Modeling</label><input type="text" id="f_modeling"></div><div class="form-group"><label>Calibrations Current</label><select id="f_calibrations"><option value="">Select...</option><option value="Yes">Yes</option><option value="Partial">Partial</option><option value="No">No</option></select></div><div class="form-group full"><label>Safety Systems</label><input type="text" id="f_safetySystems"></div></div></div>
+
+    <div class="card"><div class="card-title">5. Staffing</div><div class="form-grid"><div class="form-group"><label>Workforce Composition</label><select id="f_workforceComp"><option value="">Select...</option><option value="All permanent">All permanent</option><option value="Mostly permanent">Mostly permanent</option><option value="Mix">Mix</option><option value="Mostly temp">Mostly temp</option></select></div><div class="form-group"><label>Crew Size</label><input type="number" id="f_crewSize" placeholder="e.g. 45"></div><div class="form-group"><label># Permanent</label><input type="number" id="f_permanentEmp"></div><div class="form-group"><label># Partners/Subs</label><input type="number" id="f_partnerCount"></div></div></div>
+
+    <div class="card"><div class="card-title">6. Staffing Turnover</div><div class="form-grid"><div class="form-group"><label>Turnover Rate</label><select id="f_turnover"><option value="">Select...</option><option value="<10%">&lt;10%</option><option value="10-20%">10-20%</option><option value="20-40%">20-40%</option><option value=">40%">&gt;40%</option><option value="Unknown">Unknown</option></select></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">7. Safety Incidents (3yr)</div><div class="form-grid"><div class="form-group"><label>Total Recordable</label><select id="f_safetyIncidents"><option value="">Select...</option><option value="0-2">0-2</option><option value="3-4">3-4</option><option value="5+">5+</option><option value="Not tracked">Not tracked</option></select></div><div class="form-group"><label>Safety Program?</label><select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div><div class="form-group"><label>OSHA Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="0"></div><div class="form-group"><label>Safety Personnel</label><select id="f_safetyPersonnel"><option value="">Select...</option><option value="Dedicated Safety Supervisor">Dedicated Supervisor</option><option value="OSHA 30">OSHA 30</option><option value="OSHA 10">OSHA 10</option><option value="None">None</option></select></div></div><div class="form-grid three" style="margin-top:16px"><div class="form-group"><label>EMR Current</label><input type="text" id="f_emrCurrent" placeholder="0.85"></div><div class="form-group"><label>EMR Prior</label><input type="text" id="f_emrPrior" placeholder="0.90"></div><div class="form-group"><label>EMR 2yr Prior</label><input type="text" id="f_emr2Prior" placeholder="0.92"></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">8. TRIR</div><div class="form-grid"><div class="form-group"><label>TRIR Range</label><select id="f_trir"><option value="">Select...</option><option value="0-1.5">0-1.5 (Excellent)</option><option value="1.6-3.1">1.6-3.1 (Acceptable)</option><option value="3.2+">3.2+ (High Risk)</option><option value="Not tracked">Not tracked</option></select></div></div></div>
+
+    <div class="card section-vendor"><div class="card-title">7. Product Deployment (MW)</div><div class="form-grid"><div class="form-group"><label>MW Shipped/Deployed</label><select id="f_mwExperience"><option value="">Select...</option><option value=">501 MW">&gt;501 MW</option><option value="301-500 MW">301-500 MW</option><option value="101-300 MW">101-300 MW</option><option value="<100 MW">&lt;100 MW</option></select></div></div></div>
+
+    <div class="card section-vendor"><div class="card-title">8. Warranty</div><div class="form-grid"><div class="form-group"><label>Duration</label><input type="text" id="f_warrantyDuration" placeholder="e.g. 10 years"></div><div class="form-group"><label>Extended Warranty</label><select id="f_extWarranty"><option value="">Select...</option><option value="Available">Available</option><option value="Case by case">Case by case</option><option value="None">None</option></select></div><div class="form-group"><label>Transferability</label><select id="f_warrantyTransfer"><option value="">Select...</option><option value="Yes">Yes</option><option value="Conditional">Conditional</option><option value="No">No</option></select></div><div class="form-group"><label>Service Turnaround</label><select id="f_warrantyTurnaround"><option value="">Select...</option><option value="<48 hours">&lt;48 hours</option><option value="3-7 days">3-7 days</option><option value="1-2 weeks">1-2 weeks</option><option value="2+ weeks">2+ weeks</option></select></div><div class="form-group full"><label>Coverage Scope</label><input type="text" id="f_warrantyCoverage"></div><div class="form-group full"><label>Exclusions</label><input type="text" id="f_warrantyExclusions"></div><div class="form-group full"><label>Parts Availability</label><input type="text" id="f_partsAvail"></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">9. BESS Experience</div><div class="form-grid"><div class="form-group"><label>Years BESS Experience</label><select id="f_bessExperience"><option value="">Select...</option><option value=">7 years">7+</option><option value="5-7 years">5-7</option><option value="3-5 years">3-5</option><option value="1-2 years">1-2</option><option value="None">None</option></select></div><div class="form-group full"><label>BESS OEM Experience</label><input type="text" id="f_bessOEM" placeholder="e.g. Tesla Megapack, BYD"></div></div></div>
+
+    <div class="card section-sub"><div class="card-title">10. Project Experience (MW)</div><div class="form-grid"><div class="form-group"><label>Total MW Installed</label><select id="f_mwInstalled"><option value="">Select...</option><option value=">501 MW">&gt;501 MW</option><option value="301-500 MW">301-500 MW</option><option value="101-300 MW">101-300 MW</option><option value="<100 MW">&lt;100 MW</option></select></div><div class="form-group"><label>Largest Project</label><input type="text" id="f_largestProject" placeholder="e.g. 150 MW"></div><div class="form-group"><label>Supervisor Availability</label><select id="f_supervisorAvail"><option value="">Select...</option><option value="On-site full time">On-site full time</option><option value="Intermittent">Intermittent</option><option value="Remote">Remote</option></select></div><div class="form-group"><label>Operating Distance</label><select id="f_operatingDistance"><option value="">Select...</option><option value="<50 miles">&lt;50 mi</option><option value="50-100 miles">50-100 mi</option><option value="100-200 miles">100-200 mi</option><option value=">200 miles">&gt;200 mi</option></select></div></div></div>
+
+    <div class="card section-vendor"><div class="card-title">Safety &amp; Compliance</div><div class="form-grid three"><div class="form-group"><label>EMR Current</label><input type="text" id="f_emrCurrentV" placeholder="0.85"></div><div class="form-group"><label>EMR Prior</label><input type="text" id="f_emrPriorV" placeholder="0.90"></div><div class="form-group"><label>EMR 2yr Prior</label><input type="text" id="f_emr2PriorV" placeholder="0.92"></div></div><div class="form-grid" style="margin-top:16px"><div class="form-group"><label>Safety Program?</label><select id="f_safetyProgramV"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div><div class="form-group"><label>OSHA Incidents (3yr)</label><input type="number" id="f_oshaIncidentsV" placeholder="0"></div></div></div>
+
+    <div class="card"><div class="card-title">References</div>
+        <div class="form-grid three ref-row"><div class="form-group"><label>Ref 1 — Company</label><input type="text" class="ref-company"></div><div class="form-group"><label>Contact</label><input type="text" class="ref-contact"></div><div class="form-group"><label>Phone/Email</label><input type="text" class="ref-phone"></div></div>
+        <div class="form-grid three ref-row" style="margin-top:8px"><div class="form-group"><label>Ref 2 — Company</label><input type="text" class="ref-company"></div><div class="form-group"><label>Contact</label><input type="text" class="ref-contact"></div><div class="form-group"><label>Phone/Email</label><input type="text" class="ref-phone"></div></div>
+        <div class="form-grid three ref-row" style="margin-top:8px"><div class="form-group"><label>Ref 3 — Company</label><input type="text" class="ref-company"></div><div class="form-group"><label>Contact</label><input type="text" class="ref-contact"></div><div class="form-group"><label>Phone/Email</label><input type="text" class="ref-phone"></div></div>
     </div>
+
+    <div class="card"><div class="card-title">Additional Notes</div><div class="form-group"><textarea id="f_notes" rows="4" placeholder="Any additional information, project history with DEG entities..."></textarea></div></div>
+
+    <div class="btn-row"><button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Prequalification</button></div>
 </div>
 
-<!-- ═══ SUCCESS SCREEN ═══ -->
 <div class="container success-screen" id="successScreen">
-    <div class="check-circle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-    </div>
+    <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
     <h2>Application Submitted</h2>
-    <p>Your vendor prequalification application has been received. Our team will review your submission and you will be contacted regarding next steps. Typical review time is 3–5 business days.</p>
+    <p>Your prequalification application has been received. Our team will review and contact you within 3–5 business days.</p>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
-// PASTE YOUR POWER AUTOMATE WEBHOOK URL BELOW
-// ══════════════════════════════════════════════════
-const WEBHOOK_URL = 'https://defaultec357a325b85438da765ae33c8eb13.b7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/809579ee018146c0b7bf30b1fc1f3465/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z_oVZah2JwcyDtWSaZWQtsjNtJhcTL48h3lbEeaSCPo';
+const WEBHOOK_URL='https://defaultec357a325b85438da765ae33c8eb13.b7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/809579ee018146c0b7bf30b1fc1f3465/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z_oVZah2JwcyDtWSaZWQtsjNtJhcTL48h3lbEeaSCPo';
 
-let currentStep = 1;
+function toggleType(){const v=val('f_vendorType');document.querySelectorAll('.section-vendor').forEach(e=>e.style.display=v==='Vendor'?'block':'none');document.querySelectorAll('.section-sub').forEach(e=>e.style.display=v==='Subcontractor'?'block':'none');}
 
-function goStep(n) {
-    if (n > currentStep && !validateStep(currentStep)) return;
-    currentStep = n;
-    for (let i = 1; i <= 5; i++) {
-        document.getElementById(`sec${i}`).classList.toggle('active', i === n);
-        const step = document.getElementById(`step${i}`);
-        step.classList.remove('active', 'done');
-        if (i < n) step.classList.add('done');
-        else if (i === n) step.classList.add('active');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    hideError();
-}
+function gc(id){const v=[];document.querySelectorAll(`#${id} input:checked`).forEach(c=>v.push(c.value));return v.join(', ');}
 
-function validateStep(step) {
-    if (step === 1) {
-        const required = ['f_companyName', 'f_contact', 'f_email', 'f_phone', 'f_address', 'f_ein'];
-        for (const id of required) {
-            if (!val(id)) { showError('Please complete all required fields.'); focus(id); return false; }
-        }
-        if (!val('f_email').includes('@')) { showError('Please enter a valid email address.'); focus('f_email'); return false; }
-    }
-    if (step === 2) {
-        if (!val('f_tier') || !val('f_entity')) { showError('Please select a tier and entity.'); return false; }
-        if (getCheckedTrades().length === 0) { showError('Please select at least one trade/scope.'); return false; }
-        if (getCheckedStates().length === 0) { showError('Please select at least one state for service region.'); return false; }
-    }
-    if (step === 3) {
-        if (!val('f_glLimit') || !val('f_wcCarrier') || !val('f_coiExpiry') || !val('f_emrCurrent') || !val('f_safetyProgram')) {
-            showError('Please complete all required insurance and safety fields.'); return false;
-        }
-    }
-    return true;
-}
+async function submitForm(){
+    const vt=val('f_vendorType'),cn=val('f_companyName'),co=val('f_contact'),em=val('f_email'),ph=val('f_phone'),ti=val('f_tier'),en=val('f_entity');
+    if(!vt){showError('Select Vendor or Subcontractor.');return;}
+    if(!cn||!co||!em||!ph||!ti||!en){showError('Fill all required fields.');return;}
+    if(!gc('f_trades')){showError('Select at least one trade.');return;}
+    if(!gc('f_states')){showError('Select at least one state.');return;}
+    if(!val('f_coreFunctions')){showError('Describe your core functions.');return;}
 
-function getCheckedTrades() {
-    const trades = [];
-    document.querySelectorAll('#f_trades input:checked').forEach(cb => trades.push(cb.value));
-    return trades;
-}
+    const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
 
-function getCheckedStates() {
-    const states = [];
-    document.querySelectorAll('#f_states input:checked').forEach(cb => states.push(cb.value));
-    return states;
-}
-
-function updateTierVisibility() {
-    const tier = val('f_tier');
-    const note = document.getElementById('tierNote');
-    if (tier === 'Tier 1') note.textContent = 'Tier 1 selected — financial section is optional but recommended.';
-    else if (tier === 'Tier 2') note.textContent = 'Tier 2 selected — please provide financial details including revenue and D&B number.';
-    else if (tier === 'Tier 3') note.textContent = 'Tier 3 selected — full financial and bonding information required.';
-    else note.textContent = 'Complete this section if your expected contract value exceeds $100K.';
-}
-
-async function submitForm() {
-    if (!validateStep(currentStep)) return;
-
-    const refCompanies = document.querySelectorAll('.ref-company');
-    const refContacts = document.querySelectorAll('.ref-contact');
-    const refPhones = document.querySelectorAll('.ref-phone');
-    const refs = [];
-    refCompanies.forEach((el, i) => {
-        const co = el.value.trim();
-        if (co) refs.push(`${co} | ${refContacts[i]?.value.trim() || ''} | ${refPhones[i]?.value.trim() || ''}`);
-    });
-
-    if (refs.length < 2) { showError('Please provide at least two trade references.'); return; }
-
-    if (WEBHOOK_URL.includes('PASTE_YOUR')) {
-        showError('Webhook URL not configured. Contact DEG admin.'); return;
-    }
-
-    const payload = {
-        Title: val('f_companyName'),
-        Contact: val('f_contact'),
-        DBA: val('f_dba'),
-        ContactTitle: val('f_contactTitle'),
-        VendorEmail: val('f_email'),
-        Phone: val('f_phone'),
-        Address1: val('f_address'),
-        EIN: val('f_ein'),
-        YearEstablished: parseInt(val('f_yearsInBusiness')) || 0,
-        Website: val('f_website'),
-        Tier: val('f_tier'),
-        Entity: val('f_entity'),
-        Trades: getCheckedTrades().join(', '),
-        ServiceRegion: getCheckedStates().join(', '),
-        Licenses: val('f_licenses'),
-        OEMCerts: val('f_oemCerts'),
-        GL_Limit: val('f_glLimit'),
-        WC_Carrier: val('f_wcCarrier'),
-        COI_Expiry: val('f_coiExpiry') || '',
-        EMR_Current: val('f_emrCurrent'),
-        EMR_Prior: val('f_emrPrior'),
-        EMR_2Prior: val('f_emr2Prior'),
-        SafetyProgram: val('f_safetyProgram'),
-        OSHA_Incidents: parseInt(val('f_oshaIncidents')) || 0,
-        Revenue: val('f_revenue'),
-        DUNS: val('f_duns'),
-        BondCapacity: val('f_bondCapacity'),
-        BankRef: val('f_bankRef'),
-        Ref1: refs[0] || '',
-        Ref2: refs[1] || '',
-        Ref3: refs[2] || '',
-        Notes: val('f_notes'),
-        Status: 'Pending',
-        SubmittedDate: new Date().toISOString().split('T')[0]
+    const isSub=vt==='Subcontractor';
+    const p={
+        Title:cn,Contact:co,DBA:val('f_dba'),ContactTitle:val('f_contactTitle'),VendorEmail:em,Phone:ph,
+        Address1:val('f_address'),VendorType:vt,YearEstablished:parseInt(val('f_yearsInBusiness'))||0,
+        Website:val('f_website'),CoreFunctions:val('f_coreFunctions'),ServiceRegion:gc('f_states'),
+        Tier:ti,Entity:en,Trades:gc('f_trades'),Licenses:val('f_licenses'),OEMCerts:val('f_oemCerts'),
+        EIN:val('f_ein'),Revenue:val('f_revenue'),DocsOnFile:gc('f_docsOnFile'),
+        AuditedFinancials:val('f_auditedFinancials'),DUNS:val('f_duns'),GL_Limit:val('f_glLimit'),
+        ProfLiability:val('f_profLiability'),BondCapacity:val('f_bondCapacity'),WC_Carrier:val('f_wcCarrier'),
+        COI_Expiry:val('f_coiExpiry')||'',BankRef:val('f_bankRef'),
+        ResponseTime:val('f_responseTime'),EmergencyResponse:val('f_emergencyResponse'),
+        SupportChannels:gc('f_supportChannels'),SLAs:val('f_slas'),EscalationProcess:val('f_escalation'),
+        TrainingSupport:val('f_trainingSupport'),TechExpertise:val('f_techExpertise'),
+        WorkforceComp:val('f_workforceComp'),CrewSize:parseInt(val('f_crewSize'))||0,
+        PermanentEmp:parseInt(val('f_permanentEmp'))||0,PartnerCount:parseInt(val('f_partnerCount'))||0,
+        TurnoverRate:val('f_turnover'),
+        Ref1:refs[0]||'',Ref2:refs[1]||'',Ref3:refs[2]||'',Notes:val('f_notes'),
+        Status:'Pending',SubmittedDate:new Date().toISOString().split('T')[0],SubmittedBy:'Vendor Self-Submit'
     };
 
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
+    if(isSub)Object.assign(p,{EquipOwnership:val('f_equipOwnership'),EquipContingency:val('f_equipContingency'),PileDrivers:parseInt(val('f_pileDrivers'))||0,Drills:parseInt(val('f_drills'))||0,SkidSteers:parseInt(val('f_skidSteers'))||0,Trucks:parseInt(val('f_trucks'))||0,OfficeStorage:val('f_officeStorage'),Automation:val('f_automation'),DigitalPlatforms:val('f_digitalPlatforms'),Modeling:val('f_modeling'),Calibrations:val('f_calibrations'),SafetySystems:val('f_safetySystems'),SafetyIncidents:val('f_safetyIncidents'),SafetyProgram:val('f_safetyProgram'),OSHA_Incidents:parseInt(val('f_oshaIncidents'))||0,SafetyPersonnel:val('f_safetyPersonnel'),EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior'),TRIR:val('f_trir'),BESSExperience:val('f_bessExperience'),BESSOEM:val('f_bessOEM'),MWInstalled:val('f_mwInstalled'),LargestProject:val('f_largestProject'),SupervisorAvail:val('f_supervisorAvail'),OperatingDistance:val('f_operatingDistance')});
+    else Object.assign(p,{ContImprovement:val('f_contImprovement'),TechAdvancement:val('f_techAdvancement'),RandD:val('f_rAndD'),IndustryLeadership:val('f_industryLeadership'),CustomSolutions:val('f_customSolutions'),CostOptimization:val('f_costOptimization'),Reliability:val('f_reliability'),DefectRate:val('f_defectRate'),QualityCerts:val('f_qualityCerts'),MWExperience:val('f_mwExperience'),WarrantyDuration:val('f_warrantyDuration'),ExtWarranty:val('f_extWarranty'),WarrantyTransfer:val('f_warrantyTransfer'),WarrantyTurnaround:val('f_warrantyTurnaround'),WarrantyCoverage:val('f_warrantyCoverage'),WarrantyExclusions:val('f_warrantyExclusions'),PartsAvail:val('f_partsAvail'),SafetyProgram:val('f_safetyProgramV'),OSHA_Incidents:parseInt(val('f_oshaIncidentsV'))||0,EMR_Current:val('f_emrCurrentV'),EMR_Prior:val('f_emrPriorV'),EMR_2Prior:val('f_emr2PriorV')});
 
-    try {
-        const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
-        const sent = navigator.sendBeacon(WEBHOOK_URL, blob);
-        if (sent) {
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('successScreen').classList.add('show');
-        } else {
-            throw new Error('Browser rejected the request');
-        }
-    } catch (err) {
-        showError('Submission failed. Please try again or contact procurement@distributedei.com. Error: ' + err.message);
-        btn.disabled = false;
-        btn.textContent = 'Submit Prequalification';
-    }
+    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting...';
+    try{
+        const blob=new Blob([JSON.stringify(p)],{type:'text/plain'});
+        if(navigator.sendBeacon(WEBHOOK_URL,blob)){document.getElementById('formContainer').style.display='none';document.getElementById('successScreen').classList.add('show');}
+        else throw new Error('Request blocked');
+    }catch(e){showError('Submission failed: '+e.message);btn.disabled=false;btn.textContent='Submit Prequalification';}
 }
-
-function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
-function focus(id) { document.getElementById(id)?.focus(); }
-function showError(msg) {
-    const el = document.getElementById('errorBanner');
-    el.textContent = msg;
-    el.classList.add('show');
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-function hideError() { document.getElementById('errorBanner').classList.remove('show'); }
+function val(id){return document.getElementById(id)?.value?.trim()||'';}
+function showError(m){const e=document.getElementById('errorBanner');e.textContent=m;e.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 </body>
 </html>
