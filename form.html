@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Prequalification — Distributed Energy</title>
+    <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -156,6 +157,33 @@
         }
         .error-banner.show { display: block; }
 
+        .login-gate {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 60vh; flex-direction: column; gap: 16px; padding: 40px 20px;
+        }
+        .login-gate .login-icon {
+            width: 64px; height: 64px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; color: var(--navy); }
+        .login-gate p { font-size: 13px; color: var(--text-muted); max-width: 400px; text-align: center; }
+        .login-gate .login-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--navy); color: white; border: none;
+            padding: 12px 28px; border-radius: var(--radius);
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .login-gate .login-btn:hover { background: var(--navy-dark); transform: translateY(-1px); }
+        .login-gate .login-btn svg { width: 20px; height: 20px; }
+        .user-bar {
+            background: white; border-bottom: 1px solid var(--border);
+            padding: 8px 24px; font-size: 12px; color: var(--text-muted);
+            display: none; text-align: right;
+        }
+        .user-bar.show { display: block; }
+        .user-bar strong { color: var(--navy); }
+
         .progress-bar {
             display: flex; gap: 0; margin-bottom: 24px;
             background: white; border: 1px solid var(--border);
@@ -206,7 +234,21 @@
     <p>Vendor Prequalification Application</p>
 </div>
 
-<div class="container" id="formContainer">
+<div class="user-bar" id="userBar">Signed in as <strong id="userName"></strong></div>
+
+<div id="loginGate" class="login-gate">
+    <div class="login-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+    </div>
+    <h2>Vendor Prequalification</h2>
+    <p>Sign in with your Microsoft account to complete and submit your prequalification application.</p>
+    <button class="login-btn" onclick="signIn()">
+        <svg viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+        Sign in with Microsoft
+    </button>
+</div>
+
+<div class="container" id="formContainer" style="display:none;">
 
     <div class="intro">
         <h2>Welcome</h2>
@@ -371,16 +413,109 @@
 
 <script>
 // ══════════════════════════════════════════════════
-// CONFIG — Update webhookUrl with your Power Automate HTTP trigger
+// CONFIG
 // ══════════════════════════════════════════════════
-const WEBHOOK_URL = '%%POWER_AUTOMATE_WEBHOOK_URL%%';
+const CONFIG = {
+    clientId: '613928f8-0497-47ea-bb0f-c1725a1f156a',
+    tenantId: 'ec357a32-5b85-438d-a765-ae33c8eb13b7',
+    siteId: 'distributedei.sharepoint.com',
+    listName: 'Vendors',
+    redirectUri: window.location.origin + '/DEG-VendorPrequal/form.html',
+    scopes: ['Sites.ReadWrite.All']
+};
 
+let msalInstance = null;
+let accessToken = null;
+let currentUser = null;
+let listId = null;
 let currentStep = 1;
 
-function goStep(n) {
-    // Validate current step before advancing
-    if (n > currentStep && !validateStep(currentStep)) return;
+// ══════════════════════════════════════════════════
+// MSAL AUTH
+// ══════════════════════════════════════════════════
+async function initMsal() {
+    msalInstance = new msal.PublicClientApplication({
+        auth: {
+            clientId: CONFIG.clientId,
+            authority: `https://login.microsoftonline.com/${CONFIG.tenantId}`,
+            redirectUri: CONFIG.redirectUri
+        },
+        cache: { cacheLocation: 'sessionStorage' }
+    });
+    await msalInstance.initialize();
 
+    const redirectResp = await msalInstance.handleRedirectPromise();
+    if (redirectResp) {
+        msalInstance.setActiveAccount(redirectResp.account);
+        await acquireToken();
+        return;
+    }
+
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+        msalInstance.setActiveAccount(accounts[0]);
+        await acquireToken();
+    }
+}
+
+async function signIn() {
+    await msalInstance.loginRedirect({ scopes: CONFIG.scopes });
+}
+
+async function acquireToken() {
+    try {
+        const resp = await msalInstance.acquireTokenSilent({ scopes: CONFIG.scopes });
+        accessToken = resp.accessToken;
+        currentUser = resp.account;
+        onAuthenticated();
+    } catch (err) {
+        await msalInstance.acquireTokenRedirect({ scopes: CONFIG.scopes });
+    }
+}
+
+function onAuthenticated() {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('formContainer').style.display = 'block';
+    document.getElementById('userBar').classList.add('show');
+    document.getElementById('userName').textContent = currentUser.name || currentUser.username;
+    resolveListId();
+}
+
+// ══════════════════════════════════════════════════
+// GRAPH API
+// ══════════════════════════════════════════════════
+async function graphGet(url) {
+    const r = await fetch(`https://graph.microsoft.com/v1.0${url}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    if (!r.ok) throw new Error(`GET ${r.status}`);
+    return r.json();
+}
+
+async function graphPost(url, body) {
+    const r = await fetch(`https://graph.microsoft.com/v1.0${url}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error(`POST ${r.status}: ${await r.text()}`);
+    return r.json();
+}
+
+async function resolveListId() {
+    try {
+        const data = await graphGet(`/sites/${CONFIG.siteId}/lists?$filter=displayName eq '${CONFIG.listName}'`);
+        if (data.value && data.value.length > 0) listId = data.value[0].id;
+    } catch (err) {
+        console.warn('Could not resolve list:', err.message);
+    }
+}
+
+// ══════════════════════════════════════════════════
+// FORM NAVIGATION
+// ══════════════════════════════════════════════════
+function goStep(n) {
+    if (n > currentStep && !validateStep(currentStep)) return;
     currentStep = n;
     for (let i = 1; i <= 5; i++) {
         document.getElementById(`sec${i}`).classList.toggle('active', i === n);
@@ -403,13 +538,11 @@ function validateStep(step) {
     }
     if (step === 2) {
         if (!val('f_tier') || !val('f_entity')) { showError('Please select a tier and entity.'); return false; }
-        const trades = getCheckedTrades();
-        if (trades.length === 0) { showError('Please select at least one trade/scope.'); return false; }
+        if (getCheckedTrades().length === 0) { showError('Please select at least one trade/scope.'); return false; }
     }
     if (step === 3) {
         if (!val('f_glLimit') || !val('f_wcCarrier') || !val('f_coiExpiry') || !val('f_emrCurrent') || !val('f_safetyProgram')) {
-            showError('Please complete all required insurance and safety fields.');
-            return false;
+            showError('Please complete all required insurance and safety fields.'); return false;
         }
     }
     return true;
@@ -430,10 +563,12 @@ function updateTierVisibility() {
     else note.textContent = 'Complete this section if your expected contract value exceeds $100K.';
 }
 
+// ══════════════════════════════════════════════════
+// SUBMIT — Direct to SharePoint via Graph API
+// ══════════════════════════════════════════════════
 async function submitForm() {
     if (!validateStep(currentStep)) return;
 
-    // Collect references
     const refCompanies = document.querySelectorAll('.ref-company');
     const refContacts = document.querySelectorAll('.ref-contact');
     const refPhones = document.querySelectorAll('.ref-phone');
@@ -443,21 +578,23 @@ async function submitForm() {
         if (co) refs.push(`${co} | ${refContacts[i]?.value.trim() || ''} | ${refPhones[i]?.value.trim() || ''}`);
     });
 
-    if (refs.length < 2) {
-        showError('Please provide at least two trade references.');
+    if (refs.length < 2) { showError('Please provide at least two trade references.'); return; }
+
+    if (!listId) {
+        showError('Could not connect to the Vendors list. Please try refreshing the page.');
         return;
     }
 
-    const payload = {
-        CompanyName: val('f_companyName'),
+    const fields = {
+        Title: val('f_companyName'),
+        Contact: val('f_contact'),
         DBA: val('f_dba'),
-        PrimaryContact: val('f_contact'),
         ContactTitle: val('f_contactTitle'),
-        Email: val('f_email'),
+        VendorEmail: val('f_email'),
         Phone: val('f_phone'),
-        Address: val('f_address'),
+        Address_x0020_1: val('f_address'),
         EIN: val('f_ein'),
-        YearsInBusiness: parseInt(val('f_yearsInBusiness')) || null,
+        YearEstablished: parseInt(val('f_yearsInBusiness')) || null,
         Tier: val('f_tier'),
         Entity: val('f_entity'),
         Trades: getCheckedTrades().join(', '),
@@ -469,7 +606,7 @@ async function submitForm() {
         EMR_Current: val('f_emrCurrent'),
         EMR_Prior: val('f_emrPrior'),
         EMR_2Prior: val('f_emr2Prior'),
-        SafetyProgram: val('f_safetyProgram'),
+        SafetyProgram: val('f_safetyProgram') || null,
         OSHA_Incidents: parseInt(val('f_oshaIncidents')) || 0,
         Revenue: val('f_revenue'),
         DUNS: val('f_duns'),
@@ -480,7 +617,8 @@ async function submitForm() {
         Ref3: refs[2] || '',
         Notes: val('f_notes'),
         Status: 'Pending',
-        SubmittedDate: new Date().toISOString().split('T')[0]
+        SubmittedDate: new Date().toISOString().split('T')[0],
+        SubmittedBy: currentUser.name || currentUser.username
     };
 
     const btn = document.getElementById('submitBtn');
@@ -488,24 +626,20 @@ async function submitForm() {
     btn.textContent = 'Submitting...';
 
     try {
-        const resp = await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/items`, { fields });
 
-        if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
-
-        // Show success
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('successScreen').classList.add('show');
     } catch (err) {
-        showError('Submission failed. Please try again or contact us at procurement@distributedei.com. Error: ' + err.message);
+        showError('Submission failed: ' + err.message + '. Please contact procurement@distributedei.com.');
         btn.disabled = false;
         btn.textContent = 'Submit Prequalification';
     }
 }
 
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
 function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
 function focus(id) { document.getElementById(id)?.focus(); }
 function showError(msg) {
@@ -515,6 +649,11 @@ function showError(msg) {
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 function hideError() { document.getElementById('errorBanner').classList.remove('show'); }
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+initMsal();
 </script>
 </body>
 </html>
