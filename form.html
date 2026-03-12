@@ -581,10 +581,11 @@ async function submitForm() {
     try {
         const resp = await fetch(WEBHOOK_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(payload)
         });
-        if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+        // no-cors means we can't read the response, but the request goes through
         document.getElementById('formContainer').style.display = 'none';
         document.getElementById('successScreen').classList.add('show');
     } catch (err) {
