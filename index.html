@@ -262,11 +262,13 @@
                     <select id="filterStatus" onchange="applyFilters()"><option value="">All Statuses</option><option value="Pending">Pending</option><option value="Under Review">Under Review</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option><option value="Expired">Expired</option></select>
                     <select id="filterTier" onchange="applyFilters()"><option value="">All Tiers</option><option value="Tier 1">Tier 1</option><option value="Tier 2">Tier 2</option><option value="Tier 3">Tier 3</option></select>
                     <select id="filterEntity" onchange="applyFilters()"><option value="">All Entities</option><option value="DEI">DEI</option><option value="DER">DER</option><option value="DEP">DEP</option><option value="DES">DES</option><option value="Mike EPC">Mike EPC</option></select>
+                    <select id="filterType" onchange="applyFilters()"><option value="">All Types</option><option value="Vendor">Vendor</option><option value="Subcontractor">Subcontractor</option></select>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr>
                             <th onclick="sortTable('Title')">Company <span class="sort-arrow" id="sort-Title"></span></th>
+                            <th onclick="sortTable('VendorType')">Type <span class="sort-arrow" id="sort-VendorType"></span></th>
                             <th onclick="sortTable('Tier')">Tier <span class="sort-arrow" id="sort-Tier"></span></th>
                             <th onclick="sortTable('Entity')">Entity <span class="sort-arrow" id="sort-Entity"></span></th>
                             <th onclick="sortTable('Trades')">Trades</th>
@@ -285,25 +287,40 @@
 
         <div id="formView" style="display:none;">
             <div class="page-header"><h2>New <span>Vendor Submission</span></h2></div>
+
+            <!-- VENDOR TYPE TOGGLE -->
+            <div class="card" style="background:linear-gradient(135deg,rgba(55,86,115,0.03),rgba(119,157,54,0.03));">
+                <div class="card-title">Submission Type</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Type <span class="req">*</span></label>
+                        <select id="f_vendorType" onchange="toggleVendorType()">
+                            <option value="">Select type...</option>
+                            <option value="Subcontractor">Subcontractor (Field Labor / Installation)</option>
+                            <option value="Vendor">Vendor (Supplier / Manufacturer / Service Provider)</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>DEG Entity <span class="req">*</span></label><select id="f_entity"><option value="">Select entity...</option><option value="DEI">DEI</option><option value="DER">DER</option><option value="DEP">DEP</option><option value="DES">DES</option><option value="Mike EPC">Mike EPC</option></select></div>
+                </div>
+            </div>
+
+            <!-- BASIC COMPANY INFO -->
             <div class="card">
-                <div class="card-title">Company Information</div>
+                <div class="card-title">Basic Company Information</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
                     <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba" placeholder="If different from legal name"></div>
+                    <div class="form-group"><label>Year Established</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 2015"></div>
+                    <div class="form-group"><label>Service Region <span class="req">*</span></label><input type="text" id="f_serviceRegion" placeholder="e.g. Southeast, East Coast, National"></div>
+                    <div class="form-group"><label>Website</label><input type="url" id="f_website" placeholder="https://www.example.com"></div>
+                    <div class="form-group"><label>Core Functions <span class="req">*</span></label><input type="text" id="f_coreFunctions" placeholder="e.g. Full Mechanical Installation, Racking Mfg"></div>
                     <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
                     <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
                     <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
                     <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
                     <div class="form-group full"><label>Address</label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
-                    <div class="form-group"><label>Federal Tax ID (EIN)</label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
-                    <div class="form-group"><label>Years in Business</label><input type="number" id="f_yearsInBusiness" placeholder="e.g. 12"></div>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Scope &amp; Tier Classification</div>
-                <div class="form-grid">
+                <div class="form-grid" style="margin-top:16px;">
                     <div class="form-group"><label>Expected Contract Value Range <span class="req">*</span></label><select id="f_tier"><option value="">Select tier...</option><option value="Tier 1">Tier 1 — Under $100K</option><option value="Tier 2">Tier 2 — $100K – $500K</option><option value="Tier 3">Tier 3 — Over $500K</option></select></div>
-                    <div class="form-group"><label>DEG Entity <span class="req">*</span></label><select id="f_entity"><option value="">Select entity...</option><option value="DEI">DEI</option><option value="DER">DER</option><option value="DEP">DEP</option><option value="DES">DES</option><option value="Mike EPC">Mike EPC</option></select></div>
                     <div class="form-group full"><label>Trade / Scope of Work <span class="req">*</span></label>
                         <div class="checkbox-group" id="f_trades">
                             <label><input type="checkbox" value="Electrical"> Electrical</label>
@@ -318,34 +335,248 @@
                             <label><input type="checkbox" value="Other"> Other</label>
                         </div>
                     </div>
-                    <div class="form-group full"><label>Relevant Licenses / Certifications</label><input type="text" id="f_licenses" placeholder="e.g. FL EC13012345, NABCEP PV Installation Professional"></div>
-                    <div class="form-group full"><label>OEM Certifications (if applicable)</label><input type="text" id="f_oemCerts" placeholder="e.g. Tesla Powerwall Certified Installer, SMA Service Partner"></div>
                 </div>
             </div>
+
+            <!-- 1. FINANCIAL STABILITY (Both) -->
             <div class="card">
-                <div class="card-title">Insurance &amp; Safety</div>
-                <div class="form-grid three">
+                <div class="card-title">1. Financial Stability</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Federal Tax ID (EIN)</label><input type="text" id="f_ein" placeholder="XX-XXXXXXX"></div>
+                    <div class="form-group"><label>Annual Revenue (Approx.)</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
+                    <div class="form-group full"><label>Documentation on File</label>
+                        <div class="checkbox-group" id="f_docsOnFile">
+                            <label><input type="checkbox" value="W-9"> W-9</label>
+                            <label><input type="checkbox" value="NDA"> NDA</label>
+                            <label><input type="checkbox" value="COI"> COI</label>
+                            <label><input type="checkbox" value="Business Registration"> Business Registration</label>
+                            <label><input type="checkbox" value="Licenses"> Licenses</label>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Audited Financial Statements</label>
+                        <select id="f_auditedFinancials"><option value="">Select...</option><option value="Yes - 3yr">Yes — Past 3 Years</option><option value="Partial">Partial (1-2 years)</option><option value="No">No / Not Provided</option></select>
+                    </div>
+                    <div class="form-group"><label>D&amp;B / DUNS Number</label><input type="text" id="f_duns" placeholder="DUNS number"></div>
+                </div>
+                <div class="form-grid three" style="margin-top:16px;">
                     <div class="form-group"><label>General Liability Limit</label><input type="text" id="f_glLimit" placeholder="e.g. $2,000,000"></div>
+                    <div class="form-group"><label>Professional Liability</label><input type="text" id="f_profLiability" placeholder="e.g. $1,000,000"></div>
+                    <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate"></div>
                     <div class="form-group"><label>Workers Comp Carrier</label><input type="text" id="f_wcCarrier" placeholder="Carrier name"></div>
                     <div class="form-group"><label>COI Expiration Date</label><input type="date" id="f_coiExpiry"></div>
+                    <div class="form-group"><label>Banking Reference</label><input type="text" id="f_bankRef" placeholder="Bank name + contact"></div>
+                </div>
+            </div>
+
+            <!-- 2. CUSTOMER SUPPORT (Both) -->
+            <div class="card">
+                <div class="card-title">2. Customer Support &amp; Communication</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Avg. Response Time</label>
+                        <select id="f_responseTime"><option value="">Select...</option><option value="Under 1 hour">Under 1 hour</option><option value="1-4 hours">1-4 hours</option><option value="Same day">Same business day</option><option value="1-2 days">1-2 days</option><option value="3+ days">3+ days</option></select>
+                    </div>
+                    <div class="form-group"><label>Emergency Response Availability</label>
+                        <select id="f_emergencyResponse"><option value="">Select...</option><option value="24/7">24/7 on-call</option><option value="Extended hours">Extended hours</option><option value="Business hours only">Business hours only</option><option value="None">No emergency support</option></select>
+                    </div>
+                    <div class="form-group full"><label>Support Channels Available</label>
+                        <div class="checkbox-group" id="f_supportChannels">
+                            <label><input type="checkbox" value="Phone"> Phone</label>
+                            <label><input type="checkbox" value="Email"> Email</label>
+                            <label><input type="checkbox" value="Chat/Portal"> Chat / Online Portal</label>
+                            <label><input type="checkbox" value="Dedicated Rep"> Dedicated Account Rep</label>
+                            <label><input type="checkbox" value="Field Support"> On-site Field Support</label>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Service Level Agreements</label>
+                        <select id="f_slas"><option value="">Select...</option><option value="Formal SLAs">Formal SLAs in place</option><option value="Informal">Informal commitments</option><option value="None">None</option></select>
+                    </div>
+                    <div class="form-group"><label>Escalation Process</label>
+                        <select id="f_escalation"><option value="">Select...</option><option value="Documented">Documented with timelines</option><option value="Informal">Informal process</option><option value="None">None</option></select>
+                    </div>
+                    <div class="form-group full"><label>Training / Onboarding Support Offered</label><input type="text" id="f_trainingSupport" placeholder="Describe training, onboarding, or knowledge transfer programs offered"></div>
+                    <div class="form-group full"><label>Technical Expertise / Certifications</label><input type="text" id="f_techExpertise" placeholder="e.g. NABCEP, OEM certs, PE on staff, industry specializations"></div>
+                </div>
+            </div>
+
+            <!-- 3V. INNOVATION & VALUE ADDED (Vendor only) -->
+            <div class="card section-vendor" style="display:none;">
+                <div class="card-title">3. Innovation &amp; Value Added</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Continuous Improvement Programs</label><input type="text" id="f_contImprovement" placeholder="Process optimization, operational improvement efforts"></div>
+                    <div class="form-group"><label>Technology / Automation Capabilities</label><input type="text" id="f_techAdvancement" placeholder="AI, automation, digital platforms or portals"></div>
+                    <div class="form-group"><label>R&amp;D / New Product Development</label><input type="text" id="f_rAndD" placeholder="Recent or upcoming product releases"></div>
+                    <div class="form-group"><label>Industry Leadership / Conferences</label><input type="text" id="f_industryLeadership" placeholder="Conference participation, thought leadership"></div>
+                    <div class="form-group full"><label>Custom Solutions / Flexibility</label><input type="text" id="f_customSolutions" placeholder="Custom configurations, adaptation to DEI needs, flexible service models"></div>
+                    <div class="form-group full"><label>Cost Optimization Ideas</label><input type="text" id="f_costOptimization" placeholder="Alternative sourcing, resource optimization, process efficiencies"></div>
+                </div>
+            </div>
+
+            <!-- 3S. CAPITAL EQUIPMENT (Subcontractor only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">3. Capital Equipment Availability</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Equipment Ownership Model</label>
+                        <select id="f_equipOwnership"><option value="">Select...</option><option value="Owns all">Owns all equipment</option><option value="Mix own/lease">Mix of owned and leased</option><option value="Partner equipment">Utilizes partner's equipment</option><option value="Leases all">Leases all equipment</option></select>
+                    </div>
+                    <div class="form-group"><label>Equipment Contingency Plan</label>
+                        <select id="f_equipContingency"><option value="">Select...</option><option value="Strong">Backup equipment readily available</option><option value="Moderate">Can source within 1-2 days</option><option value="Weak">No contingency plan</option></select>
+                    </div>
+                </div>
+                <div class="form-grid three" style="margin-top:16px;">
+                    <div class="form-group"><label># Pile Drivers</label><input type="number" id="f_pileDrivers" placeholder="0"></div>
+                    <div class="form-group"><label># Drills</label><input type="number" id="f_drills" placeholder="0"></div>
+                    <div class="form-group"><label># Skid Steers</label><input type="number" id="f_skidSteers" placeholder="0"></div>
+                    <div class="form-group"><label># Trucks / UTVs</label><input type="number" id="f_trucks" placeholder="0"></div>
+                    <div class="form-group"><label>Office / Secured Storage</label><select id="f_officeStorage"><option value="">Select...</option><option value="Yes - owned">Yes — Owned</option><option value="Yes - leased">Yes — Leased</option><option value="No">No</option></select></div>
+                </div>
+            </div>
+
+            <!-- 4V. QUALITY OF PRODUCT/SERVICES (Vendor only) -->
+            <div class="card section-vendor" style="display:none;">
+                <div class="card-title">4. Quality of Product / Services</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Product/Service Reliability</label>
+                        <select id="f_reliability"><option value="">Select...</option><option value="Excellent">Excellent — Industry leading</option><option value="Good">Good — Consistent track record</option><option value="Average">Average</option><option value="Below average">Below average / Known issues</option></select>
+                    </div>
+                    <div class="form-group"><label>Known Defect Rate</label>
+                        <select id="f_defectRate"><option value="">Select...</option><option value="<1%">Under 1%</option><option value="1-3%">1-3%</option><option value="3-5%">3-5%</option><option value=">5%">Over 5%</option><option value="Unknown">Unknown</option></select>
+                    </div>
+                    <div class="form-group full"><label>Quality Certifications / Programs</label><input type="text" id="f_qualityCerts" placeholder="e.g. ISO 9001, Six Sigma, internal QC program"></div>
+                </div>
+            </div>
+
+            <!-- 4S. TECHNOLOGY (Subcontractor only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">4. Technology &amp; Tools</div>
+                <div class="form-grid">
+                    <div class="form-group full"><label>Automation Capabilities</label><input type="text" id="f_automation" placeholder="e.g. AI, robotic crews (Bot Crew), automated pile driving"></div>
+                    <div class="form-group full"><label>Digital Platforms</label><input type="text" id="f_digitalPlatforms" placeholder="e.g. project management tools, reporting dashboards"></div>
+                    <div class="form-group"><label>3D Modeling / Design Tools</label><input type="text" id="f_modeling" placeholder="e.g. ELM, AutoCAD, PVsyst"></div>
+                    <div class="form-group"><label>Calibration Certs Current</label><select id="f_calibrations"><option value="">Select...</option><option value="Yes">Yes — All current</option><option value="Partial">Some expired</option><option value="No">No / Not applicable</option></select></div>
+                    <div class="form-group full"><label>Safety Systems / Technology</label><input type="text" id="f_safetySystems" placeholder="e.g. GPS tracking, wearable monitors, drone inspection"></div>
+                </div>
+            </div>
+
+            <!-- 5. STAFFING (Both) -->
+            <div class="card">
+                <div class="card-title">5. Staffing</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Workforce Composition</label>
+                        <select id="f_workforceComp"><option value="">Select...</option><option value="All permanent">All permanent employees</option><option value="Mostly permanent">Mostly permanent, some partners/temps</option><option value="Mix">Mix of permanent, partners, and temps</option><option value="Mostly temp">Mostly temporary / day labor</option></select>
+                    </div>
+                    <div class="form-group"><label>Total Field Crew Size</label><input type="number" id="f_crewSize" placeholder="e.g. 45"></div>
+                    <div class="form-group"><label># Permanent Employees</label><input type="number" id="f_permanentEmp" placeholder="e.g. 30"></div>
+                    <div class="form-group"><label># Partners / Subs Used</label><input type="number" id="f_partnerCount" placeholder="e.g. 5"></div>
+                </div>
+            </div>
+
+            <!-- 6. STAFFING TURNOVER (Both) -->
+            <div class="card">
+                <div class="card-title">6. Staffing Turnover (Past 3 Years)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Avg. Annual Turnover Rate</label>
+                        <select id="f_turnover"><option value="">Select...</option><option value="<10%">Under 10%</option><option value="10-20%">10% – 20%</option><option value="20-40%">20% – 40%</option><option value=">40%">Over 40%</option><option value="Unknown">Unknown / Not tracked</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7S. SAFETY INCIDENTS (Sub only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">7. Safety Incidents (Past 3 Years)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Total Recordable Incidents</label>
+                        <select id="f_safetyIncidents"><option value="">Select...</option><option value="0-2">0 – 2 incidents</option><option value="3-4">3 – 4 incidents</option><option value="5+">5 or more incidents</option><option value="Not tracked">Tracking method not established</option></select>
+                    </div>
+                    <div class="form-group"><label>Has Written Safety Program?</label><select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                    <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
+                    <div class="form-group"><label>Dedicated Safety Personnel</label>
+                        <select id="f_safetyPersonnel"><option value="">Select...</option><option value="Dedicated Safety Supervisor">Dedicated on-site safety supervisor</option><option value="OSHA 30">Personnel with OSHA 30 certification</option><option value="OSHA 10">Personnel with OSHA 10 certification</option><option value="None">None — requires external sourcing</option></select>
+                    </div>
+                </div>
+                <div class="form-grid" style="margin-top:16px;">
                     <div class="form-group"><label>EMR (Current Year)</label><input type="text" id="f_emrCurrent" placeholder="e.g. 0.85"></div>
                     <div class="form-group"><label>EMR (Prior Year)</label><input type="text" id="f_emrPrior" placeholder="e.g. 0.90"></div>
                     <div class="form-group"><label>EMR (2 Years Prior)</label><input type="text" id="f_emr2Prior" placeholder="e.g. 0.92"></div>
                 </div>
-                <div class="form-grid" style="margin-top:16px;">
-                    <div class="form-group"><label>Has Written Safety Program?</label><select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
-                    <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
-                </div>
             </div>
-            <div class="card">
-                <div class="card-title">Financial (Tier 2 &amp; 3 Only)</div>
+
+            <!-- 8S. SAFETY TRIR (Sub only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">8. Total Recordable Incident Rate (TRIR)</div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Annual Revenue (Approx.)</label><input type="text" id="f_revenue" placeholder="e.g. $5,000,000"></div>
-                    <div class="form-group"><label>D&amp;B Number</label><input type="text" id="f_duns" placeholder="DUNS number"></div>
-                    <div class="form-group"><label>Bonding Capacity</label><input type="text" id="f_bondCapacity" placeholder="e.g. $2,000,000 aggregate"></div>
-                    <div class="form-group"><label>Banking Reference</label><input type="text" id="f_bankRef" placeholder="Bank name + contact"></div>
+                    <div class="form-group"><label>TRIR Range</label>
+                        <select id="f_trir"><option value="">Select...</option><option value="0-1.5">0 – 1.5 (Excellent)</option><option value="1.6-3.1">1.6 – 3.1 (Acceptable)</option><option value="3.2+">3.2+ (High Risk)</option><option value="Not tracked">Tracking method not established</option></select>
+                    </div>
                 </div>
             </div>
+
+            <!-- 7V. USE OF PRODUCT / MW EXPERIENCE (Vendor only) -->
+            <div class="card section-vendor" style="display:none;">
+                <div class="card-title">7. Product Deployment Scale (MW)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Total MW Shipped / Deployed</label>
+                        <select id="f_mwExperience"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 – 500 MW</option><option value="101-300 MW">101 – 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8V. WARRANTY (Vendor only) -->
+            <div class="card section-vendor" style="display:none;">
+                <div class="card-title">8. Warranty of Product</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Standard Warranty Duration</label><input type="text" id="f_warrantyDuration" placeholder="e.g. 10 years, 25 years performance"></div>
+                    <div class="form-group"><label>Extended Warranty Options</label><select id="f_extWarranty"><option value="">Select...</option><option value="Available">Available — with defined plans/costs</option><option value="Case by case">Case by case</option><option value="None">Not offered</option></select></div>
+                    <div class="form-group"><label>Warranty Transferability</label><select id="f_warrantyTransfer"><option value="">Select...</option><option value="Yes">Yes — fully transferable</option><option value="Conditional">Conditional</option><option value="No">Not transferable</option></select></div>
+                    <div class="form-group"><label>Avg. Warranty Service Turnaround</label><select id="f_warrantyTurnaround"><option value="">Select...</option><option value="<48 hours">Under 48 hours</option><option value="3-7 days">3-7 days</option><option value="1-2 weeks">1-2 weeks</option><option value="2+ weeks">Over 2 weeks</option></select></div>
+                    <div class="form-group full"><label>Scope of Warranty Coverage</label><input type="text" id="f_warrantyCoverage" placeholder="What's covered — defects, performance degradation, labor, shipping"></div>
+                    <div class="form-group full"><label>Known Exclusions</label><input type="text" id="f_warrantyExclusions" placeholder="e.g. modifications, environmental damage, improper installation"></div>
+                    <div class="form-group full"><label>Parts Availability</label><input type="text" id="f_partsAvail" placeholder="Inventory levels, lead times, end-of-life support"></div>
+                </div>
+            </div>
+
+            <!-- 9S. BESS EXPERIENCE (Sub only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">9. BESS Experience</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Years of BESS Installation Experience</label>
+                        <select id="f_bessExperience"><option value="">Select...</option><option value=">7 years">7+ years</option><option value="5-7 years">5 – 7 years</option><option value="3-5 years">3 – 5 years</option><option value="1-2 years">1 – 2 years</option><option value="None">None</option></select>
+                    </div>
+                    <div class="form-group full"><label>BESS OEM Experience</label><input type="text" id="f_bessOEM" placeholder="e.g. Tesla Megapack, BYD, Sungrow, FlexGen"></div>
+                </div>
+            </div>
+
+            <!-- 10S. PROJECT EXPERIENCE MW (Sub only) -->
+            <div class="card section-sub" style="display:none;">
+                <div class="card-title">10. Project Experience (MW Installed)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Total MW Installed</label>
+                        <select id="f_mwInstalled"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 – 500 MW</option><option value="101-300 MW">101 – 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
+                    </div>
+                    <div class="form-group"><label>Largest Single Project (MW)</label><input type="text" id="f_largestProject" placeholder="e.g. 150 MW"></div>
+                    <div class="form-group full"><label>Supervisor Availability</label>
+                        <select id="f_supervisorAvail"><option value="">Select...</option><option value="On-site full time">On-site superintendent for duration of project</option><option value="Intermittent">Intermittent — on-site certain days</option><option value="Remote">Remote supervision only</option></select>
+                    </div>
+                    <div class="form-group full"><label>Operating Distance from Typical Sites</label>
+                        <select id="f_operatingDistance"><option value="">Select...</option><option value="<50 miles">Under 50 miles</option><option value="50-100 miles">50 – 100 miles</option><option value="100-200 miles">100 – 200 miles</option><option value=">200 miles">Over 200 miles</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VENDOR SAFETY (lighter version for vendors) -->
+            <div class="card section-vendor" style="display:none;">
+                <div class="card-title">Safety &amp; Compliance</div>
+                <div class="form-grid three">
+                    <div class="form-group"><label>EMR (Current Year)</label><input type="text" id="f_emrCurrentV" placeholder="e.g. 0.85"></div>
+                    <div class="form-group"><label>EMR (Prior Year)</label><input type="text" id="f_emrPriorV" placeholder="e.g. 0.90"></div>
+                    <div class="form-group"><label>EMR (2 Years Prior)</label><input type="text" id="f_emr2PriorV" placeholder="e.g. 0.92"></div>
+                </div>
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group"><label>Has Written Safety Program?</label><select id="f_safetyProgramV"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                    <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidentsV" placeholder="e.g. 0"></div>
+                </div>
+            </div>
+
+            <!-- REFERENCES (Both) -->
             <div class="card">
                 <div class="card-title">References</div>
                 <div id="refsContainer">
@@ -354,10 +585,13 @@
                     <div class="form-grid three ref-row" data-idx="3" style="margin-top:8px;"><div class="form-group"><label>Reference 3 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
                 </div>
             </div>
+
+            <!-- NOTES -->
             <div class="card">
                 <div class="card-title">Additional Notes</div>
                 <div class="form-group"><textarea id="f_notes" rows="4" placeholder="Any additional information, project history with DEG entities, or notes for the reviewer..."></textarea></div>
             </div>
+
             <div class="btn-row">
                 <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
                 <button class="btn btn-primary" id="submitBtn" onclick="submitPrequal()">Submit Prequalification</button>
@@ -417,30 +651,100 @@ const LIST_COLUMNS = [
     { display:'AI Score', name:'AIScore', type:'number', required:false, existing:true },
     { display:'AI Rating', name:'AIRating', type:'choice', required:false, existing:true, choices:['Pass','Conditional','Fail'] },
     { display:'AI Analysis', name:'AIAnalysis', type:'note', required:false, existing:true },
-    // -- New prequal columns to add --
+    // -- Core prequal fields --
+    { display:'Vendor Type', name:'VendorType', type:'choice', required:true, choices:['Vendor','Subcontractor'] },
     { display:'DBA / Trade Name', name:'DBA', type:'text', required:false },
     { display:'Contact Title', name:'ContactTitle', type:'text', required:false },
-    { display:'Vendor Email', name:'VendorEmail', type:'text', required:false, notes:'Text field for email address' },
-    { display:'EIN', name:'EIN', type:'text', required:false },
-    { display:'Years in Business', name:'YearsInBusiness', type:'number', required:false },
+    { display:'Vendor Email', name:'VendorEmail', type:'text', required:false },
+    { display:'Year Established', name:'YearEstablished', type:'number', required:false },
+    { display:'Service Region', name:'ServiceRegion', type:'text', required:false },
+    { display:'Website', name:'Website', type:'text', required:false },
+    { display:'Core Functions', name:'CoreFunctions', type:'text', required:false },
     { display:'Tier', name:'Tier', type:'choice', required:true, choices:['Tier 1','Tier 2','Tier 3'] },
     { display:'DEG Entity', name:'Entity', type:'choice', required:true, choices:['DEI','DER','DEP','DES','Mike EPC'] },
     { display:'Trades', name:'Trades', type:'text', required:true, notes:'Comma-separated' },
-    { display:'Licenses', name:'Licenses', type:'text', required:false },
-    { display:'OEM Certifications', name:'OEMCerts', type:'text', required:false },
+    // -- 1. Financial Stability --
+    { display:'EIN', name:'EIN', type:'text', required:false },
+    { display:'Annual Revenue', name:'Revenue', type:'text', required:false },
+    { display:'Docs on File', name:'DocsOnFile', type:'text', required:false, notes:'Comma-separated: W-9, NDA, COI, etc.' },
+    { display:'Audited Financials', name:'AuditedFinancials', type:'choice', required:false, choices:['Yes - 3yr','Partial','No'] },
+    { display:'DUNS Number', name:'DUNS', type:'text', required:false },
     { display:'GL Limit', name:'GL_Limit', type:'text', required:false },
+    { display:'Professional Liability', name:'ProfLiability', type:'text', required:false },
+    { display:'Bonding Capacity', name:'BondCapacity', type:'text', required:false },
     { display:'WC Carrier', name:'WC_Carrier', type:'text', required:false },
     { display:'COI Expiry', name:'COI_Expiry', type:'dateTime', required:false },
+    { display:'Bank Reference', name:'BankRef', type:'text', required:false },
+    // -- 2. Customer Support --
+    { display:'Avg Response Time', name:'ResponseTime', type:'choice', required:false, choices:['Under 1 hour','1-4 hours','Same day','1-2 days','3+ days'] },
+    { display:'Emergency Response', name:'EmergencyResponse', type:'choice', required:false, choices:['24/7','Extended hours','Business hours only','None'] },
+    { display:'Support Channels', name:'SupportChannels', type:'text', required:false },
+    { display:'SLAs', name:'SLAs', type:'choice', required:false, choices:['Formal SLAs','Informal','None'] },
+    { display:'Escalation Process', name:'EscalationProcess', type:'choice', required:false, choices:['Documented','Informal','None'] },
+    { display:'Training Support', name:'TrainingSupport', type:'text', required:false },
+    { display:'Technical Expertise', name:'TechExpertise', type:'text', required:false },
+    // -- 3V. Innovation (Vendor) --
+    { display:'Continuous Improvement', name:'ContImprovement', type:'text', required:false },
+    { display:'Tech Advancement', name:'TechAdvancement', type:'text', required:false },
+    { display:'R&D', name:'RandD', type:'text', required:false },
+    { display:'Industry Leadership', name:'IndustryLeadership', type:'text', required:false },
+    { display:'Custom Solutions', name:'CustomSolutions', type:'text', required:false },
+    { display:'Cost Optimization', name:'CostOptimization', type:'text', required:false },
+    // -- 3S. Capital Equipment (Sub) --
+    { display:'Equipment Ownership', name:'EquipOwnership', type:'choice', required:false, choices:['Owns all','Mix own/lease','Partner equipment','Leases all'] },
+    { display:'Equipment Contingency', name:'EquipContingency', type:'choice', required:false, choices:['Strong','Moderate','Weak'] },
+    { display:'Pile Drivers', name:'PileDrivers', type:'number', required:false },
+    { display:'Drills', name:'Drills', type:'number', required:false },
+    { display:'Skid Steers', name:'SkidSteers', type:'number', required:false },
+    { display:'Trucks/UTVs', name:'Trucks', type:'number', required:false },
+    { display:'Office/Storage', name:'OfficeStorage', type:'choice', required:false, choices:['Yes - owned','Yes - leased','No'] },
+    // -- 4V. Quality (Vendor) --
+    { display:'Reliability', name:'Reliability', type:'choice', required:false, choices:['Excellent','Good','Average','Below average'] },
+    { display:'Defect Rate', name:'DefectRate', type:'choice', required:false, choices:['<1%','1-3%','3-5%','>5%','Unknown'] },
+    { display:'Quality Certs', name:'QualityCerts', type:'text', required:false },
+    // -- 4S. Technology (Sub) --
+    { display:'Automation', name:'Automation', type:'text', required:false },
+    { display:'Digital Platforms', name:'DigitalPlatforms', type:'text', required:false },
+    { display:'3D Modeling', name:'Modeling', type:'text', required:false },
+    { display:'Calibrations', name:'Calibrations', type:'choice', required:false, choices:['Yes','Partial','No'] },
+    { display:'Safety Systems', name:'SafetySystems', type:'text', required:false },
+    // -- 5. Staffing (Both) --
+    { display:'Workforce Composition', name:'WorkforceComp', type:'choice', required:false, choices:['All permanent','Mostly permanent','Mix','Mostly temp'] },
+    { display:'Crew Size', name:'CrewSize', type:'number', required:false },
+    { display:'Permanent Employees', name:'PermanentEmp', type:'number', required:false },
+    { display:'Partner/Sub Count', name:'PartnerCount', type:'number', required:false },
+    // -- 6. Staffing Turnover (Both) --
+    { display:'Turnover Rate', name:'TurnoverRate', type:'choice', required:false, choices:['<10%','10-20%','20-40%','>40%','Unknown'] },
+    // -- 7S. Safety Incidents (Sub) --
+    { display:'Safety Incidents (3yr)', name:'SafetyIncidents', type:'choice', required:false, choices:['0-2','3-4','5+','Not tracked'] },
+    { display:'Safety Program', name:'SafetyProgram', type:'choice', required:false, choices:['Yes','No'] },
+    { display:'OSHA Incidents', name:'OSHA_Incidents', type:'number', required:false },
+    { display:'Safety Personnel', name:'SafetyPersonnel', type:'choice', required:false, choices:['Dedicated Safety Supervisor','OSHA 30','OSHA 10','None'] },
     { display:'EMR Current', name:'EMR_Current', type:'text', required:false },
     { display:'EMR Prior', name:'EMR_Prior', type:'text', required:false },
     { display:'EMR 2yr Prior', name:'EMR_2Prior', type:'text', required:false },
-    { display:'Safety Program', name:'SafetyProgram', type:'choice', required:false, choices:['Yes','No'] },
-    { display:'OSHA Incidents (3yr)', name:'OSHA_Incidents', type:'number', required:false },
-    { display:'Annual Revenue', name:'Revenue', type:'text', required:false },
-    { display:'DUNS Number', name:'DUNS', type:'text', required:false },
-    { display:'Bonding Capacity', name:'BondCapacity', type:'text', required:false },
-    { display:'Bank Reference', name:'BankRef', type:'text', required:false },
-    { display:'Reference 1', name:'Ref1', type:'text', required:false },
+    // -- 8S. TRIR (Sub) --
+    { display:'TRIR', name:'TRIR', type:'choice', required:false, choices:['0-1.5','1.6-3.1','3.2+','Not tracked'] },
+    // -- 7V. MW Experience (Vendor) --
+    { display:'MW Deployed', name:'MWExperience', type:'choice', required:false, choices:['>501 MW','301-500 MW','101-300 MW','<100 MW'] },
+    // -- 8V. Warranty (Vendor) --
+    { display:'Warranty Duration', name:'WarrantyDuration', type:'text', required:false },
+    { display:'Extended Warranty', name:'ExtWarranty', type:'choice', required:false, choices:['Available','Case by case','None'] },
+    { display:'Warranty Transfer', name:'WarrantyTransfer', type:'choice', required:false, choices:['Yes','Conditional','No'] },
+    { display:'Warranty Turnaround', name:'WarrantyTurnaround', type:'choice', required:false, choices:['<48 hours','3-7 days','1-2 weeks','2+ weeks'] },
+    { display:'Warranty Coverage', name:'WarrantyCoverage', type:'text', required:false },
+    { display:'Warranty Exclusions', name:'WarrantyExclusions', type:'text', required:false },
+    { display:'Parts Availability', name:'PartsAvail', type:'text', required:false },
+    // -- 9S. BESS Experience (Sub) --
+    { display:'BESS Experience', name:'BESSExperience', type:'choice', required:false, choices:['>7 years','5-7 years','3-5 years','1-2 years','None'] },
+    { display:'BESS OEM Experience', name:'BESSOEM', type:'text', required:false },
+    // -- 10S. Project Experience (Sub) --
+    { display:'MW Installed', name:'MWInstalled', type:'choice', required:false, choices:['>501 MW','301-500 MW','101-300 MW','<100 MW'] },
+    { display:'Largest Project', name:'LargestProject', type:'text', required:false },
+    { display:'Supervisor Availability', name:'SupervisorAvail', type:'choice', required:false, choices:['On-site full time','Intermittent','Remote'] },
+    { display:'Operating Distance', name:'OperatingDistance', type:'choice', required:false, choices:['<50 miles','50-100 miles','100-200 miles','>200 miles'] },
+    // -- Admin/Status --
+    { display:'References', name:'Ref1', type:'text', required:false },
     { display:'Reference 2', name:'Ref2', type:'text', required:false },
     { display:'Reference 3', name:'Ref3', type:'text', required:false },
     { display:'Notes', name:'Notes', type:'note', required:false },
@@ -508,21 +812,72 @@ async function loadVendors(){
 }
 
 async function submitPrequal(){
-    const btn=document.getElementById('submitBtn'),cn=val('f_companyName'),ti=val('f_tier'),en=val('f_entity'),co=val('f_contact'),em=val('f_email'),ph=val('f_phone');
+    const btn=document.getElementById('submitBtn'),cn=val('f_companyName'),ti=val('f_tier'),en=val('f_entity'),co=val('f_contact'),em=val('f_email'),ph=val('f_phone'),vt=val('f_vendorType');
+    if(!vt){showToast('Select Vendor or Subcontractor type.','error');return;}
     if(!cn||!ti||!en||!co||!em||!ph){showToast('Please fill all required fields.','error');return;}
     const trades=[];document.querySelectorAll('#f_trades input:checked').forEach(c=>trades.push(c.value));
     if(!trades.length){showToast('Select at least one trade.','error');return;}
     if(!listId){showToast('Create the SharePoint list first.','error');return;}
     const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
-    const fields={Title:cn,Contact:co,DBA:val('f_dba'),ContactTitle:val('f_contactTitle'),VendorEmail:em,Phone:ph,Address_x0020_1:val('f_address'),EIN:val('f_ein'),YearsInBusiness:numVal('f_yearsInBusiness'),Tier:ti,Entity:en,Trades:trades.join(', '),Licenses:val('f_licenses'),OEMCerts:val('f_oemCerts'),GL_Limit:val('f_glLimit'),WC_Carrier:val('f_wcCarrier'),COI_Expiry:val('f_coiExpiry')||null,EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior'),SafetyProgram:val('f_safetyProgram')||null,OSHA_Incidents:numVal('f_oshaIncidents'),Revenue:val('f_revenue'),DUNS:val('f_duns'),BondCapacity:val('f_bondCapacity'),BankRef:val('f_bankRef'),Ref1:refs[0]||'',Ref2:refs[1]||'',Ref3:refs[2]||'',Notes:val('f_notes'),Status:'Pending',SubmittedDate:new Date().toISOString().split('T')[0],SubmittedBy:currentUser.name||currentUser.username};
+    const isSub=vt==='Subcontractor';
+    const fields={
+        Title:cn, Contact:co, DBA:val('f_dba'), ContactTitle:val('f_contactTitle'), VendorEmail:em, Phone:ph,
+        Address_x0020_1:val('f_address'), VendorType:vt, YearEstablished:numVal('f_yearsInBusiness'),
+        ServiceRegion:val('f_serviceRegion'), Website:val('f_website'), CoreFunctions:val('f_coreFunctions'),
+        Tier:ti, Entity:en, Trades:trades.join(', '),
+        // 1. Financial
+        EIN:val('f_ein'), Revenue:val('f_revenue'), DocsOnFile:getCheckedValues('f_docsOnFile'),
+        AuditedFinancials:val('f_auditedFinancials')||null, DUNS:val('f_duns'),
+        GL_Limit:val('f_glLimit'), ProfLiability:val('f_profLiability'), BondCapacity:val('f_bondCapacity'),
+        WC_Carrier:val('f_wcCarrier'), COI_Expiry:val('f_coiExpiry')||null, BankRef:val('f_bankRef'),
+        // 2. Customer Support
+        ResponseTime:val('f_responseTime')||null, EmergencyResponse:val('f_emergencyResponse')||null,
+        SupportChannels:getCheckedValues('f_supportChannels'), SLAs:val('f_slas')||null,
+        EscalationProcess:val('f_escalation')||null, TrainingSupport:val('f_trainingSupport'), TechExpertise:val('f_techExpertise'),
+        // 5. Staffing
+        WorkforceComp:val('f_workforceComp')||null, CrewSize:numVal('f_crewSize'),
+        PermanentEmp:numVal('f_permanentEmp'), PartnerCount:numVal('f_partnerCount'),
+        // 6. Turnover
+        TurnoverRate:val('f_turnover')||null,
+        // References & Notes
+        Ref1:refs[0]||'', Ref2:refs[1]||'', Ref3:refs[2]||'', Notes:val('f_notes'),
+        Status:'Pending', SubmittedDate:new Date().toISOString().split('T')[0], SubmittedBy:currentUser.name||currentUser.username
+    };
+    if(isSub){
+        // 3S. Equipment
+        Object.assign(fields,{EquipOwnership:val('f_equipOwnership')||null,EquipContingency:val('f_equipContingency')||null,
+        PileDrivers:numVal('f_pileDrivers'),Drills:numVal('f_drills'),SkidSteers:numVal('f_skidSteers'),Trucks:numVal('f_trucks'),OfficeStorage:val('f_officeStorage')||null});
+        // 4S. Technology
+        Object.assign(fields,{Automation:val('f_automation'),DigitalPlatforms:val('f_digitalPlatforms'),Modeling:val('f_modeling'),Calibrations:val('f_calibrations')||null,SafetySystems:val('f_safetySystems')});
+        // 7S. Safety
+        Object.assign(fields,{SafetyIncidents:val('f_safetyIncidents')||null,SafetyProgram:val('f_safetyProgram')||null,OSHA_Incidents:numVal('f_oshaIncidents'),SafetyPersonnel:val('f_safetyPersonnel')||null,
+        EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior')});
+        // 8S. TRIR
+        Object.assign(fields,{TRIR:val('f_trir')||null});
+        // 9S. BESS
+        Object.assign(fields,{BESSExperience:val('f_bessExperience')||null,BESSOEM:val('f_bessOEM')});
+        // 10S. Project Experience
+        Object.assign(fields,{MWInstalled:val('f_mwInstalled')||null,LargestProject:val('f_largestProject'),SupervisorAvail:val('f_supervisorAvail')||null,OperatingDistance:val('f_operatingDistance')||null});
+    } else {
+        // 3V. Innovation
+        Object.assign(fields,{ContImprovement:val('f_contImprovement'),TechAdvancement:val('f_techAdvancement'),RandD:val('f_rAndD'),IndustryLeadership:val('f_industryLeadership'),CustomSolutions:val('f_customSolutions'),CostOptimization:val('f_costOptimization')});
+        // 4V. Quality
+        Object.assign(fields,{Reliability:val('f_reliability')||null,DefectRate:val('f_defectRate')||null,QualityCerts:val('f_qualityCerts')});
+        // 7V. MW
+        Object.assign(fields,{MWExperience:val('f_mwExperience')||null});
+        // 8V. Warranty
+        Object.assign(fields,{WarrantyDuration:val('f_warrantyDuration'),ExtWarranty:val('f_extWarranty')||null,WarrantyTransfer:val('f_warrantyTransfer')||null,WarrantyTurnaround:val('f_warrantyTurnaround')||null,WarrantyCoverage:val('f_warrantyCoverage'),WarrantyExclusions:val('f_warrantyExclusions'),PartsAvail:val('f_partsAvail')});
+        // Vendor safety (lighter)
+        Object.assign(fields,{SafetyProgram:val('f_safetyProgramV')||null,OSHA_Incidents:numVal('f_oshaIncidentsV'),EMR_Current:val('f_emrCurrentV'),EMR_Prior:val('f_emrPriorV'),EMR_2Prior:val('f_emr2PriorV')});
+    }
     btn.disabled=true;btn.textContent='Submitting...';
     try{await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/items`,{fields});showToast('Vendor submitted!','success');clearForm();switchTab('dashboard');loadVendors();}
     catch(e){showToast('Error: '+e.message,'error');}finally{btn.disabled=false;btn.textContent='Submit Prequalification';}
 }
 
 function applyFilters(){
-    const s=document.getElementById('filterSearch').value.toLowerCase(),st=document.getElementById('filterStatus').value,ti=document.getElementById('filterTier').value,en=document.getElementById('filterEntity').value;
-    filteredVendors=vendors.filter(v=>{if(st&&v.Status!==st)return false;if(ti&&v.Tier!==ti)return false;if(en&&v.Entity!==en)return false;if(s){const h=[v.Title,v.Trades,v.Contact,v.VendorEmail,v.Entity].join(' ').toLowerCase();if(!h.includes(s))return false;}return true;});
+    const s=document.getElementById('filterSearch').value.toLowerCase(),st=document.getElementById('filterStatus').value,ti=document.getElementById('filterTier').value,en=document.getElementById('filterEntity').value,vt=document.getElementById('filterType').value;
+    filteredVendors=vendors.filter(v=>{if(st&&v.Status!==st)return false;if(ti&&v.Tier!==ti)return false;if(en&&v.Entity!==en)return false;if(vt&&v.VendorType!==vt)return false;if(s){const h=[v.Title,v.Trades,v.Contact,v.VendorEmail,v.Entity,v.VendorType].join(' ').toLowerCase();if(!h.includes(s))return false;}return true;});
     filteredVendors.sort((a,b)=>{let av=a[sortCol]||'',bv=b[sortCol]||'';if(typeof av==='string')av=av.toLowerCase();if(typeof bv==='string')bv=bv.toLowerCase();if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});
     renderTable();
 }
@@ -530,9 +885,10 @@ function sortTable(c){if(sortCol===c)sortDir=sortDir==='asc'?'desc':'asc';else{s
 
 function renderTable(){
     const tb=document.getElementById('vendorTableBody');
-    if(!filteredVendors.length){tb.innerHTML='<tr class="loading-row"><td colspan="10">No vendors match your filters.</td></tr>';return;}
+    if(!filteredVendors.length){tb.innerHTML='<tr class="loading-row"><td colspan="11">No vendors match your filters.</td></tr>';return;}
     tb.innerHTML=filteredVendors.map(v=>`<tr>
         <td><strong>${esc(v.Title||'')}</strong><br><span style="font-size:11px;color:var(--text-light)">${esc(v.Contact||'')}</span></td>
+        <td style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'}">${esc(v.VendorType||'—')}</td>
         <td>${tierBadge(v.Tier)}</td><td>${esc(v.Entity||'')}</td>
         <td style="max-width:180px;font-size:12px;">${esc(v.Trades||'')}</td>
         <td>${statusBadge(v.Status)}</td>
@@ -644,7 +1000,15 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 function formatDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
 function statusBadge(s){const m={'Approved':'approved','Pending':'pending','Under Review':'review','Rejected':'rejected','Expired':'expired'};return `<span class="badge badge-${m[s]||'pending'}">${esc(s||'Pending')}</span>`;}
 function tierBadge(t){const n=t==='Tier 1'?'1':t==='Tier 2'?'2':'3';return `<span class="badge-tier badge-tier-${n}">${esc(t||'')}</span>`;}
-function clearForm(){document.querySelectorAll('#formView input,#formView select,#formView textarea').forEach(e=>{if(e.type==='checkbox')e.checked=false;else e.value='';});}
+function clearForm(){document.querySelectorAll('#formView input,#formView select,#formView textarea').forEach(e=>{if(e.type==='checkbox')e.checked=false;else e.value='';});document.querySelectorAll('.section-vendor,.section-sub').forEach(el=>el.style.display='none');}
+
+function toggleVendorType(){
+    const vt=document.getElementById('f_vendorType').value;
+    document.querySelectorAll('.section-vendor').forEach(el=>el.style.display=vt==='Vendor'?'block':'none');
+    document.querySelectorAll('.section-sub').forEach(el=>el.style.display=vt==='Subcontractor'?'block':'none');
+}
+
+function getCheckedValues(id){const vals=[];document.querySelectorAll(`#${id} input:checked`).forEach(c=>vals.push(c.value));return vals.join(', ');}
 function showToast(m,t=''){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',3500);}
 
 // ══════════════════════════════════════════════════
@@ -672,50 +1036,154 @@ function saveApiKey() {
 }
 
 function buildScoringPrompt(v) {
-    return `You are an expert construction subcontractor prequalification analyst for a commercial solar and battery energy storage EPC company. Evaluate this vendor application and provide a risk-weighted score.
+    const isSub = v.VendorType === 'Subcontractor';
+    const typeLabel = isSub ? 'SUBCONTRACTOR' : 'VENDOR';
 
-VENDOR APPLICATION DATA:
-Company: ${v.Title || 'N/A'}
+    let sections = `
+COMPANY: ${v.Title || 'N/A'} (${typeLabel})
+Type: ${v.VendorType || 'N/A'}
 Tier: ${v.Tier || 'N/A'} (Tier 1: <$100K, Tier 2: $100K-$500K, Tier 3: >$500K)
 Entity: ${v.Entity || 'N/A'}
-Years in Business: ${v.YearsInBusiness || 'N/A'}
+Year Established: ${v.YearEstablished || 'N/A'}
+Service Region: ${v.ServiceRegion || 'N/A'}
+Core Functions: ${v.CoreFunctions || 'N/A'}
 Trades: ${v.Trades || 'N/A'}
-Licenses: ${v.Licenses || 'None provided'}
-OEM Certifications: ${v.OEMCerts || 'None provided'}
 
-INSURANCE & SAFETY:
+1. FINANCIAL STABILITY:
+EIN: ${v.EIN || 'Not provided'}
+Revenue: ${v.Revenue || 'Not provided'}
+Docs on File: ${v.DocsOnFile || 'None'}
+Audited Financials: ${v.AuditedFinancials || 'Not provided'}
+DUNS: ${v.DUNS || 'Not provided'}
 GL Limit: ${v.GL_Limit || 'Not provided'}
-Workers Comp Carrier: ${v.WC_Carrier || 'Not provided'}
-COI Expiry: ${v.COI_Expiry || 'Not provided'}
-EMR Current: ${v.EMR_Current || 'Not provided'}
-EMR Prior Year: ${v.EMR_Prior || 'Not provided'}
-EMR 2yr Prior: ${v.EMR_2Prior || 'Not provided'}
-Safety Program: ${v.SafetyProgram || 'Not provided'}
-OSHA Incidents (3yr): ${v.OSHA_Incidents !== undefined ? v.OSHA_Incidents : 'Not provided'}
-
-FINANCIAL (Tier 2/3):
-Annual Revenue: ${v.Revenue || 'Not provided'}
-DUNS Number: ${v.DUNS || 'Not provided'}
+Professional Liability: ${v.ProfLiability || 'Not provided'}
 Bonding Capacity: ${v.BondCapacity || 'Not provided'}
-Bank Reference: ${v.BankRef || 'Not provided'}
+WC Carrier: ${v.WC_Carrier || 'Not provided'}
+COI Expiry: ${v.COI_Expiry || 'Not provided'}
+
+2. CUSTOMER SUPPORT:
+Response Time: ${v.ResponseTime || 'Not provided'}
+Emergency Response: ${v.EmergencyResponse || 'Not provided'}
+Support Channels: ${v.SupportChannels || 'Not provided'}
+SLAs: ${v.SLAs || 'Not provided'}
+Escalation Process: ${v.EscalationProcess || 'Not provided'}
+Training Support: ${v.TrainingSupport || 'Not provided'}
+Technical Expertise: ${v.TechExpertise || 'Not provided'}
+
+5. STAFFING:
+Workforce Composition: ${v.WorkforceComp || 'Not provided'}
+Crew Size: ${v.CrewSize || 'Not provided'}
+Permanent Employees: ${v.PermanentEmp || 'Not provided'}
+Partners/Subs: ${v.PartnerCount || 'Not provided'}
+
+6. STAFFING TURNOVER: ${v.TurnoverRate || 'Not provided'}`;
+
+    if (isSub) {
+        sections += `
+
+3. CAPITAL EQUIPMENT:
+Ownership Model: ${v.EquipOwnership || 'Not provided'}
+Contingency Plan: ${v.EquipContingency || 'Not provided'}
+Pile Drivers: ${v.PileDrivers || '0'}, Drills: ${v.Drills || '0'}, Skid Steers: ${v.SkidSteers || '0'}, Trucks: ${v.Trucks || '0'}
+Office/Storage: ${v.OfficeStorage || 'Not provided'}
+
+4. TECHNOLOGY:
+Automation: ${v.Automation || 'Not provided'}
+Digital Platforms: ${v.DigitalPlatforms || 'Not provided'}
+3D Modeling: ${v.Modeling || 'Not provided'}
+Calibrations: ${v.Calibrations || 'Not provided'}
+Safety Systems: ${v.SafetySystems || 'Not provided'}
+
+7. SAFETY INCIDENTS (3yr): ${v.SafetyIncidents || 'Not provided'}
+Safety Program: ${v.SafetyProgram || 'Not provided'}
+OSHA Incidents: ${v.OSHA_Incidents !== undefined ? v.OSHA_Incidents : 'Not provided'}
+Safety Personnel: ${v.SafetyPersonnel || 'Not provided'}
+EMR Current: ${v.EMR_Current || 'Not provided'}, Prior: ${v.EMR_Prior || 'N/A'}, 2yr: ${v.EMR_2Prior || 'N/A'}
+
+8. TRIR: ${v.TRIR || 'Not provided'}
+
+9. BESS EXPERIENCE: ${v.BESSExperience || 'Not provided'}
+BESS OEMs: ${v.BESSOEM || 'Not provided'}
+
+10. PROJECT EXPERIENCE:
+MW Installed: ${v.MWInstalled || 'Not provided'}
+Largest Project: ${v.LargestProject || 'Not provided'}
+Supervisor: ${v.SupervisorAvail || 'Not provided'}
+Operating Distance: ${v.OperatingDistance || 'Not provided'}`;
+    } else {
+        sections += `
+
+3. INNOVATION & VALUE ADDED:
+Continuous Improvement: ${v.ContImprovement || 'Not provided'}
+Tech Advancement: ${v.TechAdvancement || 'Not provided'}
+R&D: ${v.RandD || 'Not provided'}
+Industry Leadership: ${v.IndustryLeadership || 'Not provided'}
+Custom Solutions: ${v.CustomSolutions || 'Not provided'}
+Cost Optimization: ${v.CostOptimization || 'Not provided'}
+
+4. QUALITY:
+Reliability: ${v.Reliability || 'Not provided'}
+Defect Rate: ${v.DefectRate || 'Not provided'}
+Quality Certs: ${v.QualityCerts || 'Not provided'}
+
+7. MW DEPLOYED: ${v.MWExperience || 'Not provided'}
+
+8. WARRANTY:
+Duration: ${v.WarrantyDuration || 'Not provided'}
+Extended: ${v.ExtWarranty || 'Not provided'}
+Transferable: ${v.WarrantyTransfer || 'Not provided'}
+Turnaround: ${v.WarrantyTurnaround || 'Not provided'}
+Coverage: ${v.WarrantyCoverage || 'Not provided'}
+Exclusions: ${v.WarrantyExclusions || 'Not provided'}
+Parts Availability: ${v.PartsAvail || 'Not provided'}
+
+SAFETY:
+EMR Current: ${v.EMR_Current || 'Not provided'}, Prior: ${v.EMR_Prior || 'N/A'}, 2yr: ${v.EMR_2Prior || 'N/A'}
+Safety Program: ${v.SafetyProgram || 'Not provided'}
+OSHA Incidents: ${v.OSHA_Incidents !== undefined ? v.OSHA_Incidents : 'Not provided'}`;
+    }
+
+    sections += `
 
 REFERENCES:
 Ref 1: ${v.Ref1 || 'None'}
 Ref 2: ${v.Ref2 || 'None'}
 Ref 3: ${v.Ref3 || 'None'}
+Notes: ${v.Notes || 'None'}`;
 
-Notes: ${v.Notes || 'None'}
+    const scoringCriteria = isSub ?
+`SUBCONTRACTOR SCORING (1-5 per category, 5=Excellent):
+1. Financial Stability (15%): Docs, insurance, bonding, financials
+2. Customer Support (10%): Responsiveness, SLAs, expertise
+3. Capital Equipment (15%): Ownership, quantity, contingency
+4. Technology (10%): Automation, digital tools, calibrations
+5. Staffing (10%): Permanent vs temp ratio, crew size adequacy
+6. Staffing Turnover (5%): <10% excellent, >40% fail
+7. Safety Incidents (10%): 0-2 excellent, 5+ fail
+8. Safety TRIR (10%): 0-1.5 excellent, 3.2+ fail
+9. BESS Experience (5%): 7+ years excellent
+10. Project Experience (10%): MW installed, supervisor, distance` :
+`VENDOR SCORING (1-5 per category, 5=Excellent):
+1. Financial Stability (20%): Docs, insurance, bonding, financials
+2. Customer Support (15%): Responsiveness, SLAs, expertise
+3. Innovation & Value Added (15%): R&D, tech, custom solutions
+4. Quality of Product/Services (15%): Reliability, defect rate, certs
+5. Staffing (10%): Permanent vs temp, crew adequacy
+6. Staffing Turnover (5%): <10% excellent, >40% fail
+7. Product Scale / MW (10%): >501 MW excellent
+8. Warranty (10%): Duration, coverage, transferability, parts`;
 
-SCORING CRITERIA (weighted):
-1. EMR & Safety (35%): EMR under 1.0 is good, under 0.85 is excellent. EMR over 1.0 is a red flag. Written safety program required. Zero OSHA incidents preferred.
-2. Insurance Compliance (30%): COI must be current (not expired). GL limits should meet industry standard ($1M+ per occurrence, $2M+ aggregate). WC carrier must be provided.
-3. Financial Stability (25%): For Tier 2/3 only. Revenue should support contract size. DUNS number shows established credit. Bonding capacity important for Tier 3. For Tier 1, give full marks if basic info provided.
-4. Completeness & References (10%): All required fields filled. At least 2 references from GCs/owners.
+    return `You are an expert ${typeLabel.toLowerCase()} prequalification analyst for DEI, a commercial solar and battery energy storage EPC company. Score this ${typeLabel.toLowerCase()} using the DEI Selection Scorecard.
 
-RESPOND WITH ONLY THIS JSON FORMAT (no markdown, no backticks):
-{"score": <number 1-100>, "rating": "<Pass|Conditional|Fail>", "analysis": "<2-3 paragraph assessment covering each scoring category, specific risks identified, and recommendation>"}
+${sections}
 
-RATING THRESHOLDS: Pass = 70+, Conditional = 40-69, Fail = below 40`;
+${scoringCriteria}
+
+RESPOND WITH ONLY THIS JSON (no markdown, no backticks):
+{"score": <number 1-100>, "rating": "<Pass|Conditional|Fail>", "analysis": "<2-3 paragraph assessment. Score each numbered category 1-5, explain rationale, flag specific risks, and give final recommendation.>"}
+
+RATING THRESHOLDS: Pass = 70+, Conditional = 40-69, Fail = below 40
+SCORING SCALE: 5=Excellent/Exceeds, 4=Very Good, 3=Acceptable, 2=Weak, 1=Poor`;
 }
 
 async function scoreVendor(id) {
