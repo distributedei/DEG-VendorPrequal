@@ -194,40 +194,16 @@ async function submitForm(){
 
     const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting...';
     const body=JSON.stringify(p);
+    console.log('Submitting payload, length:', body.length);
     try{
-        // Try fetch first
-        const controller=new AbortController();
-        const timeout=setTimeout(()=>controller.abort(),10000);
-        await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:body,signal:controller.signal});
-        clearTimeout(timeout);
+        await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:body});
+        console.log('Fetch completed');
         document.getElementById('formContainer').style.display='none';
         document.getElementById('successScreen').classList.add('show');
-    }catch(e1){
-        // Fallback to XMLHttpRequest
-        try{
-            await new Promise((resolve,reject)=>{
-                const xhr=new XMLHttpRequest();
-                xhr.open('POST',WEBHOOK_URL);
-                xhr.setRequestHeader('Content-Type','text/plain');
-                xhr.onload=()=>resolve();
-                xhr.onerror=()=>reject(new Error('XHR failed'));
-                xhr.ontimeout=()=>reject(new Error('XHR timeout'));
-                xhr.timeout=10000;
-                xhr.send(body);
-            });
-            document.getElementById('formContainer').style.display='none';
-            document.getElementById('successScreen').classList.add('show');
-        }catch(e2){
-            // Last resort: sendBeacon
-            const blob=new Blob([body],{type:'text/plain'});
-            if(navigator.sendBeacon(WEBHOOK_URL,blob)){
-                document.getElementById('formContainer').style.display='none';
-                document.getElementById('successScreen').classList.add('show');
-            }else{
-                showError('Submission failed. Please try again or contact procurement@distributedei.com');
-                btn.disabled=false;btn.textContent='Submit Prequalification';
-            }
-        }
+    }catch(e){
+        console.error('Fetch failed:', e);
+        showError('Submission failed: '+e.message);
+        btn.disabled=false;btn.textContent='Submit Prequalification';
     }
 }
 function val(id){return document.getElementById(id)?.value?.trim()||'';}
