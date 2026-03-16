@@ -241,7 +241,7 @@
 
     <!-- DOCUMENT UPLOADS -->
     <div class="card"><div class="card-title">Required Documents</div>
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Upload the following documents (PDF, DOC, DOCX, JPG, PNG — max 4MB each).</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Upload the following documents (PDF, DOC, DOCX, JPG, PNG — max 5MB each).</p>
         <div class="form-grid">
             <div class="form-group">
                 <label>W-9 <span class="req">*</span></label>
@@ -271,20 +271,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Safety Program</label>
-                <div class="file-upload" onclick="this.querySelector('input').click()">
-                    <input type="file" id="f_fileSafety" accept=".pdf,.doc,.docx,.jpg,.png" onchange="showFileName(this)">
-                    <div class="file-icon">📄</div>
-                    <div class="file-label">Click to upload Safety Program</div>
-                    <div class="file-name" id="fn_fileSafety"></div>
-                </div>
-            </div>
-            <div class="form-group full">
                 <label>OSHA 300 Logs (3 Years)</label>
                 <div class="file-upload" onclick="this.querySelector('input').click()">
                     <input type="file" id="f_fileOSHA" accept=".pdf,.doc,.docx,.jpg,.png" multiple onchange="showFileName(this)">
                     <div class="file-icon">📄</div>
-                    <div class="file-label">Click to upload OSHA 300 logs (can select multiple files)</div>
+                    <div class="file-label">Click to upload OSHA 300 logs (multiple files OK)</div>
                     <div class="file-name" id="fn_fileOSHA"></div>
                 </div>
             </div>
@@ -364,9 +355,9 @@ async function submitForm(){
     if(val('f_ndaStatus')==='No'&&!document.getElementById('f_fileNDA').files.length){showError('Upload executed NDA (download template above if needed).');return;}
 
     // Check file sizes (4MB max each)
-    const maxSize=4*1024*1024;
-    const fileInputs=['f_fileW9','f_fileCOI','f_fileNDA','f_fileSafety','f_fileOSHA'];
-    for(const fid of fileInputs){const inp=document.getElementById(fid);if(inp.files)for(const f of inp.files)if(f.size>maxSize){showError(`File "${f.name}" exceeds 4MB limit.`);return;}}
+    const maxSize=5*1024*1024;
+    const fileInputs=['f_fileW9','f_fileCOI','f_fileNDA','f_fileOSHA'];
+    for(const fid of fileInputs){const inp=document.getElementById(fid);if(inp&&inp.files)for(const f of inp.files)if(f.size>maxSize){showError(`File "${f.name}" exceeds 5MB limit.`);return;}}
 
     const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
     if(refs.length<2){showError('Provide at least 2 trade references.');return;}
@@ -377,7 +368,6 @@ async function submitForm(){
     const fileW9=await getFileData('f_fileW9');
     const fileCOI=await getFileData('f_fileCOI');
     const fileNDA=await getFileData('f_fileNDA');
-    const fileSafety=await getFileData('f_fileSafety');
     const fileOSHA=await getFileData('f_fileOSHA');
 
     btn.textContent='Submitting...';
@@ -414,7 +404,7 @@ async function submitForm(){
         Ref1:refs[0]||'',Ref2:refs[1]||'',Ref3:refs[2]||'',Notes:val('f_notes'),
         Status:'Pending',SubmittedDate:new Date().toISOString().split('T')[0],SubmittedBy:'Vendor Self-Submit',
         // Files (base64)
-        File_W9:fileW9,File_COI:fileCOI,File_NDA:fileNDA,File_Safety:fileSafety,File_OSHA:fileOSHA
+        File_W9:fileW9,File_COI:fileCOI,File_NDA:fileNDA,File_OSHA:fileOSHA
     };
 
     // Type-specific fields
