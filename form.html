@@ -193,11 +193,42 @@ async function submitForm(){
     else Object.assign(p,{ContImprovement:val('f_contImprovement'),TechAdvancement:val('f_techAdvancement'),RandD:val('f_rAndD'),IndustryLeadership:val('f_industryLeadership'),CustomSolutions:val('f_customSolutions'),CostOptimization:val('f_costOptimization'),Reliability:val('f_reliability'),DefectRate:val('f_defectRate'),QualityCerts:val('f_qualityCerts'),MWExperience:val('f_mwExperience'),WarrantyDuration:val('f_warrantyDuration'),ExtWarranty:val('f_extWarranty'),WarrantyTransfer:val('f_warrantyTransfer'),WarrantyTurnaround:val('f_warrantyTurnaround'),WarrantyCoverage:val('f_warrantyCoverage'),WarrantyExclusions:val('f_warrantyExclusions'),PartsAvail:val('f_partsAvail'),SafetyProgram:val('f_safetyProgramV'),OSHA_Incidents:parseInt(val('f_oshaIncidentsV'))||0,EMR_Current:val('f_emrCurrentV'),EMR_Prior:val('f_emrPriorV'),EMR_2Prior:val('f_emr2PriorV')});
 
     const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting...';
+    const body=JSON.stringify(p);
     try{
-        const blob=new Blob([JSON.stringify(p)],{type:'text/plain'});
-        if(navigator.sendBeacon(WEBHOOK_URL,blob)){document.getElementById('formContainer').style.display='none';document.getElementById('successScreen').classList.add('show');}
-        else throw new Error('Request blocked');
-    }catch(e){showError('Submission failed: '+e.message);btn.disabled=false;btn.textContent='Submit Prequalification';}
+        // Try fetch first
+        const controller=new AbortController();
+        const timeout=setTimeout(()=>controller.abort(),10000);
+        await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:body,signal:controller.signal});
+        clearTimeout(timeout);
+        document.getElementById('formContainer').style.display='none';
+        document.getElementById('successScreen').classList.add('show');
+    }catch(e1){
+        // Fallback to XMLHttpRequest
+        try{
+            await new Promise((resolve,reject)=>{
+                const xhr=new XMLHttpRequest();
+                xhr.open('POST',WEBHOOK_URL);
+                xhr.setRequestHeader('Content-Type','text/plain');
+                xhr.onload=()=>resolve();
+                xhr.onerror=()=>reject(new Error('XHR failed'));
+                xhr.ontimeout=()=>reject(new Error('XHR timeout'));
+                xhr.timeout=10000;
+                xhr.send(body);
+            });
+            document.getElementById('formContainer').style.display='none';
+            document.getElementById('successScreen').classList.add('show');
+        }catch(e2){
+            // Last resort: sendBeacon
+            const blob=new Blob([body],{type:'text/plain'});
+            if(navigator.sendBeacon(WEBHOOK_URL,blob)){
+                document.getElementById('formContainer').style.display='none';
+                document.getElementById('successScreen').classList.add('show');
+            }else{
+                showError('Submission failed. Please try again or contact procurement@distributedei.com');
+                btn.disabled=false;btn.textContent='Submit Prequalification';
+            }
+        }
+    }
 }
 function val(id){return document.getElementById(id)?.value?.trim()||'';}
 function showError(m){const e=document.getElementById('errorBanner');e.textContent=m;e.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Intake — Distributed Energy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--navy:#375673;--navy-dark:#1a2d42;--green:#779d36;--green-dark:#5f7e2b;--green-light:#8fb844;--bg:#f5f7fa;--card:#fff;--border:#e2e8f0;--text:#1e2a36;--text-muted:#6b7c8a;--red:#c0392b;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,0.04)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+        .top-bar{background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:20px 24px;text-align:center;color:#fff}
+        .top-bar h1{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;letter-spacing:1px}
+        .top-bar h1 span{color:var(--green-light)}
+        .top-bar p{font-size:13px;opacity:.7;margin-top:4px}
+        .container{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+        .card-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .form-grid.three{grid-template-columns:1fr 1fr 1fr}
+        .form-group{display:flex;flex-direction:column;gap:4px}
+        .form-group.full{grid-column:1/-1}
+        .form-group label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+        .form-group label .req{color:var(--red)}
+        .form-group input,.form-group select,.form-group textarea{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;transition:border-color .2s}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(119,157,54,.12)}
+        .form-group textarea{resize:vertical;min-height:80px}
+        .checkbox-group{display:flex;flex-wrap:wrap;gap:12px;padding:4px 0}
+        .checkbox-group label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer}
+        .checkbox-group input[type="checkbox"]{width:16px;height:16px;accent-color:var(--green)}
+        .btn-row{display:flex;gap:12px;justify-content:center;margin-top:24px}
+        .btn{padding:12px 36px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;text-transform:uppercase}
+        .btn-primary{background:var(--green);color:#fff}
+        .btn-primary:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+        .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .error-banner{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:6px;padding:10px 16px;font-size:13px;color:var(--red);margin-bottom:16px;display:none}
+        .error-banner.show{display:block}
+        .success-screen{display:none;text-align:center;padding:60px 20px}
+        .success-screen.show{display:block}
+        .success-screen .check-circle{width:80px;height:80px;border-radius:50%;background:rgba(119,157,54,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+        .success-screen .check-circle svg{width:40px;height:40px;color:var(--green)}
+        .success-screen h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:var(--navy)}
+        .success-screen p{font-size:14px;color:var(--text-muted);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto}
+        .intro{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow)}
+        .intro h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--navy);margin-bottom:8px}
+        .intro p{font-size:13px;color:var(--text-muted)}
+        @media(max-width:640px){.form-grid,.form-grid.three{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<div class="top-bar"><h1>DISTRIBUTED <span>ENERGY</span></h1><p>Client Project Intake — Solar PV</p></div>
+
+<div class="container" id="formContainer">
+    <div class="error-banner" id="errorBanner"></div>
+
+    <div class="intro">
+        <h2>Welcome</h2>
+        <p>Thank you for your interest in working with Distributed Energy. Please provide your company information and project details below. Our team will review your submission and follow up within 1–2 business days.</p>
+    </div>
+
+    <!-- COMPANY INFORMATION -->
+    <div class="card">
+        <div class="card-title">Company Information</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Company Name <span class="req">*</span></label><input type="text" id="f_companyName" placeholder="Legal entity name"></div>
+            <div class="form-group"><label>DBA / Trade Name</label><input type="text" id="f_dba" placeholder="If different from legal name"></div>
+            <div class="form-group"><label>Website</label><input type="url" id="f_website" placeholder="https://www.example.com"></div>
+            <div class="form-group"><label>Industry / Sector</label><input type="text" id="f_industry" placeholder="e.g. Real Estate, Manufacturing, Agriculture"></div>
+            <div class="form-group full"><label>Company Address <span class="req">*</span></label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
+        </div>
+    </div>
+
+    <!-- PRIMARY CONTACT -->
+    <div class="card">
+        <div class="card-title">Primary Contact</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Contact Name <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
+            <div class="form-group"><label>Title <span class="req">*</span></label><input type="text" id="f_contactTitle" placeholder="e.g. VP of Facilities, CEO, Director of Sustainability"></div>
+            <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
+            <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
+        </div>
+    </div>
+
+    <!-- DECISION MAKER / STAKEHOLDERS -->
+    <div class="card">
+        <div class="card-title">Decision Maker &amp; Stakeholders</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Decision Maker Name <span class="req">*</span></label><input type="text" id="f_decisionMaker" placeholder="Person who approves the project"></div>
+            <div class="form-group"><label>Decision Maker Title</label><input type="text" id="f_decisionMakerTitle" placeholder="e.g. CEO, CFO, Board Chair"></div>
+            <div class="form-group"><label>Decision Maker Email</label><input type="email" id="f_decisionMakerEmail" placeholder="email@company.com"></div>
+            <div class="form-group"><label>Decision Maker Phone</label><input type="tel" id="f_decisionMakerPhone" placeholder="(555) 555-5555"></div>
+            <div class="form-group full"><label>Other Stakeholders</label><textarea id="f_stakeholders" rows="3" placeholder="List any other people involved in the decision process — name, title, role (e.g. legal counsel, facilities manager, CFO)"></textarea></div>
+        </div>
+    </div>
+
+    <!-- PROJECT OVERVIEW -->
+    <div class="card">
+        <div class="card-title">Project Overview</div>
+        <div class="form-grid">
+            <div class="form-group"><label>Project Type <span class="req">*</span></label>
+                <select id="f_projectType">
+                    <option value="">Select...</option>
+                    <option value="Rooftop Solar">Rooftop Solar</option>
+                    <option value="Ground Mount Solar">Ground Mount Solar</option>
+                    <option value="Carport Solar">Carport Solar</option>
+                    <option value="Solar + Battery Storage">Solar + Battery Storage</option>
+                    <option value="Battery Storage Only">Battery Storage Only</option>
+                    <option value="Community Solar">Community Solar</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Estimated Project Size</label><input type="text" id="f_projectSize" placeholder="e.g. 500 kW, 5 MW, 2,000 panels"></div>
+            <div class="form-group"><label>Project Location / State <span class="req">*</span></label><input type="text" id="f_projectLocation" placeholder="City, State or full address"></div>
+            <div class="form-group"><label>Desired Timeline</label>
+                <select id="f_timeline">
+                    <option value="">Select...</option>
+                    <option value="ASAP">ASAP — Ready to move</option>
+                    <option value="1-3 months">1–3 months</option>
+                    <option value="3-6 months">3–6 months</option>
+                    <option value="6-12 months">6–12 months</option>
+                    <option value="12+ months">12+ months — Planning phase</option>
+                    <option value="Exploring">Just exploring options</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Ownership Model</label>
+                <select id="f_ownershipModel">
+                    <option value="">Select...</option>
+                    <option value="Direct Purchase">Direct Purchase</option>
+                    <option value="PPA">Power Purchase Agreement (PPA)</option>
+                    <option value="Lease">Lease</option>
+                    <option value="EPC Only">EPC Only (client owns)</option>
+                    <option value="Not Sure">Not sure — need guidance</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Estimated Budget Range</label>
+                <select id="f_budgetRange">
+                    <option value="">Select...</option>
+                    <option value="Under $500K">Under $500K</option>
+                    <option value="$500K - $1M">$500K – $1M</option>
+                    <option value="$1M - $5M">$1M – $5M</option>
+                    <option value="$5M - $10M">$5M – $10M</option>
+                    <option value="$10M+">$10M+</option>
+                    <option value="TBD">TBD — Need proposal first</option>
+                </select>
+            </div>
+            <div class="form-group"><label>DEG Entity</label>
+                <select id="f_entity">
+                    <option value="">Select...</option>
+                    <option value="DEI">DEI</option>
+                    <option value="DER">DER</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW DID YOU HEAR ABOUT US -->
+    <div class="card">
+        <div class="card-title">Additional Information</div>
+        <div class="form-grid">
+            <div class="form-group"><label>How did you hear about us?</label>
+                <select id="f_source">
+                    <option value="">Select...</option>
+                    <option value="Referral">Referral</option>
+                    <option value="Website">Website</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Trade Show">Trade Show / Conference</option>
+                    <option value="Industry Publication">Industry Publication</option>
+                    <option value="Existing Relationship">Existing Relationship</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Referral Name (if applicable)</label><input type="text" id="f_referralName" placeholder="Who referred you?"></div>
+        </div>
+        <div class="form-group full" style="margin-top:16px"><label>Additional Notes / Questions</label><textarea id="f_notes" rows="4" placeholder="Anything else you'd like us to know — site conditions, existing infrastructure, specific goals, questions..."></textarea></div>
+    </div>
+
+    <div class="btn-row"><button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit Inquiry</button></div>
+</div>
+
+<div class="container success-screen" id="successScreen">
+    <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <h2>Inquiry Submitted</h2>
+    <p>Thank you for your interest in Distributed Energy. Our team will review your submission and reach out within 1–2 business days to discuss your project.</p>
+</div>
+
+<script>
+const WEBHOOK_URL='https://defaultec357a325b85438da765ae33c8eb13.b7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/809579ee018146c0b7bf30b1fc1f3465/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=z_oVZah2JwcyDtWSaZWQtsjNtJhcTL48h3lbEeaSCPo';
+
+async function submitForm(){
+    const cn=val('f_companyName'),co=val('f_contact'),ct=val('f_contactTitle'),em=val('f_email'),ph=val('f_phone'),addr=val('f_address'),dm=val('f_decisionMaker'),pt=val('f_projectType'),pl=val('f_projectLocation');
+
+    if(!cn){showError('Please enter the company name.');return;}
+    if(!co||!ct||!em||!ph){showError('Please complete all primary contact fields.');return;}
+    if(!addr){showError('Please enter the company address.');return;}
+    if(!dm){showError('Please enter the decision maker name.');return;}
+    if(!pt){showError('Please select a project type.');return;}
+    if(!pl){showError('Please enter the project location.');return;}
+
+    const payload={
+        Title:cn,
+        Contact:co,
+        DBA:val('f_dba'),
+        ContactTitle:ct,
+        VendorEmail:em,
+        Phone:ph,
+        Address1:addr,
+        Website:val('f_website'),
+        VendorType:'Client',
+        Entity:val('f_entity'),
+        CoreFunctions:val('f_industry'),
+        ServiceRegion:pl,
+        Tier:val('f_budgetRange'),
+        Trades:pt,
+        Notes:[
+            val('f_decisionMaker')?`Decision Maker: ${val('f_decisionMaker')}${val('f_decisionMakerTitle')?' ('+val('f_decisionMakerTitle')+')':''}${val('f_decisionMakerEmail')?' — '+val('f_decisionMakerEmail'):''}${val('f_decisionMakerPhone')?' — '+val('f_decisionMakerPhone'):''}':'',
+            val('f_stakeholders')?`Stakeholders: ${val('f_stakeholders')}`:'',
+            val('f_projectSize')?`Project Size: ${val('f_projectSize')}`:'',
+            val('f_timeline')?`Timeline: ${val('f_timeline')}`:'',
+            val('f_ownershipModel')?`Ownership Model: ${val('f_ownershipModel')}`:'',
+            val('f_source')?`Source: ${val('f_source')}`:'',
+            val('f_referralName')?`Referral: ${val('f_referralName')}`:'',
+            val('f_notes')?`Notes: ${val('f_notes')}`:''
+        ].filter(Boolean).join('\n'),
+        Status:'Pending',
+        SubmittedDate:new Date().toISOString().split('T')[0],
+        SubmittedBy:'Client Self-Submit'
+    };
+
+    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting...';
+    try{
+        const blob=new Blob([JSON.stringify(payload)],{type:'text/plain'});
+        if(navigator.sendBeacon(WEBHOOK_URL,blob)){document.getElementById('formContainer').style.display='none';document.getElementById('successScreen').classList.add('show');}
+        else throw new Error('Request blocked');
+    }catch(e){showError('Submission failed: '+e.message);btn.disabled=false;btn.textContent='Submit Inquiry';}
+}
+function val(id){return document.getElementById(id)?.value?.trim()||'';}
+function showError(m){const e=document.getElementById('errorBanner');e.textContent=m;e.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});}
+</script>
+</body>
+</html>
