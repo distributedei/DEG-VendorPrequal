@@ -32,14 +32,17 @@
         .accent-line{width:50px;height:2px;background:linear-gradient(90deg,var(--green),var(--green-light));margin:20px auto 0;border-radius:1px}
 
         /* Nav links */
-        .nav-links{display:flex;flex-direction:column;align-items:center;gap:0}
-        .nav-link{display:block;text-decoration:none;color:var(--navy-light);font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:18px 36px;transition:all 0.4s ease;position:relative}
-        .nav-link::after{content:'';position:absolute;bottom:10px;left:50%;transform:translateX(-50%) scaleX(0);width:30px;height:2px;background:var(--green);transition:transform 0.3s ease;border-radius:1px}
-        .nav-link:hover{color:var(--navy);letter-spacing:5px}
-        .nav-link:hover::after{transform:translateX(-50%) scaleX(1)}
-        .nav-link .lock{font-size:10px;opacity:0.35;margin-left:6px;vertical-align:middle}
-
-        .nav-dot{width:3px;height:3px;border-radius:50%;background:rgba(55,86,115,0.15)}
+        .nav-links{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:380px}
+        .nav-link{display:block;width:100%;text-decoration:none;color:var(--navy-light);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:18px 32px;transition:all 0.35s ease;position:relative;border:2px solid rgba(55,86,115,0.15);border-radius:4px;text-align:center;background:transparent;overflow:hidden}
+        .nav-link::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:var(--navy);transform:scaleX(0);transform-origin:left;transition:transform 0.35s ease;z-index:0}
+        .nav-link span.label{position:relative;z-index:1;transition:color 0.35s}
+        .nav-link:hover{border-color:var(--navy)}
+        .nav-link:hover::before{transform:scaleX(1)}
+        .nav-link:hover span.label{color:#fff}
+        .nav-link .arrow{position:relative;z-index:1;opacity:0;transform:translateX(-8px);transition:all 0.35s;margin-left:8px;font-size:14px}
+        .nav-link:hover .arrow{opacity:1;transform:translateX(0)}
+        .nav-link .lock{position:relative;z-index:1;font-size:10px;opacity:0.3;margin-left:6px;vertical-align:middle;transition:opacity 0.35s}
+        .nav-link:hover .lock{opacity:0.7}
 
         /* Footer */
         .footer{position:relative;z-index:1;text-align:center;padding:24px;font-size:10px;color:var(--text-muted);opacity:0.5}
@@ -74,16 +77,13 @@
 <div class="page">
     <div class="logo-area">
         <img src="dei-wordmark.png" alt="Distributed" class="wordmark">
-        <div class="sub">Energy Group</div>
         <div class="accent-line"></div>
     </div>
 
     <nav class="nav-links">
-        <a href="client.html" class="nav-link">Owners</a>
-        <div class="nav-dot"></div>
-        <a href="form.html" class="nav-link">Vendors &amp; Subcontractors</a>
-        <div class="nav-dot"></div>
-        <a href="dashboard.html" class="nav-link">Employees <span class="lock">🔒</span></a>
+        <a href="client.html" class="nav-link"><span class="label">Owners</span><span class="arrow">→</span></a>
+        <a href="form.html" class="nav-link"><span class="label">Vendors &amp; Subcontractors</span><span class="arrow">→</span></a>
+        <a href="dashboard.html" class="nav-link"><span class="label">Employees</span><span class="lock">🔒</span><span class="arrow">→</span></a>
     </nav>
 </div>
 
