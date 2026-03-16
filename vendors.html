@@ -39,6 +39,29 @@
         .nav-link.disabled{opacity:0.35;pointer-events:none;border-style:dashed}
         .nav-link .coming{position:relative;z-index:1;font-size:9px;font-weight:500;letter-spacing:1px;color:var(--text-muted);margin-left:8px;text-transform:uppercase}
 
+        /* Modal */
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(12,30,45,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+        .modal-overlay.open{display:flex}
+        .modal{background:#fff;border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+        .modal-header{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:flex-start}
+        .modal-header h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--navy)}
+        .modal-close{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;cursor:pointer;font-size:16px;color:var(--text-muted);transition:background 0.2s}
+        .modal-close:hover{background:var(--bg)}
+        .modal-body{padding:20px 24px}
+        .modal-body p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px}
+        .modal-checklist{list-style:none;margin:0 0 20px;padding:0}
+        .modal-checklist li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);padding:5px 0}
+        .modal-checklist li .ck{color:var(--green);font-size:14px;flex-shrink:0;margin-top:1px}
+        .modal-note{background:rgba(119,157,54,0.05);border:1px solid rgba(119,157,54,0.12);border-radius:var(--radius);padding:12px 14px;font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:20px}
+        .modal-note a{color:var(--navy);font-weight:600;text-decoration:none}
+        .modal-note a:hover{text-decoration:underline}
+        .modal-footer{padding:0 24px 24px;display:flex;gap:10px;justify-content:flex-end}
+        .modal-btn{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:12px 28px;border-radius:var(--radius);cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+        .modal-btn-primary{background:var(--navy);color:#fff;border:none}
+        .modal-btn-primary:hover{background:var(--navy-light)}
+        .modal-btn-secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+        .modal-btn-secondary:hover{background:var(--bg)}
+
         /* Back link */
         .back{text-decoration:none;color:var(--text-muted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px;transition:color 0.2s;margin-top:32px}
         .back:hover{color:var(--navy)}
@@ -70,7 +93,7 @@
     <div class="title">Vendors &amp; Subcontractors</div>
 
     <nav class="nav-links">
-        <a href="form.html" class="nav-link"><span class="label">Prequalification</span><span class="arrow">→</span></a>
+        <a href="#" onclick="openPrequal();return false;" class="nav-link"><span class="label">Prequalification</span><span class="arrow">→</span></a>
         <a href="#" class="nav-link disabled"><span class="label">RFI's</span><span class="coming">Coming Soon</span></a>
         <a href="#" class="nav-link disabled"><span class="label">Submittals</span><span class="coming">Coming Soon</span></a>
         <a href="#" class="nav-link disabled"><span class="label">Opportunities</span><span class="coming">Coming Soon</span></a>
@@ -82,6 +105,43 @@
 <div class="footer">
     © 2026 Distributed Energy Group · <a href="https://www.distributedei.com">distributedei.com</a>
 </div>
+
+<div class="modal-overlay" id="prequal-modal" onclick="if(event.target===this)closePrequal()">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Before You Start</h2>
+            <button class="modal-close" onclick="closePrequal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <p>The prequalification process takes approximately 15–20 minutes. Please have the following ready before you begin:</p>
+            <ul class="modal-checklist">
+                <li><span class="ck">✓</span>Federal Tax ID (EIN)</li>
+                <li><span class="ck">✓</span>General Liability & Workers Comp information</li>
+                <li><span class="ck">✓</span>Current Certificate of Insurance with expiration date</li>
+                <li><span class="ck">✓</span>EMR — Experience Modification Rate (current + 2 prior years)</li>
+                <li><span class="ck">✓</span>W-9 document (PDF upload required)</li>
+                <li><span class="ck">✓</span>Sample insurance certificate (PDF upload required)</li>
+                <li><span class="ck">✓</span>OSHA 300 logs — past 3 years</li>
+                <li><span class="ck">✓</span>At least two trade references (GC or project owner)</li>
+                <li><span class="ck">✓</span>Executive & operations contact information</li>
+                <li><span class="ck">✓</span>Relevant licenses & certifications</li>
+            </ul>
+            <div class="modal-note">
+                If you don't have an executed NDA with Distributed Energy, you'll be able to <a href="DEG-NDA-Template.docx" download>download our NDA template</a> during the application. Please have it signed and ready to upload.
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);">Your progress cannot be saved — please complete the form in one session.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-secondary" onclick="closePrequal()">Cancel</button>
+            <a href="form.html" class="modal-btn modal-btn-primary">Continue to Application →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPrequal(){document.getElementById('prequal-modal').classList.add('open');}
+function closePrequal(){document.getElementById('prequal-modal').classList.remove('open');}
+</script>
 
 </body>
 </html>
