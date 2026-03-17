@@ -1377,173 +1377,215 @@ async function scoreAllPending() {
 // USA COVERAGE MAP
 // ══════════════════════════════════════════════════════════════════
 
-// Simplified SVG paths for all 50 states + DC
-// Coordinates scaled to viewBox 0 0 960 600
-const STATE_PATHS = {
-  AL:{d:"M 520 370 L 530 370 L 535 420 L 520 420 L 510 400 Z",cx:522,cy:395},
-  AK:{d:"M 100 480 L 180 480 L 200 540 L 150 560 L 90 540 Z",cx:145,cy:520},
-  AZ:{d:"M 155 300 L 220 300 L 220 390 L 155 390 Z",cx:187,cy:345},
-  AR:{d:"M 490 350 L 530 350 L 530 390 L 490 390 Z",cx:510,cy:370},
-  CA:{d:"M 80 220 L 140 200 L 155 300 L 120 380 L 80 360 Z",cx:115,cy:290},
-  CO:{d:"M 240 280 L 330 280 L 330 340 L 240 340 Z",cx:285,cy:310},
-  CT:{d:"M 760 210 L 785 210 L 785 230 L 760 230 Z",cx:772,cy:220},
-  DE:{d:"M 750 240 L 765 240 L 765 265 L 750 265 Z",cx:757,cy:252},
-  FL:{d:"M 530 420 L 600 420 L 620 460 L 580 500 L 530 460 Z",cx:570,cy:455},
-  GA:{d:"M 530 370 L 590 370 L 590 420 L 530 420 Z",cx:560,cy:395},
-  HI:{d:"M 280 540 L 340 540 L 340 570 L 280 570 Z",cx:310,cy:555},
-  ID:{d:"M 175 160 L 225 150 L 235 240 L 200 250 L 175 220 Z",cx:205,cy:200},
-  IL:{d:"M 510 270 L 540 270 L 545 340 L 510 340 Z",cx:527,cy:305},
-  IN:{d:"M 540 270 L 570 270 L 570 330 L 540 330 Z",cx:555,cy:300},
-  IA:{d:"M 450 250 L 510 250 L 510 290 L 450 290 Z",cx:480,cy:270},
-  KS:{d:"M 360 300 L 450 300 L 450 340 L 360 340 Z",cx:405,cy:320},
-  KY:{d:"M 545 310 L 630 310 L 630 345 L 545 345 Z",cx:587,cy:327},
-  LA:{d:"M 470 400 L 530 400 L 535 430 L 490 440 L 470 420 Z",cx:500,cy:418},
-  ME:{d:"M 810 130 L 845 120 L 855 170 L 820 175 Z",cx:832,cy:149},
-  MD:{d:"M 720 255 L 760 250 L 760 275 L 720 278 Z",cx:740,cy:264},
-  MA:{d:"M 790 195 L 840 190 L 845 215 L 790 218 Z",cx:817,cy:204},
-  MI:{d:"M 565 210 L 615 200 L 620 255 L 565 260 Z",cx:592,cy:230},
-  MN:{d:"M 430 170 L 495 165 L 500 240 L 430 240 Z",cx:465,cy:202},
-  MS:{d:"M 500 370 L 530 370 L 530 430 L 500 430 Z",cx:515,cy:400},
-  MO:{d:"M 450 300 L 520 300 L 520 360 L 450 360 Z",cx:485,cy:330},
-  MT:{d:"M 205 130 L 340 125 L 340 195 L 205 200 Z",cx:272,cy:162},
-  NE:{d:"M 355 255 L 450 255 L 450 300 L 355 300 Z",cx:402,cy:277},
-  NV:{d:"M 130 215 L 185 200 L 195 300 L 155 305 L 130 270 Z",cx:160,cy:255},
-  NH:{d:"M 800 165 L 820 160 L 825 200 L 800 205 Z",cx:812,cy:182},
-  NJ:{d:"M 755 230 L 775 225 L 778 260 L 755 262 Z",cx:766,cy:243},
-  NM:{d:"M 225 320 L 310 320 L 310 400 L 225 400 Z",cx:267,cy:360},
-  NY:{d:"M 720 185 L 790 180 L 795 230 L 720 238 Z",cx:757,cy:208},
-  NC:{d:"M 625 330 L 730 320 L 735 355 L 625 360 Z",cx:680,cy:342},
-  ND:{d:"M 355 160 L 450 155 L 453 210 L 355 215 Z",cx:404,cy:185},
-  OH:{d:"M 570 255 L 620 250 L 625 310 L 570 315 Z",cx:597,cy:282},
-  OK:{d:"M 350 345 L 460 345 L 460 385 L 350 385 Z",cx:405,cy:365},
-  OR:{d:"M 100 165 L 190 155 L 195 230 L 100 240 Z",cx:147,cy:197},
-  PA:{d:"M 680 225 L 755 218 L 758 262 L 680 268 Z",cx:718,cy:243},
-  RI:{d:"M 800 215 L 815 212 L 818 230 L 800 232 Z",cx:809,cy:221},
-  SC:{d:"M 625 360 L 690 355 L 695 395 L 625 395 Z",cx:660,cy:375},
-  SD:{d:"M 355 210 L 450 205 L 453 255 L 355 258 Z",cx:404,cy:232},
-  TN:{d:"M 530 345 L 640 340 L 643 370 L 530 375 Z",cx:586,cy:357},
-  TX:{d:"M 310 345 L 460 340 L 465 440 L 380 460 L 310 420 Z",cx:390,cy:400},
-  UT:{d:"M 200 255 L 255 252 L 258 320 L 200 322 Z",cx:228,cy:287},
-  VT:{d:"M 785 160 L 805 156 L 808 198 L 785 202 Z",cx:796,cy:179},
-  VA:{d:"M 660 290 L 750 280 L 755 320 L 660 328 Z",cx:707,cy:304},
-  WA:{d:"M 100 120 L 195 112 L 198 165 L 100 172 Z",cx:149,cy:142},
-  WV:{d:"M 638 278 L 685 272 L 688 312 L 638 318 Z",cx:663,cy:295},
-  WI:{d:"M 490 195 L 545 188 L 548 255 L 490 260 Z",cx:519,cy:222},
-  WY:{d:"M 240 210 L 345 205 L 348 275 L 240 278 Z",cx:294,cy:241},
-  DC:{d:"M 738 268 L 748 264 L 750 274 L 738 276 Z",cx:744,cy:270},
+// ── D3 + TopoJSON USA Map ─────────────────────────────────────────
+let mapInitialized = false;
+let mapSelectedState = null;
+let d3Projection = null;
+let d3PathGen = null;
+let topoStates = null;
+
+const STATE_ABBR = {
+  "Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA",
+  "Colorado":"CO","Connecticut":"CT","Delaware":"DE","Florida":"FL","Georgia":"GA",
+  "Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA",
+  "Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD",
+  "Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS",
+  "Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH",
+  "New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC",
+  "North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA",
+  "Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN",
+  "Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA",
+  "West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY","District of Columbia":"DC"
 };
 
-let mapSelectedState = null;
-let mapInitialized = false;
+function getStateFill(abbr, counts){
+    const n = counts[abbr] || 0;
+    if(n === 0) return '#eef0f4';
+    if(n === 1) return '#779d36';
+    if(n === 2) return '#4a7aaa';
+    if(n === 3) return '#d4870e';
+    return '#6c3ec4';
+}
 
-function initMap(){
-    if(mapInitialized) return;
-    mapInitialized = true;
-    const svg = document.getElementById('usaMapSvg');
-    const tooltip = document.getElementById('mapTooltip');
-    const wrap = document.getElementById('mapSvgWrap');
-
-    Object.entries(STATE_PATHS).forEach(([abbr, info])=>{
-        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-        path.setAttribute('d', info.d);
-        path.setAttribute('id', `state-${abbr}`);
-        path.classList.add('state-path');
-        path.setAttribute('data-state', abbr);
-
-        // State label
-        const text = document.createElementNS('http://www.w3.org/2000/svg','text');
-        text.setAttribute('x', info.cx);
-        text.setAttribute('y', info.cy);
-        text.setAttribute('text-anchor','middle');
-        text.setAttribute('dominant-baseline','middle');
-        text.setAttribute('font-size','8');
-        text.setAttribute('font-family','Barlow Condensed, sans-serif');
-        text.setAttribute('font-weight','700');
-        text.setAttribute('fill','#5a6b7a');
-        text.setAttribute('pointer-events','none');
-        text.textContent = abbr;
-
-        path.addEventListener('mouseenter', (e)=>{
-            const vendors = getVendorsForState(abbr);
-            if(vendors.length){
-                tooltip.style.display='block';
-                tooltip.innerHTML=`<strong>${abbr}</strong><br>${vendors.length} vendor${vendors.length>1?'s':''}<br><span style="opacity:0.7;font-size:10px;">${vendors.map(v=>v.Title).slice(0,3).join(', ')}${vendors.length>3?'…':''}</span>`;
-            }
-        });
-        path.addEventListener('mousemove', (e)=>{
-            const rect = wrap.getBoundingClientRect();
-            tooltip.style.left = (e.clientX-rect.left+12)+'px';
-            tooltip.style.top = (e.clientY-rect.top-10)+'px';
-        });
-        path.addEventListener('mouseleave', ()=>{ tooltip.style.display='none'; });
-        path.addEventListener('click', ()=>{
-            mapSelectedState = mapSelectedState===abbr ? null : abbr;
-            renderMapSidebar();
-            highlightStates();
-        });
-
-        svg.appendChild(path);
-        svg.appendChild(text);
+function getVendorsForState(abbr){
+    return getFilteredVendorsForMap().filter(v=>{
+        const region = (v.ServiceRegion||'').toUpperCase();
+        return region.includes('NATIONWIDE') || region.split(/[\s,]+/).includes(abbr);
     });
 }
 
 function getFilteredVendorsForMap(){
-    const type   = document.getElementById('mapFilterType')?.value || '';
-    const tier   = document.getElementById('mapFilterTier')?.value || '';
-    const status = document.getElementById('mapFilterStatus')?.value || '';
-    const entity = document.getElementById('mapFilterEntity')?.value || '';
-    const search = (document.getElementById('mapFilterSearch')?.value || '').toLowerCase();
-
+    const type   = document.getElementById('mapFilterType')?.value||'';
+    const tier   = document.getElementById('mapFilterTier')?.value||'';
+    const status = document.getElementById('mapFilterStatus')?.value||'';
+    const entity = document.getElementById('mapFilterEntity')?.value||'';
+    const search = (document.getElementById('mapFilterSearch')?.value||'').toLowerCase();
     return vendors.filter(v=>{
-        if(type   && v.VendorType !== type)   return false;
-        if(tier   && v.Tier       !== tier)   return false;
-        if(status && v.Status     !== status) return false;
-        if(entity && v.Entity     !== entity) return false;
+        if(type   && v.VendorType!==type)   return false;
+        if(tier   && v.Tier!==tier)         return false;
+        if(status && v.Status!==status)     return false;
+        if(entity && v.Entity!==entity)     return false;
         if(search){
-            const hay = [v.Title, v.Trades, v.CoreFunctions, v.ExecName].join(' ').toLowerCase();
+            const hay=[v.Title,v.Trades,v.CoreFunctions,v.ExecName].join(' ').toLowerCase();
             if(!hay.includes(search)) return false;
         }
         return true;
     });
 }
 
-function getVendorsForState(abbr){
-    return getFilteredVendorsForMap().filter(v=>{
-        const region = (v.ServiceRegion||'').toUpperCase();
-        return region.includes('NATIONWIDE') || region.includes(abbr);
-    });
-}
-
-function highlightStates(){
+function buildStateCounts(){
     const filtered = getFilteredVendorsForMap();
-    // Count vendors per state
     const counts = {};
     filtered.forEach(v=>{
         const region = (v.ServiceRegion||'').toUpperCase();
         const isNationwide = region.includes('NATIONWIDE');
-        Object.keys(STATE_PATHS).forEach(abbr=>{
-            if(isNationwide || region.includes(abbr)){
-                counts[abbr] = (counts[abbr]||0) + 1;
+        Object.values(STATE_ABBR).forEach(abbr=>{
+            if(isNationwide || region.split(/[\s,]+/).includes(abbr)){
+                counts[abbr] = (counts[abbr]||0)+1;
             }
         });
     });
+    return counts;
+}
 
-    Object.keys(STATE_PATHS).forEach(abbr=>{
-        const el = document.getElementById(`state-${abbr}`);
-        if(!el) return;
-        el.classList.remove('active-1','active-2','active-3','active-multi');
-        const n = counts[abbr] || 0;
-        if(n===1) el.classList.add('active-1');
-        else if(n===2) el.classList.add('active-2');
-        else if(n===3) el.classList.add('active-3');
-        else if(n>=4) el.classList.add('active-multi');
+async function initMap(){
+    if(mapInitialized) return;
+    mapInitialized = true;
 
-        // Highlight selected state
-        el.style.outline = mapSelectedState===abbr ? '2px solid var(--navy)' : '';
-        el.style.opacity = mapSelectedState && mapSelectedState!==abbr ? '0.6' : '1';
+    // Load D3 and TopoJSON from CDN
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js');
+
+    const wrap = document.getElementById('mapSvgWrap');
+    const W = wrap.clientWidth - 32;
+    const H = Math.max(wrap.clientHeight - 80, 380);
+
+    const svg = d3.select('#usaMapSvg')
+        .attr('viewBox', `0 0 ${W} ${H}`)
+        .attr('preserveAspectRatio','xMidYMid meet');
+
+    d3Projection = d3.geoAlbersUsa()
+        .translate([W/2, H/2])
+        .scale(W * 1.25);
+
+    d3PathGen = d3.geoPath().projection(d3Projection);
+
+    // Fetch US TopoJSON
+    const us = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json());
+    topoStates = topojson.feature(us, us.objects.states).features;
+
+    const tooltip = document.getElementById('mapTooltip');
+
+    // Build FIPS → abbr lookup
+    // Build FIPS → abbr from already-fetched TopoJSON
+    const fipsMap = {};
+    us.objects.states.geometries.forEach(g=>{
+        const name = g.properties?.name || '';
+        const abbr = STATE_ABBR[name];
+        if(abbr) fipsMap[g.id] = abbr;
     });
+    window._fipsMap = fipsMap; // store globally for updateMapColors
 
-    document.getElementById('mapVendorCount').textContent = `${filtered.length} vendor${filtered.length!==1?'s':''} shown`;
+    const counts = buildStateCounts();
+
+    const g = svg.append('g').attr('class','states-group');
+
+    g.selectAll('path')
+        .data(topoStates)
+        .join('path')
+        .attr('d', d3PathGen)
+        .attr('class','state-path')
+        .attr('id', d=> `state-${fipsMap[d.id]||d.id}`)
+        .attr('data-abbr', d=> fipsMap[d.id]||'')
+        .attr('fill', d=> getStateFill(fipsMap[d.id], counts))
+        .attr('stroke','#fff')
+        .attr('stroke-width', 1.2)
+        .style('cursor','pointer')
+        .style('transition','fill 0.2s, opacity 0.2s')
+        .on('mouseenter', function(event, d){
+            const abbr = fipsMap[d.id]||'';
+            const vs = getVendorsForState(abbr);
+            if(vs.length){
+                tooltip.style.display='block';
+                tooltip.innerHTML=`<strong>${abbr}</strong> — ${vs.length} vendor${vs.length>1?'s':''}<br><span style="opacity:0.75;font-size:10px;">${vs.map(v=>v.Title).slice(0,4).join('<br>')}${vs.length>4?`<br>+${vs.length-4} more`:''}</span>`;
+            } else {
+                tooltip.style.display='block';
+                tooltip.innerHTML=`<strong>${abbr}</strong> — No coverage`;
+            }
+            d3.select(this).attr('stroke-width', 2).attr('stroke','var(--navy)');
+        })
+        .on('mousemove', function(event){
+            const rect = wrap.getBoundingClientRect();
+            tooltip.style.left=(event.clientX-rect.left+14)+'px';
+            tooltip.style.top=(event.clientY-rect.top-10)+'px';
+        })
+        .on('mouseleave', function(){
+            tooltip.style.display='none';
+            d3.select(this).attr('stroke-width', 1.2).attr('stroke','#fff');
+        })
+        .on('click', function(event, d){
+            const abbr = fipsMap[d.id]||'';
+            mapSelectedState = mapSelectedState===abbr ? null : abbr;
+            updateMapColors(fipsMap, counts);
+            renderMapSidebar();
+        });
+
+    // State labels
+    g.selectAll('text')
+        .data(topoStates.filter(d=>{
+            const abbr = fipsMap[d.id]||'';
+            // Skip tiny states for labels
+            return !['RI','CT','DE','DC','MA','NJ','NH','VT','MD'].includes(abbr);
+        }))
+        .join('text')
+        .attr('x', d=>{ const c=d3PathGen.centroid(d); return c[0]||0; })
+        .attr('y', d=>{ const c=d3PathGen.centroid(d); return c[1]||0; })
+        .attr('text-anchor','middle')
+        .attr('dominant-baseline','middle')
+        .attr('font-size', d=>{
+            const abbr = fipsMap[d.id]||'';
+            return ['AK','TX','CA','MT','NM','AZ','NV','CO','WY','OR','ID','WA','UT'].includes(abbr) ? 11 : 8;
+        })
+        .attr('font-family',"'Barlow Condensed', sans-serif")
+        .attr('font-weight','700')
+        .attr('fill', d=>{ const abbr=fipsMap[d.id]||''; const n=counts[abbr]||0; return n>0?'rgba(255,255,255,0.9)':'#8a9baa'; })
+        .attr('pointer-events','none')
+        .text(d=> fipsMap[d.id]||'');
+
+    // Trigger initial sidebar + stats
+    renderMapSidebar();
+    document.getElementById('mapVendorCount').textContent = `${getFilteredVendorsForMap().length} vendor${getFilteredVendorsForMap().length!==1?'s':''} shown`;
+}
+
+function updateMapColors(fipsMap, counts){
+    const fm = fipsMap || window._fipsMap || {};
+    const cts = counts || buildStateCounts();
+    d3.selectAll('.state-path')
+        .attr('fill', function(){
+            const abbr = this.getAttribute('data-abbr');
+            const fill = getStateFill(abbr, cts);
+            return fill;
+        })
+        .style('opacity', function(){
+            const abbr = this.getAttribute('data-abbr');
+            return mapSelectedState && mapSelectedState!==abbr ? 0.5 : 1;
+        });
+
+    // Update label colors
+    d3.selectAll('text').each(function(){
+        const el = d3.select(this);
+        // Get abbr from nearby path — approximate by centroid match
+        // Just update all labels based on count
+    });
+}
+
+function loadScript(src){
+    return new Promise((res,rej)=>{
+        if(document.querySelector(`script[src="${src}"]`)){res();return;}
+        const s=document.createElement('script');
+        s.src=src; s.onload=res; s.onerror=rej;
+        document.head.appendChild(s);
+    });
 }
 
 function renderMapSidebar(){
@@ -1553,16 +1595,19 @@ function renderMapSidebar(){
         : getFilteredVendorsForMap();
 
     if(!vendorsToShow.length){
-        list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);font-size:13px;">${mapSelectedState?`No vendors serve ${mapSelectedState}`:'No vendors match filters'}</div>`;
+        list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;">${mapSelectedState?`No vendors cover <strong>${mapSelectedState}</strong>`:'No vendors match filters'}</div>`;
         return;
     }
 
-    const title = mapSelectedState
-        ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;">${mapSelectedState} — ${vendorsToShow.length} Vendor${vendorsToShow.length!==1?'s':''} <span style="font-weight:400;cursor:pointer;color:var(--text-light);" onclick="mapSelectedState=null;renderMap();">✕ Clear</span></div>` : '';
+    const header = mapSelectedState
+        ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+            <span>${mapSelectedState} — ${vendorsToShow.length} Vendor${vendorsToShow.length!==1?'s':''}</span>
+            <span style="font-weight:400;cursor:pointer;color:var(--text-light);font-size:18px;" onclick="mapSelectedState=null;renderMap();">✕</span>
+           </div>` : '';
 
-    list.innerHTML = title + vendorsToShow.map(v=>`
+    list.innerHTML = header + vendorsToShow.map(v=>`
         <div class="map-vendor-card" onclick="switchTab('dashboard');setTimeout(()=>openDetail('${v.id}'),300);">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
                 <h4>${esc(v.Title||'')}</h4>
                 ${statusBadge(v.Status)}
             </div>
@@ -1571,16 +1616,22 @@ function renderMapSidebar(){
                 <span style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'};">${esc(v.VendorType||'')}</span>
                 ${v.Entity?`<span style="font-size:10px;background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--text-muted);font-weight:600;">${esc(v.Entity)}</span>`:''}
             </div>
-            <div class="mvc-region">📍 ${esc((v.ServiceRegion||'—').substring(0,60))}${(v.ServiceRegion||'').length>60?'…':''}</div>
-            ${v.Trades?`<div style="font-size:10px;color:var(--text-light);margin-top:2px;">🔧 ${esc(v.Trades.substring(0,50))}${v.Trades.length>50?'…':''}</div>`:''}
+            ${v.ServiceRegion?`<div class="mvc-region">📍 ${esc(v.ServiceRegion.substring(0,70))}${v.ServiceRegion.length>70?'…':''}</div>`:''}
+            ${v.Trades?`<div style="font-size:10px;color:var(--text-light);margin-top:2px;">🔧 ${esc(v.Trades.substring(0,60))}${v.Trades.length>60?'…':''}</div>`:''}
             ${v.AIScore?`<div style="margin-top:4px;">${aiScoreBadge(v.AIScore,v.AIRating)}</div>`:''}
         </div>`).join('');
 }
 
 function renderMap(){
-    initMap();
-    highlightStates();
-    renderMapSidebar();
+    if(!mapInitialized){
+        initMap(); // async — will call renderMapSidebar when done
+    } else {
+        const counts = buildStateCounts();
+        updateMapColors(null, counts);
+        renderMapSidebar();
+        document.getElementById('mapVendorCount').textContent = `${getFilteredVendorsForMap().length} vendor${getFilteredVendorsForMap().length!==1?'s':''} shown`;
+    }
+    document.getElementById('mapVendorCount').textContent = `${getFilteredVendorsForMap().length} vendor${getFilteredVendorsForMap().length!==1?'s':''} shown`;
 }
 
 initMsal();
