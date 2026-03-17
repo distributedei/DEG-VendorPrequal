@@ -161,7 +161,7 @@
         .cb { display: flex; align-items: center; gap: 12px; background: rgba(119,157,54,0.06); border: 1px solid rgba(119,157,54,0.2); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 20px; font-size: 13px; color: var(--green-dark); }
         .cb .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
-        .score-badge { display:inline-flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px; }
+        .score-badge { display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px; }
         .score-badge.pass { background:rgba(119,157,54,0.12);color:#3d6b1e; }
         .score-badge.conditional { background:#fff3dc;color:#8a6300; }
         .score-badge.fail { background:rgba(192,57,43,0.1);color:#922b21; }
@@ -177,7 +177,7 @@
         .modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:250;display:none;align-items:center;justify-content:center; }
         .modal-overlay.open { display:flex; }
         .modal { background:white;border-radius:var(--radius);padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15); }
-        .modal h3 { font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--navy);margin-bottom:12px; }
+        .modal h3 { font-size:18px;color:var(--navy);margin-bottom:12px; }
         .modal p { font-size:13px;color:var(--text-muted);margin-bottom:16px; }
         .modal input { width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:monospace;margin-bottom:12px; }
         .modal .modal-btns { display:flex;gap:8px;justify-content:flex-end; }
@@ -191,7 +191,7 @@
         .rfp-vendor-row.selected { border-color:var(--green); background:rgba(119,157,54,0.04); }
         .rfp-vendor-row input[type="checkbox"] { width:18px; height:18px; accent-color:var(--green); flex-shrink:0; cursor:pointer; }
         .rfp-vendor-info { flex:1; min-width:0; }
-        .rfp-vendor-info h4 { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; color:var(--navy); }
+        .rfp-vendor-info h4 {  font-size:15px; font-weight:700; color:var(--navy); }
         .rfp-vendor-info .rfp-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:3px; align-items:center; }
         .rfp-vendor-info .rfp-contact { font-size:11px; color:var(--text-muted); margin-top:3px; }
         .rfp-vendor-actions { display:flex; gap:6px; flex-shrink:0; }
@@ -231,10 +231,10 @@
         .map-vendor-card { background:white; border:1px solid var(--border); border-radius:var(--radius); padding:12px; cursor:pointer; transition:all 0.15s; box-shadow:var(--shadow); }
         .map-vendor-card:hover { border-color:var(--green); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
         .map-vendor-card.selected { border-color:var(--navy); background:rgba(55,86,115,0.03); }
-        .map-vendor-card h4 { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+        .map-vendor-card h4 {  font-size:14px; font-weight:700; color:var(--navy); margin-bottom:4px; }
         .map-vendor-card .mvc-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px; }
         .map-vendor-card .mvc-region { font-size:10px; color:var(--text-light); margin-top:2px; }
-        .map-count-badge { position:absolute; top:8px; right:8px; background:var(--navy); color:white; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; padding:3px 10px; border-radius:12px; }
+        .map-count-badge { position:absolute; top:8px; right:8px; background:var(--navy); color:white;  font-weight:700; font-size:12px; padding:3px 10px; border-radius:12px; }
 
         @media (max-width: 900px) { .map-wrap { grid-template-columns:1fr; } }
         @media (max-width: 900px) {
@@ -691,7 +691,7 @@
                     </div>
                 </div>
                 <div style="display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);">
-                    <div style="background:var(--navy);color:white;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="background:var(--navy);color:white;padding:10px 14px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;">
                         <span id="mapSidebarTitle">All Vendors</span>
                         <button onclick="clearMapFilter()" id="mapClearBtn" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.7);font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer;display:none;">&#x2715; Clear</button>
                     </div>
@@ -1122,7 +1122,7 @@ function renderTable(){
         <td style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'}">${esc(v.VendorType||'-')}</td>
         <td>${tierBadge(v.Tier)}</td><td>${esc(v.Entity||'')}</td>
         <td>${statusBadge(v.Status)}</td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'-')}</td>
+        <td style="font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'-')}</td>
         <td>${aiScoreBadge(v.AIScore,v.AIRating)}</td>
         <td style="text-align:center;">${docsCell}</td>
         <td><button class="btn btn-secondary btn-sm" onclick="openDetail('${v.id}')">Review</button></td>
@@ -1170,7 +1170,7 @@ function openDetail(id){
             <div class="dp-field"><label>GL Limit</label><span>${esc(v.GL_Limit||'-')}</span></div>
             <div class="dp-field"><label>WC Carrier</label><span>${esc(v.WC_Carrier||'-')}</span></div>
             <div class="dp-field"><label>COI Expiry</label><span>${formatDate(v.COI_Expiry)} ${coiStatus}</span></div>
-            <div class="dp-field"><label>EMR (3yr avg)</label><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:${emrAvg!=='-'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)'}">${emrAvg}</span></div>
+            <div class="dp-field"><label>EMR (3yr avg)</label><span style="font-weight:700;font-size:16px;color:${emrAvg!=='-'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)'}">${emrAvg}</span></div>
             <div class="dp-field"><label>EMR Current</label><span>${esc(v.EMR_Current||'-')}</span></div>
             <div class="dp-field"><label>EMR Prior</label><span>${esc(v.EMR_Prior||'-')}</span></div>
         </div></div>
@@ -1190,7 +1190,7 @@ function openDetail(id){
             ${v.AIScore ? `
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
                     ${aiScoreBadge(v.AIScore,v.AIRating)}
-                    <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:${v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)'}">${v.AIScore}</span>
+                    <span style="font-size:28px;font-weight:700;color:${v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)'}">${v.AIScore}</span>
                     <span style="font-size:12px;color:var(--text-light)">/100</span>
                 </div>
                 <div class="score-bar-wrap">
@@ -1745,7 +1745,7 @@ function renderMapSidebar(){
         const contact = v.ExecName||v.field_1||'';
         return '<div class="map-vendor-card" data-id="'+v.id+'" style="padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:white;border-left:3px solid '+(inRfp?'var(--green)':'transparent')+';" onclick="openMapDrawer(\''+v.id+'\')">'+
             '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
-                '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;color:var(--navy);">'+esc(v.Title||'')+'</div>'+
+                '<div style="font-size:14px;font-weight:700;color:var(--navy);">'+esc(v.Title||'')+'</div>'+
                 statusBadge(v.Status)+
             '</div>'+
             '<div style="display:flex;gap:5px;flex-wrap:wrap;margin:3px 0;">'+
@@ -2007,10 +2007,10 @@ function printRfpPdf(){
         body{font-family:'Inter',sans-serif;font-size:11px;color:#0c1e2d;padding:0;line-height:1.6}
         .cover{background:#0c1e2d;color:#fff;padding:40px 48px;position:relative}
         .cover::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#779d36,#8fb844,transparent)}
-        .cover h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;margin-bottom:6px}
+        .cover h1{font-size:32px;font-weight:800;margin-bottom:6px}
         .cover h1 span{color:#8fb844}
         .cover .sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px}
-        .cover .proj{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;margin-top:16px}
+        .cover .proj{font-size:22px;font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;margin-top:16px}
         .body{padding:32px 48px}
         .rfp-body{white-space:pre-wrap;font-size:11.5px;line-height:1.8}
         .vendor-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:11px}
@@ -2021,7 +2021,7 @@ function printRfpPdf(){
         @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
     </style></head><body>
     <div class="cover">
-        <div><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:1px;">DISTRIBUTED ENERGY <span style="color:#8fb844;">INFRASTRUCTURE</span></span></div>
+        <div><span style="font-size:18px;font-weight:800;letter-spacing:1px;">DISTRIBUTED ENERGY <span style="color:#8fb844;">INFRASTRUCTURE</span></span></div>
         <div class="sub">REQUEST FOR PROPOSAL -- CONFIDENTIAL</div>
         <div class="proj">${projName}</div>
         <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.6);">Issued: ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
@@ -2059,11 +2059,11 @@ function openStatePopup(abbr, vendorsInState){
     popup.innerHTML = `
         <div style="background:var(--navy);color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
             <div>
-                <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;">${abbr} -- ${vendorsInState.length} Vendor${vendorsInState.length!==1?'s':''}</div>
+                <div style="font-size:20px;font-weight:800;letter-spacing:.5px;">${abbr} -- ${vendorsInState.length} Vendor${vendorsInState.length!==1?'s':''}</div>
                 <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">Select vendors to add to RFP Builder</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
-                <button onclick="addToRfp(${JSON.stringify(vendorsInState.map(v=>v.id))});document.getElementById('statePopup').remove();" style="background:var(--green);color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;">+ Add All to RFP</button>
+                <button onclick="addToRfp(${JSON.stringify(vendorsInState.map(v=>v.id))});document.getElementById('statePopup').remove();" style="background:var(--green);color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;">+ Add All to RFP</button>
                 <button onclick="document.getElementById('statePopup').remove();" style="background:rgba(255,255,255,0.1);color:white;border:none;width:30px;height:30px;border-radius:6px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
             </div>
         </div>
@@ -2077,7 +2077,7 @@ function openStatePopup(abbr, vendorsInState){
                 return `<div style="border:1px solid ${inRfp?'var(--green)':'var(--border)'};background:${inRfp?'rgba(119,157,54,0.04)':'white'};border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;">
                     <div style="flex:1;min-width:0;">
                         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-                            <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--navy);">${esc(v.Title||'')}</span>
+                            <span style="font-size:15px;font-weight:700;color:var(--navy);">${esc(v.Title||'')}</span>
                             ${tierBadge(v.Tier)} ${statusBadge(v.Status)}
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
@@ -2091,7 +2091,7 @@ function openStatePopup(abbr, vendorsInState){
                         ${v.ServiceRegion?`<div style="font-size:10px;color:var(--text-light);">📍 ${esc(v.ServiceRegion.substring(0,80))}${v.ServiceRegion.length>80?'…':''}</div>`:''}
                         ${docsUrl?`<a href="${docsUrl}" target="_blank" style="font-size:10px;color:var(--navy-light);margin-top:3px;display:inline-block;">📁 View Docs</a>`:''}
                     </div>
-                    <button onclick="toggleRfpFromPopup('${v.id}',this)" style="flex-shrink:0;padding:6px 12px;border-radius:6px;border:1px solid ${inRfp?'var(--green)':'var(--border)'};background:${inRfp?'var(--green)':'white'};color:${inRfp?'white':'var(--navy)'};font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;white-space:nowrap;">${inRfp?'✓ Added':'+ RFP'}</button>
+                    <button onclick="toggleRfpFromPopup('${v.id}',this)" style="flex-shrink:0;padding:6px 12px;border-radius:6px;border:1px solid ${inRfp?'var(--green)':'var(--border)'};background:${inRfp?'var(--green)':'white'};color:${inRfp?'white':'var(--navy)'};font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">${inRfp?'✓ Added':'+ RFP'}</button>
                 </div>`;
             }).join('')}
         </div>
@@ -2173,6 +2173,146 @@ function vendorServesState(v, abbr){
 
 function getVendorsForStateFixed(abbr){
     return getFilteredVendorsForMap().filter(function(v){ return vendorServesState(v,abbr); });
+}
+
+
+// ══════════════════════════════════════════════════════════════════
+// MAP VENDOR DRAWER — slide-in panel, no popups
+// ══════════════════════════════════════════════════════════════════
+function openMapDrawer(id){
+    const v = vendors.find(x=>x.id===id);
+    if(!v) return;
+
+    // Highlight sidebar card
+    document.querySelectorAll('.map-vendor-card').forEach(el=>{
+        const active = el.dataset.id===id;
+        el.style.borderLeft = active ? '3px solid var(--green)' : '3px solid transparent';
+        el.style.background = active ? 'rgba(119,157,54,0.05)' : 'white';
+    });
+    const card = document.querySelector('.map-vendor-card[data-id="'+id+'"]');
+    if(card) card.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+    const inRfp    = rfpSelectedVendors.includes(id);
+    const contact  = v.ExecName||v.field_1||'';
+    const email    = v.ExecEmail||v.VendorEmail||'';
+    const phone    = v.ExecPhone||v.field_4||'';
+    const docsUrl  = getDocsUrl(v);
+    const addr     = v.Address1||v.Address_x0020_1||v.field_2||'';
+    const coiOk    = v.COI_Expiry && new Date(v.COI_Expiry) > new Date();
+    const coiStatus= v.COI_Expiry ? (coiOk
+        ? '<span style="color:var(--green);font-weight:600;">Active</span>'
+        : '<span style="color:var(--red);font-weight:600;">EXPIRED</span>') : '--';
+    const emrVals  = [v.EMR_Current,v.EMR_Prior,v.EMR_2Prior].map(parseFloat).filter(n=>!isNaN(n));
+    const emrAvg   = emrVals.length ? (emrVals.reduce((a,b)=>a+b,0)/emrVals.length).toFixed(2) : '--';
+
+    let h = '';
+
+    // Header
+    h += '<div class="dp-header">';
+    h += '<div><h2>'+esc(v.Title||'')+'</h2>';
+    if(v.DBA) h += '<span style="font-size:13px;color:var(--text-light);">'+esc(v.DBA)+'</span>';
+    h += '</div>';
+    h += '<button class="dp-close" onclick="closeMapDrawer()">&#x2715;</button>';
+    h += '</div>';
+
+    // Badges row
+    h += '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">';
+    h += tierBadge(v.Tier) + ' ' + statusBadge(v.Status);
+    if(v.VendorType) h += '<span style="font-size:11px;font-weight:600;color:'+(v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)')+';">'+esc(v.VendorType)+'</span>';
+    if(v.Entity) h += '<span style="font-size:11px;background:var(--bg);padding:2px 8px;border-radius:3px;color:var(--text-muted);font-weight:600;">'+esc(v.Entity)+'</span>';
+    h += '</div>';
+
+    // Action buttons
+    h += '<div style="display:flex;gap:8px;margin-bottom:18px;">';
+    h += '<button id="mapDrawerRfpBtn" onclick="toggleRfpFromDrawer(\''+id+'\')"\'" style="flex:1;padding:10px 0;border-radius:4px;border:1px solid '+(inRfp?'#779d36':'#e2e8f0')+';background:'+(inRfp?'#779d36':'white')+';color:'+(inRfp?'white':'#0c1e2d')+';font-size:14px;font-weight:700;cursor:pointer;">'+(inRfp?'IN RFP QUEUE':'+ ADD TO RFP')+'</button>';
+    h += '<button onclick="closeMapDrawer();switchTab(\'dashboard\');setTimeout(()=>openDetail(\''+id+'\'),300);" style="padding:10px 14px;border-radius:4px;border:1px solid #e2e8f0;background:white;font-size:14px;font-weight:700;cursor:pointer;color:#0c1e2d;">FULL REVIEW</button>';
+    if(docsUrl) h += '<a href="'+docsUrl+'" target="_blank" title="View Documents" style="padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:white;font-size:18px;text-decoration:none;display:flex;align-items:center;">&#128193;</a>';
+    h += '</div>';
+
+    // Contacts
+    h += '<div class="dp-section"><h4>Contacts</h4><div class="dp-grid">';
+    h += '<div class="dp-field"><label>Exec Name</label><span>'+esc(contact||'--')+'</span></div>';
+    h += '<div class="dp-field"><label>Phone</label><span>'+esc(phone||'--')+'</span></div>';
+    h += '<div class="dp-field" style="grid-column:1/-1"><label>Email</label><span>'+(email?'<a href="mailto:'+esc(email)+'" style="color:var(--navy);">'+esc(email)+'</a>':'--')+'</span></div>';
+    if(v.OpsName) h += '<div class="dp-field"><label>Ops Name</label><span>'+esc(v.OpsName)+'</span></div>';
+    if(v.OpsEmail) h += '<div class="dp-field"><label>Ops Email</label><span><a href="mailto:'+esc(v.OpsEmail)+'" style="color:var(--navy);">'+esc(v.OpsEmail)+'</a></span></div>';
+    if(addr) h += '<div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>'+esc(addr)+'</span></div>';
+    h += '</div></div>';
+
+    // Scope
+    h += '<div class="dp-section"><h4>Scope</h4><div class="dp-grid">';
+    h += '<div class="dp-field"><label>Tier</label><span>'+esc(v.Tier||'--')+'</span></div>';
+    h += '<div class="dp-field"><label>Entity</label><span>'+esc(v.Entity||'--')+'</span></div>';
+    if(v.Trades) h += '<div class="dp-field" style="grid-column:1/-1"><label>Trades</label><span>'+esc(v.Trades)+'</span></div>';
+    if(v.ServiceRegion) h += '<div class="dp-field" style="grid-column:1/-1"><label>Service Region</label><span>'+esc(v.ServiceRegion)+'</span></div>';
+    if(v.Licenses) h += '<div class="dp-field" style="grid-column:1/-1"><label>Licenses</label><span>'+esc(v.Licenses)+'</span></div>';
+    if(v.OEMCerts) h += '<div class="dp-field" style="grid-column:1/-1"><label>OEM Certs</label><span>'+esc(v.OEMCerts)+'</span></div>';
+    h += '</div></div>';
+
+    // Safety & Insurance
+    h += '<div class="dp-section"><h4>Safety &amp; Insurance</h4><div class="dp-grid">';
+    h += '<div class="dp-field"><label>EMR Current</label><span style="font-size:20px;font-weight:700;color:'+(v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--green)')+';">'+esc(v.EMR_Current||'--')+'</span></div>';
+    h += '<div class="dp-field"><label>EMR 3yr Avg</label><span style="font-size:20px;font-weight:700;color:'+(emrAvg!=='--'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)')+';">'+emrAvg+'</span></div>';
+    h += '<div class="dp-field"><label>GL Limit</label><span>'+esc(v.GL_Limit||'--')+'</span></div>';
+    h += '<div class="dp-field"><label>WC Carrier</label><span>'+esc(v.WC_Carrier||'--')+'</span></div>';
+    h += '<div class="dp-field"><label>COI Expiry</label><span>'+formatDate(v.COI_Expiry)+' '+coiStatus+'</span></div>';
+    h += '<div class="dp-field"><label>Safety Program</label><span>'+esc(v.SafetyProgram||'--')+'</span></div>';
+    if(v.BondCapacity) h += '<div class="dp-field"><label>Bond Capacity</label><span>'+esc(v.BondCapacity)+'</span></div>';
+    if(v.OSHA_Incidents!==undefined&&v.OSHA_Incidents!==null) h += '<div class="dp-field"><label>OSHA Incidents</label><span>'+v.OSHA_Incidents+'</span></div>';
+    h += '</div></div>';
+
+    // AI Score
+    if(v.AIScore){
+        h += '<div class="dp-section"><h4>AI Assessment</h4>';
+        h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">';
+        h += aiScoreBadge(v.AIScore, v.AIRating);
+        h += '<span style="font-size:28px;font-weight:700;color:'+(v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)')+';">'+v.AIScore+'</span>';
+        h += '<span style="font-size:12px;color:var(--text-light);">/100</span></div>';
+        h += '<div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:'+v.AIScore+'%;background:'+(v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)')+'"></div></div>';
+        h += '<div class="score-bar-labels"><span>0 — Fail</span><span>40 — Conditional</span><span>70 — Pass</span><span>100</span></div></div>';
+        if(v.AIAnalysis) h += '<div class="ai-analysis">'+esc(v.AIAnalysis)+'</div>';
+        h += '</div>';
+    }
+
+    // References
+    const refs = [v._x0052_ef1||v.Ref1, v._x0052_ef2||v.Ref2, v._x0052_ef3||v.Ref3].filter(Boolean);
+    if(refs.length){
+        h += '<div class="dp-section"><h4>Trade References</h4>';
+        refs.forEach(r=>{ h += '<div style="font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);">'+esc(r)+'</div>'; });
+        h += '</div>';
+    }
+
+    if(v.Notes) h += '<div class="dp-section"><h4>Notes</h4><p style="font-size:13px;color:var(--text-muted);">'+esc(v.Notes)+'</p></div>';
+
+    // Score button at bottom
+    h += '<div class="dp-actions">';
+    h += '<button class="btn btn-primary btn-sm" onclick="scoreVendor(\''+id+'\')">⚡ AI Score</button>';
+    h += '<button class="btn btn-secondary btn-sm" onclick="closeMapDrawer()">Close</button>';
+    h += '</div>';
+
+    document.getElementById('mapDrawerPanel').innerHTML = h;
+    document.getElementById('mapDrawerOverlay').classList.add('open');
+}
+
+function closeMapDrawer(){
+    document.getElementById('mapDrawerOverlay').classList.remove('open');
+}
+
+function toggleRfpFromDrawer(id){
+    if(rfpSelectedVendors.includes(id)) removeFromRfp(id); else addToRfp([id]);
+    const inRfp = rfpSelectedVendors.includes(id);
+    const rfpBtnStyle='flex:1;padding:10px 0;border-radius:4px;border:1px solid '+(inRfp?'#779d36':'#e2e8f0')+';background:'+(inRfp?'#779d36':'white')+';color:'+(inRfp?'white':'#0c1e2d')+';font-size:14px;font-weight:700;cursor:pointer;';
+    h += '<button id="mapDrawerRfpBtn" onclick="toggleRfpFromDrawer(\''+id+'\')\'" style="'+rfpBtnStyle+'">'+(inRfp?'IN RFP QUEUE':'+ ADD TO RFP')+'</button>';
+    if(btn){
+        btn.innerHTML = inRfp ? '&#10003; IN RFP QUEUE' : '+ ADD TO RFP';
+        btn.style.background = inRfp ? 'var(--green)' : 'white';
+        btn.style.color = inRfp ? 'white' : 'var(--navy)';
+        btn.style.borderColor = inRfp ? 'var(--green)' : 'var(--border)';
+    }
+    // Update sidebar card highlight
+    document.querySelectorAll('.map-vendor-card[data-id="'+id+'"]').forEach(el=>{
+        el.style.borderLeft = inRfp ? '3px solid var(--green)' : '3px solid transparent';
+    });
 }
 
 initMsal();
