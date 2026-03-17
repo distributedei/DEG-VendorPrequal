@@ -813,7 +813,10 @@
     </div>
 </div>
 
-<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+<div class="detail-overlay" id="mapDrawerOverlay" onclick="closeMapDrawer()">
+    <div class="detail-panel" id="mapDrawerPanel" onclick="event.stopPropagation()"></div>
+</div>
+<div class="detail-overlay" id="detailOverlay"  onclick="closeDetail(event)">
     <div class="detail-panel" id="detailPanel" onclick="event.stopPropagation()"></div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1671,7 +1674,7 @@ function renderMapSidebar(vlist){
     if(!vlist.length){list.innerHTML='<div style="text-align:center;padding:40px 16px;color:var(--text-muted);font-size:13px;">No vendors match filters</div>';return;}
     list.innerHTML=vlist.map(function(v){
         const inRfp=rfpSelectedVendors.includes(v.id),contact=v.ExecName||v.field_1||'',addr=getVendorAddress(v);
-        return '<div class="map-vendor-card" data-id="'+v.id+'" style="padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:white;border-left:3px solid '+(inRfp?'var(--green)':'transparent')+';" onclick="focusVendorOnMap(\''+v.id+'\')">' +
+        return '<div class="map-vendor-card" data-id="'+v.id+'" style="padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:white;border-left:3px solid '+(inRfp?'var(--green)':'transparent')+';" onclick="openMapDrawer(\''+v.id+'\');focusVendorOnMap(\''+v.id+'\');">' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;color:var(--navy);">'+esc(v.Title||'')+'</div>'+statusBadge(v.Status)+'</div>' +
             '<div style="display:flex;gap:5px;flex-wrap:wrap;margin:3px 0;">'+tierBadge(v.Tier)+'<span style="font-size:10px;font-weight:600;color:'+(v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)')+';">'+esc(v.VendorType||'')+'</span>'+(v.Entity?'<span style="font-size:10px;background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--text-muted);font-weight:600;">'+esc(v.Entity)+'</span>':'')+'</div>' +
             (addr?'<div style="font-size:10px;color:var(--text-muted);">📍 '+esc(addr.substring(0,50))+(addr.length>50?'…':'')+'</div>':'') +
