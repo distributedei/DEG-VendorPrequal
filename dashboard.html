@@ -1036,7 +1036,7 @@ async function submitPrequal(){
     const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
     const isSub=vt==='Subcontractor';
     const fields={
-        Title:cn, field_1:co, DBA:val('f_dba'), ContactTitle:val('f_contactTitle'), VendorEmail:em, field_4:ph,
+        Title:cn, field_1:co, DBA:val('f_dba'), VendorEmail:em, field_4:ph,
         field_2:val('f_address'), VendorType:vt, YearEstablished:numVal('f_yearsInBusiness'),
         ServiceRegion:val('f_serviceRegion'), Website:val('f_website'), CoreFunctions:val('f_coreFunctions'),
         Tier:ti, Entity:en, Trades:trades.join(', '),
