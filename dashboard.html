@@ -1887,7 +1887,10 @@ async function generateRfp(){
     document.getElementById('rfpOutput').textContent='Generating RFP...';
     document.getElementById('rfpEmailBody').textContent='Generating email draft...';
 
-    const vendorList = sel.map((v,i)=>`${i+1}. ${v.Title} (${v.VendorType||''}, ${v.Tier||''}, EMR: ${v.EMR_Current||'N/A'}, AI Score: ${v.AIScore||'N/A'})`).join('\n');
+    const vendorList = sel.map((v,i)=>{
+        var line = (i+1) + '. ' + (v.Title||'') + ' (' + (v.VendorType||'') + ', ' + (v.Tier||'') + ', EMR: ' + (v.EMR_Current||'N/A') + ', AI Score: ' + (v.AIScore||'N/A') + ')';
+        return line;
+    }).join('\n');
 
     const prompt = `You are drafting a professional RFP (Request for Proposal) package on behalf of Distributed Energy Infrastructure (DEI), a commercial solar and battery storage EPC company based in Stuart, FL.
 
@@ -1943,10 +1946,11 @@ Then the email body -- professional, concise, under 200 words. Reference the pro
         const emailRaw = parts[1]?.trim()||'';
 
         // Parse subject line
-        const emailLines = emailRaw.split('\n');
-        const subjectLine = emailLines.find(l=>l.startsWith('SUBJECT:'))||'';
-        const subject = subjectLine.replace('SUBJECT:','').trim();
-        const emailBody = emailLines.filter(l=>!l.startsWith('SUBJECT:')).join('\n').trim();
+        var emailLines = emailRaw.split('\n');
+        var subjectLine = '';
+        for(var ei=0;ei<emailLines.length;ei++){ if(emailLines[ei].startsWith('SUBJECT:')){ subjectLine=emailLines[ei]; break; } }
+        var subject = subjectLine.replace('SUBJECT:','').trim();
+        var emailBody = emailLines.filter(function(l){ return !l.startsWith('SUBJECT:'); }).join('\n').trim();
 
         document.getElementById('rfpOutput').textContent = rfpDoc;
         document.getElementById('rfpEmailBody').textContent = emailBody;
