@@ -820,7 +820,11 @@
             <div class="card">
                 <div class="card-title">Vendors List -- Prequal Columns</div>
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Your existing <strong>Vendors</strong> list on the root SharePoint site already has base columns. The button below adds the prequal-specific columns (skips any that already exist). Existing columns are shown in gray.</p>
-                <button class="btn btn-primary" id="createListBtn" onclick="createSharePointList()">Add Prequal Columns to Vendors List</button>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                    <button class="btn btn-primary" id="createListBtn" onclick="createSharePointList()">Add Prequal Columns to Vendors List</button>
+                    <button class="btn btn-secondary" id="addRegionColBtn" onclick="addServiceRegionColumn()">+ Add ServiceRegion Column</button>
+                    <button class="btn btn-secondary" id="backfillBtn" onclick="backfillServiceRegion()">↺ Backfill ServiceRegion from Address</button>
+                </div>
                 <div style="margin-top:20px;"><table><thead><tr><th>Status</th><th>Column Name</th><th>Internal Name</th><th>Type</th><th>Required</th><th>Notes</th></tr></thead><tbody id="schemaTableBody"></tbody></table></div>
             </div>
         </div>
@@ -1216,6 +1220,59 @@ function closeDetail(e){if(e&&e.target!==document.getElementById('detailOverlay'
 async function saveReview(id){
     try{await graphPatch(`/sites/${CONFIG.siteId}/lists/${listId}/items/${id}/fields`,{Status:document.getElementById('dp_status').value,ReviewerNotes:document.getElementById('dp_reviewNotes').value,ReviewDate:new Date().toISOString().split('T')[0]});showToast('Review saved.','success');closeDetail();loadVendors();}
     catch(e){showToast('Save error: '+e.message,'error');}
+}
+
+async function addServiceRegionColumn(){
+    const btn = document.getElementById('addRegionColBtn');
+    btn.disabled=true; btn.textContent='Adding...';
+    try{
+        if(!listId){ showToast('List not found','error'); return; }
+        await graphPost(`/sites/${CONFIG.siteId}/lists/${listId}/columns`,{
+            name:'ServiceRegion', displayName:'Service Region',
+            text:{maxLength:2000}
+        });
+        showToast('ServiceRegion column added!','success');
+        btn.textContent='ServiceRegion Added ✓';
+    } catch(e){
+        // May already exist
+        if(e.message.includes('already exists') || e.message.includes('400')){
+            showToast('ServiceRegion column already exists','success');
+            btn.textContent='Already Exists ✓';
+        } else {
+            showToast('Error: '+e.message,'error');
+            btn.disabled=false; btn.textContent='+ Add ServiceRegion Column';
+        }
+    }
+}
+
+async function backfillServiceRegion(){
+    // For existing vendors with no ServiceRegion, set it from their address state
+    const btn = document.getElementById('backfillBtn');
+    btn.disabled=true; btn.textContent='Backfilling...';
+    try{
+        if(!vendors.length) await loadVendors();
+        const needsFill = vendors.filter(v=>!v.ServiceRegion && (v.Address1||v.Address_x0020_1||v.field_2));
+        showToast(`Backfilling ${needsFill.length} vendors...`);
+        let done=0;
+        for(const v of needsFill){
+            const addr = v.Address1||v.Address_x0020_1||v.field_2||'';
+            const states = extractStatesFromText(addr);
+            if(states.length){
+                await graphPatch(`/sites/${CONFIG.siteId}/lists/${listId}/items/${v.id}/fields`,{
+                    ServiceRegion: states.join(', ')
+                });
+                done++;
+            }
+            btn.textContent = `Backfilling... ${done}/${needsFill.length}`;
+        }
+        await loadVendors();
+        showToast(`Backfilled ${done} vendors with home state from address`,'success');
+        btn.textContent='Backfill Complete ✓'; btn.disabled=false;
+        renderMap();
+    } catch(e){
+        showToast('Error: '+e.message,'error');
+        btn.disabled=false; btn.textContent='↺ Backfill ServiceRegion';
+    }
 }
 
 function populateSchemaTable(){
@@ -1628,8 +1685,7 @@ async function initMap(){
     console.log('Sample:', JSON.stringify(Object.entries(fipsMap).slice(0,5)));
 
     const counts = buildStateCounts();
-    console.log('State counts:', JSON.stringify(counts));
-    if(vendors.length>0) console.log('Sample vendor states:', [...getVendorStates(vendors[0])], 'from address:', vendors[0].Address1||vendors[0].Address_x0020_1||vendors[0].field_2);
+    console.log('DEG Map: '+Object.keys(counts).length+' states with coverage, '+vendors.length+' vendors loaded');
 
     const g = svg.append('g').attr('class','states-group');
 
@@ -2153,8 +2209,16 @@ function extractStatesFromText(text){
 
 function getVendorStates(v){
     var states = new Set();
-    var fields = [v.ServiceRegion, v.Address1, v.Address_x0020_1, v.field_2];
-    fields.forEach(function(f){ extractStatesFromText(f).forEach(function(s){ states.add(s); }); });
+    // Priority: ServiceRegion (explicit coverage) > address (home state fallback)
+    var regionFields = [v.ServiceRegion, v.serviceRegion];
+    var hasRegion = regionFields.some(function(f){ return f && f.trim(); });
+    if(hasRegion){
+        regionFields.forEach(function(f){ extractStatesFromText(f).forEach(function(s){ states.add(s); }); });
+    } else {
+        // Fall back to home state from address
+        var addrFields = [v.Address1, v.Address_x0020_1, v.field_2];
+        addrFields.forEach(function(f){ extractStatesFromText(f).forEach(function(s){ states.add(s); }); });
+    }
     return states;
 }
 
