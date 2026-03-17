@@ -379,7 +379,6 @@
                     <div class="form-group"><label>Website</label><input type="url" id="f_website" placeholder="https://www.example.com"></div>
                     <div class="form-group"><label>Core Functions <span class="req">*</span></label><input type="text" id="f_coreFunctions" placeholder="e.g. Full Mechanical Installation, Racking Mfg"></div>
                     <div class="form-group"><label>Primary Contact <span class="req">*</span></label><input type="text" id="f_contact" placeholder="Full name"></div>
-                    <div class="form-group"><label>Title</label><input type="text" id="f_contactTitle" placeholder="e.g. VP Operations"></div>
                     <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" placeholder="email@company.com"></div>
                     <div class="form-group"><label>Phone <span class="req">*</span></label><input type="tel" id="f_phone" placeholder="(555) 555-5555"></div>
                     <div class="form-group full"><label>Address</label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
@@ -868,7 +867,6 @@ const LIST_COLUMNS = [
     // -- Core prequal fields --
     { display:'Vendor Type', name:'VendorType', type:'choice', required:true, choices:['Vendor','Subcontractor'] },
     { display:'DBA / Trade Name', name:'DBA', type:'text', required:false },
-    { display:'Contact Title', name:'ContactTitle', type:'text', required:false },
     { display:'Vendor Email', name:'VendorEmail', type:'text', required:false },
     { display:'Year Established', name:'YearEstablished', type:'number', required:false },
     { display:'Service Region', name:'ServiceRegion', type:'text', required:false },
@@ -1036,7 +1034,7 @@ async function submitPrequal(){
     const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
     const isSub=vt==='Subcontractor';
     const fields={
-        Title:cn, field_1:co, DBA:val('f_dba'), ContactTitle:val('f_contactTitle'), VendorEmail:em, field_4:ph,
+        Title:cn, field_1:co, DBA:val('f_dba'), VendorEmail:em, field_4:ph,
         field_2:val('f_address'), VendorType:vt, YearEstablished:numVal('f_yearsInBusiness'),
         ServiceRegion:val('f_serviceRegion'), Website:val('f_website'), CoreFunctions:val('f_coreFunctions'),
         Tier:ti, Entity:en, Trades:trades.join(', '),
