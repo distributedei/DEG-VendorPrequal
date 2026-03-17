@@ -182,6 +182,31 @@
         .modal input { width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:monospace;margin-bottom:12px; }
         .modal .modal-btns { display:flex;gap:8px;justify-content:flex-end; }
 
+        /* ── RFP BUILDER ── */
+        .rfp-layout { display:grid; grid-template-columns:1fr 420px; gap:20px; }
+        .rfp-vendor-roster { display:flex; flex-direction:column; gap:10px; }
+        .rfp-vendor-row { display:flex; align-items:center; gap:12px; background:white; border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; box-shadow:var(--shadow); }
+        .rfp-vendor-row.selected { border-color:var(--green); background:rgba(119,157,54,0.04); }
+        .rfp-vendor-row input[type="checkbox"] { width:18px; height:18px; accent-color:var(--green); flex-shrink:0; cursor:pointer; }
+        .rfp-vendor-info { flex:1; min-width:0; }
+        .rfp-vendor-info h4 { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; color:var(--navy); }
+        .rfp-vendor-info .rfp-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:3px; align-items:center; }
+        .rfp-vendor-info .rfp-contact { font-size:11px; color:var(--text-muted); margin-top:3px; }
+        .rfp-vendor-actions { display:flex; gap:6px; flex-shrink:0; }
+        .rfp-panel { position:sticky; top:24px; display:flex; flex-direction:column; gap:16px; }
+        .rfp-panel .card { margin-bottom:0; }
+        .rfp-output { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:14px; font-size:12px; line-height:1.7; white-space:pre-wrap; max-height:320px; overflow-y:auto; font-family:monospace; color:var(--text); }
+        .rfp-selected-chips { display:flex; flex-wrap:wrap; gap:6px; min-height:32px; padding:4px 0; }
+        .rfp-chip { display:inline-flex; align-items:center; gap:6px; background:var(--navy); color:white; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+        .rfp-chip button { background:none; border:none; color:rgba(255,255,255,0.7); cursor:pointer; font-size:14px; padding:0; line-height:1; }
+        .rfp-chip button:hover { color:white; }
+        .rfp-empty { text-align:center; padding:60px 20px; color:var(--text-muted); font-size:13px; }
+        .rfp-empty svg { width:48px; height:48px; color:var(--border); margin:0 auto 12px; display:block; }
+        .trade-checkbox-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+        .trade-cb-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); cursor:pointer; }
+        .trade-cb-item input { accent-color:var(--green); width:14px; height:14px; }
+        @media(max-width:1100px){ .rfp-layout { grid-template-columns:1fr; } }
+
         /* ── MAP VIEW ── */
         .map-controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
         .map-controls select, .map-controls input { padding:7px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:inherit; background:white; }
@@ -256,6 +281,11 @@
             <div class="sb-item" data-tab="map" onclick="switchTab('map')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
                 Coverage Map
+            </div>
+            <div class="sb-item" data-tab="rfp" onclick="switchTab('rfp')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                RFP Builder
+                <span class="sb-badge" id="rfpBadge" style="display:none;">0</span>
             </div>
         </div>
         <div class="sb-section">
@@ -680,6 +710,111 @@
             </div>
         </div>
 
+        <!-- ══ RFP BUILDER ══════════════════════════════════════════ -->
+        <div id="rfpView" style="display:none;">
+            <div class="page-header">
+                <h2>RFP <span>Builder</span></h2>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <span id="rfpSelectedCount" style="font-size:13px;color:var(--text-muted);">0 vendors selected</span>
+                    <button class="btn btn-secondary btn-sm" onclick="clearRfpVendors()">Clear All</button>
+                    <button class="btn btn-primary btn-sm" onclick="generateRfp()" id="rfpGenerateBtn" disabled>⚡ Generate RFP</button>
+                </div>
+            </div>
+
+            <div class="rfp-layout">
+                <!-- LEFT: Project form + vendor roster -->
+                <div>
+                    <!-- Project Details -->
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-title">Project Details</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Project Name <span class="req">*</span></label><input type="text" id="rfp_projectName" placeholder="e.g. Endicott NY Solar Farm — 85 MW"></div>
+                            <div class="form-group"><label>Project Location <span class="req">*</span></label><input type="text" id="rfp_location" placeholder="City, State"></div>
+                            <div class="form-group"><label>System Size</label><input type="text" id="rfp_systemSize" placeholder="e.g. 85 MW DC / 68 MW AC"></div>
+                            <div class="form-group"><label>Bid Due Date <span class="req">*</span></label><input type="date" id="rfp_bidDate"></div>
+                            <div class="form-group"><label>Construction Start</label><input type="date" id="rfp_startDate"></div>
+                            <div class="form-group"><label>Estimated Contract Value</label><input type="text" id="rfp_contractValue" placeholder="e.g. $4,200,000"></div>
+                            <div class="form-group full"><label>Data Room Link</label><input type="url" id="rfp_dataRoom" placeholder="https://dataroom.example.com/project-xyz"></div>
+                            <div class="form-group full"><label>Project Description</label><textarea id="rfp_description" rows="3" placeholder="Brief project overview — technology, offtaker, EPC structure, site conditions..."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Scope of Work -->
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-title">Scope of Work Required</div>
+                        <div class="trade-checkbox-grid" id="rfp_trades">
+                            <label class="trade-cb-item"><input type="checkbox" value="Electrical"> Electrical</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Civil / Sitework"> Civil / Sitework</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Structural / Racking"> Structural / Racking</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Mechanical"> Mechanical</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="BESS Install"> BESS Install</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Commissioning"> Commissioning</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Trenching"> Trenching</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Fencing"> Fencing</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Testing / QC"> Testing / QC</label>
+                            <label class="trade-cb-item"><input type="checkbox" value="Full EPC"> Full EPC</label>
+                        </div>
+                        <div class="form-group" style="margin-top:12px;">
+                            <label>Additional Scope Notes</label>
+                            <textarea id="rfp_scopeNotes" rows="2" placeholder="Special requirements, phasing, milestones, NTP conditions..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Roster -->
+                    <div class="card">
+                        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+                            <span>Vendor Roster</span>
+                            <button class="btn btn-secondary btn-sm" onclick="switchTab('map')" style="font-size:11px;">+ Add from Map</button>
+                        </div>
+                        <div id="rfpVendorRoster">
+                            <div class="rfp-empty">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                                <div>No vendors selected yet.</div>
+                                <div style="margin-top:8px;"><button class="btn btn-primary btn-sm" onclick="switchTab('map')">Go to Coverage Map</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Output panel -->
+                <div class="rfp-panel">
+                    <div class="card">
+                        <div class="card-title">Selected Vendors</div>
+                        <div class="rfp-selected-chips" id="rfpChips">
+                            <span style="font-size:12px;color:var(--text-light);">None selected</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">RFP Output</div>
+                        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                            <button class="btn btn-secondary btn-sm" onclick="generateRfp()" id="rfpGenBtn2">⚡ Generate with AI</button>
+                            <button class="btn btn-secondary btn-sm" onclick="copyRfp()">📋 Copy</button>
+                            <button class="btn btn-secondary btn-sm" onclick="printRfpPdf()">📄 PDF</button>
+                        </div>
+                        <div class="rfp-output" id="rfpOutput">RFP will appear here after generation...</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Email Draft</div>
+                        <div style="margin-bottom:8px;">
+                            <div class="form-group"><label>To (auto-filled from selection)</label>
+                                <input type="text" id="rfpEmailTo" placeholder="vendor@company.com" style="font-size:12px;">
+                            </div>
+                            <div class="form-group" style="margin-top:8px;"><label>Subject</label>
+                                <input type="text" id="rfpEmailSubject" placeholder="RFP: Project Name — Bid Invitation" style="font-size:12px;">
+                            </div>
+                        </div>
+                        <div class="rfp-output" id="rfpEmailBody" style="max-height:240px;">Email body will appear after generation...</div>
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <button class="btn btn-primary btn-sm" onclick="openInOutlook()" style="flex:1;">Open in Outlook</button>
+                            <button class="btn btn-secondary btn-sm" onclick="copyEmail()">📋 Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="schemaView" style="display:none;">
             <div class="page-header"><h2>SharePoint <span>List Setup</span></h2></div>
             <div class="card">
@@ -838,6 +973,7 @@ const LIST_COLUMNS = [
 ];
 
 let msalInstance=null, accessToken=null, currentUser=null, vendors=[], filteredVendors=[], listId=null, sortCol='SubmittedDate', sortDir='desc';
+window.vendors=vendors;
 
 async function initMsal(){
     msalInstance = new msal.PublicClientApplication({auth:{clientId:CONFIG.clientId,authority:`https://login.microsoftonline.com/${CONFIG.tenantId}`,redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'sessionStorage'}});
@@ -889,7 +1025,7 @@ async function createSharePointList(){
 
 async function loadVendors(){
     if(!listId){document.getElementById('vendorTableBody').innerHTML='<tr class="loading-row"><td colspan="9">No list found. Use <strong>List Setup</strong> to create it.</td></tr>';return;}
-    try{const d=await graphGet(`/sites/${CONFIG.siteId}/lists/${listId}/items?$expand=fields&$top=500`);vendors=(d.value||[]).map(i=>({id:i.id,...i.fields}));console.log('SP Field Names:',vendors.length>0?Object.keys(vendors[0]).join(', '):'no vendors');applyFilters();updateStats();}
+    try{const d=await graphGet(`/sites/${CONFIG.siteId}/lists/${listId}/items?$expand=fields&$top=500`);vendors=(d.value||[]).map(i=>({id:i.id,...i.fields}));window.vendors=vendors;console.log('SP Field Names:',vendors.length>0?Object.keys(vendors[0]).join(', '):'no vendors');applyFilters();updateStats();}
     catch(e){showToast('Error loading: '+e.message,'error');}
 }
 
@@ -1092,8 +1228,10 @@ function switchTab(t){
     document.getElementById('dashView').style.display=t==='dashboard'?'block':'none';
     document.getElementById('schemaView').style.display=t==='schema'?'block':'none';
     document.getElementById('mapView').style.display=t==='map'?'block':'none';
+    document.getElementById('rfpView').style.display=t==='rfp'?'block':'none';
     if(t==='dashboard'&&listId)loadVendors();
     if(t==='map'){if(listId&&!vendors.length)loadVendors().then(renderMap);else renderMap();}
+    if(t==='rfp')renderRfpRoster();
 }
 
 function getDocsUrl(v){
@@ -1407,12 +1545,7 @@ function getStateFill(abbr, counts){
     return '#6c3ec4';
 }
 
-function getVendorsForState(abbr){
-    return getFilteredVendorsForMap().filter(v=>{
-        const region = (v.ServiceRegion||'').toUpperCase();
-        return region.includes('NATIONWIDE') || region.split(/[\s,]+/).includes(abbr);
-    });
-}
+function getVendorsForState(abbr){ return getVendorsForStateFixed(abbr); }
 
 function getFilteredVendorsForMap(){
     const type   = document.getElementById('mapFilterType')?.value||'';
@@ -1437,12 +1570,8 @@ function buildStateCounts(){
     const filtered = getFilteredVendorsForMap();
     const counts = {};
     filtered.forEach(v=>{
-        const region = (v.ServiceRegion||'').toUpperCase();
-        const isNationwide = region.includes('NATIONWIDE');
         Object.values(STATE_ABBR).forEach(abbr=>{
-            if(isNationwide || region.split(/[\s,]+/).includes(abbr)){
-                counts[abbr] = (counts[abbr]||0)+1;
-            }
+            if(vendorServesState(v,abbr)){ counts[abbr]=(counts[abbr]||0)+1; }
         });
     });
     return counts;
@@ -1525,9 +1654,11 @@ async function initMap(){
         })
         .on('click', function(event, d){
             const abbr = fipsMap[d.id]||'';
-            mapSelectedState = mapSelectedState===abbr ? null : abbr;
+            if(!abbr) return;
+            const vendorsInState = getVendorsForStateFixed(abbr);
+            if(vendorsInState.length){ openStatePopup(abbr, vendorsInState); } else { showToast('No vendors cover '+abbr); }
+            mapSelectedState = abbr;
             updateMapColors(fipsMap, counts);
-            renderMapSidebar();
         });
 
     // State labels
@@ -1551,13 +1682,6 @@ async function initMap(){
         .attr('fill', d=>{ const abbr=fipsMap[d.id]||''; const n=counts[abbr]||0; return n>0?'rgba(255,255,255,0.9)':'#8a9baa'; })
         .attr('pointer-events','none')
         .text(d=> fipsMap[d.id]||'');
-
-    // Debug: log first vendor's ServiceRegion and fipsMap sample
-    if(vendors.length > 0){
-        console.log('Sample ServiceRegion:', vendors[0].ServiceRegion);
-        console.log('FipsMap sample:', Object.entries(fipsMap).slice(0,5));
-        console.log('Topo geometry sample id/props:', us.objects.states.geometries.slice(0,3).map(g=>({id:g.id, props:g.properties})));
-    }
 
     // Trigger initial sidebar + stats
     renderMapSidebar();
@@ -1639,6 +1763,372 @@ function renderMap(){
         document.getElementById('mapVendorCount').textContent = `${getFilteredVendorsForMap().length} vendor${getFilteredVendorsForMap().length!==1?'s':''} shown`;
     }
     document.getElementById('mapVendorCount').textContent = `${getFilteredVendorsForMap().length} vendor${getFilteredVendorsForMap().length!==1?'s':''} shown`;
+}
+
+
+// ══════════════════════════════════════════════════════════════════
+// RFP BUILDER
+// ══════════════════════════════════════════════════════════════════
+let rfpSelectedVendors = []; // array of vendor ids
+
+function addToRfp(ids){
+    if(!Array.isArray(ids)) ids=[ids];
+    ids.forEach(id=>{ if(!rfpSelectedVendors.includes(id)) rfpSelectedVendors.push(id); });
+    updateRfpBadge();
+    renderRfpRoster();
+    showToast(`${ids.length} vendor${ids.length>1?'s':''} added to RFP`,'success');
+}
+
+function removeFromRfp(id){
+    rfpSelectedVendors = rfpSelectedVendors.filter(x=>x!==id);
+    updateRfpBadge();
+    renderRfpRoster();
+    renderRfpChips();
+}
+
+function clearRfpVendors(){
+    rfpSelectedVendors=[];
+    updateRfpBadge();
+    renderRfpRoster();
+    renderRfpChips();
+}
+
+function updateRfpBadge(){
+    const badge = document.getElementById('rfpBadge');
+    const count = document.getElementById('rfpSelectedCount');
+    if(rfpSelectedVendors.length>0){
+        badge.style.display=''; badge.textContent=rfpSelectedVendors.length;
+    } else {
+        badge.style.display='none';
+    }
+    if(count) count.textContent=`${rfpSelectedVendors.length} vendor${rfpSelectedVendors.length!==1?'s':''} selected`;
+    const btn = document.getElementById('rfpGenerateBtn');
+    if(btn) btn.disabled = rfpSelectedVendors.length===0;
+}
+
+function renderRfpRoster(){
+    const el = document.getElementById('rfpVendorRoster');
+    if(!el) return;
+    const sel = rfpSelectedVendors.map(id=>vendors.find(v=>v.id===id)).filter(Boolean);
+    if(!sel.length){
+        el.innerHTML=`<div class="rfp-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg><div>No vendors selected.</div><div style="margin-top:8px;"><button class="btn btn-primary btn-sm" onclick="switchTab('map')">Go to Coverage Map</button></div></div>`;
+        renderRfpChips();
+        return;
+    }
+    el.innerHTML = sel.map(v=>{
+        const docsUrl = getDocsUrl(v);
+        const contact = v.ExecName||v.field_1||'—';
+        const email   = v.ExecEmail||v.VendorEmail||'';
+        const phone   = v.ExecPhone||v.field_4||'';
+        return `<div class="rfp-vendor-row selected" id="rfprow-${v.id}">
+            <input type="checkbox" checked onchange="removeFromRfp('${v.id}')">
+            <div class="rfp-vendor-info">
+                <h4>${esc(v.Title||'')}</h4>
+                <div class="rfp-meta">
+                    ${tierBadge(v.Tier)}
+                    <span style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'};">${esc(v.VendorType||'')}</span>
+                    ${v.Entity?`<span style="font-size:10px;background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--text-muted);font-weight:600;">${esc(v.Entity)}</span>`:''}
+                    ${v.EMR_Current?`<span style="font-size:11px;color:${parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--green-dark)'};font-weight:700;">EMR ${esc(v.EMR_Current)}</span>`:''}
+                    ${v.AIScore?aiScoreBadge(v.AIScore,v.AIRating):''}
+                </div>
+                <div class="rfp-contact">👤 ${esc(contact)}${email?` · <a href="mailto:${esc(email)}" style="color:var(--navy);">${esc(email)}</a>`:''}${phone?` · ${esc(phone)}`:''}
+                </div>
+                ${v.Trades?`<div style="font-size:10px;color:var(--text-light);margin-top:2px;">🔧 ${esc(v.Trades)}</div>`:''}
+                ${v.ServiceRegion?`<div style="font-size:10px;color:var(--text-light);">📍 ${esc(v.ServiceRegion.substring(0,80))}${v.ServiceRegion.length>80?'…':''}</div>`:''}
+                ${docsUrl?`<div style="margin-top:4px;"><a href="${docsUrl}" target="_blank" style="font-size:10px;color:var(--navy-light);">📁 View Documents</a></div>`:''}
+            </div>
+            <div class="rfp-vendor-actions">
+                <button class="btn btn-secondary btn-sm" onclick="removeFromRfp('${v.id}')" title="Remove">✕</button>
+            </div>
+        </div>`;
+    }).join('');
+    renderRfpChips();
+}
+
+function renderRfpChips(){
+    const el = document.getElementById('rfpChips');
+    if(!el) return;
+    const sel = rfpSelectedVendors.map(id=>vendors.find(v=>v.id===id)).filter(Boolean);
+    if(!sel.length){ el.innerHTML='<span style="font-size:12px;color:var(--text-light);">None selected</span>'; return; }
+    el.innerHTML = sel.map(v=>`<span class="rfp-chip">${esc(v.Title||'')} <button onclick="removeFromRfp('${v.id}')" title="Remove">×</button></span>`).join('');
+    // Auto-fill email To field
+    const emails = sel.map(v=>v.ExecEmail||v.VendorEmail).filter(Boolean);
+    const toEl = document.getElementById('rfpEmailTo');
+    if(toEl && emails.length) toEl.value = emails.join('; ');
+}
+
+function getRfpTradesSelected(){
+    const vals=[];
+    document.querySelectorAll('#rfp_trades input:checked').forEach(c=>vals.push(c.value));
+    return vals;
+}
+
+async function generateRfp(){
+    if(!claudeApiKey){ openApiKeyModal(); showToast('Set your Claude API key first.','error'); return; }
+    const sel = rfpSelectedVendors.map(id=>vendors.find(v=>v.id===id)).filter(Boolean);
+    if(!sel.length){ showToast('Add vendors to the roster first.','error'); return; }
+
+    const projName    = document.getElementById('rfp_projectName')?.value||'';
+    const location    = document.getElementById('rfp_location')?.value||'';
+    const systemSize  = document.getElementById('rfp_systemSize')?.value||'';
+    const bidDate     = document.getElementById('rfp_bidDate')?.value||'';
+    const startDate   = document.getElementById('rfp_startDate')?.value||'';
+    const contractVal = document.getElementById('rfp_contractValue')?.value||'';
+    const dataRoom    = document.getElementById('rfp_dataRoom')?.value||'';
+    const description = document.getElementById('rfp_description')?.value||'';
+    const scopeNotes  = document.getElementById('rfp_scopeNotes')?.value||'';
+    const trades      = getRfpTradesSelected();
+
+    if(!projName||!location||!bidDate){ showToast('Fill in Project Name, Location, and Bid Date.','error'); return; }
+
+    const btn1 = document.getElementById('rfpGenerateBtn');
+    const btn2 = document.getElementById('rfpGenBtn2');
+    [btn1,btn2].forEach(b=>{ if(b){ b.disabled=true; b.textContent='⚡ Generating...'; }});
+    document.getElementById('rfpOutput').textContent='Generating RFP...';
+    document.getElementById('rfpEmailBody').textContent='Generating email draft...';
+
+    const vendorList = sel.map((v,i)=>`${i+1}. ${v.Title} (${v.VendorType||''}, ${v.Tier||''}, EMR: ${v.EMR_Current||'N/A'}, AI Score: ${v.AIScore||'N/A'})`).join('
+');
+
+    const prompt = `You are drafting a professional RFP (Request for Proposal) package on behalf of Distributed Energy Infrastructure (DEI), a commercial solar and battery storage EPC company based in Stuart, FL.
+
+PROJECT DETAILS:
+- Project Name: ${projName}
+- Location: ${location}
+- System Size: ${systemSize||'TBD'}
+- Estimated Contract Value: ${contractVal||'TBD'}
+- Bid Due Date: ${bidDate}
+- Construction Start: ${startDate||'TBD'}
+- Data Room: ${dataRoom||'To be provided upon NDA execution'}
+- Description: ${description||'Commercial solar + BESS installation project'}
+
+SCOPE OF WORK REQUIRED:
+${trades.length?trades.join(', '):'Full scope TBD'}
+${scopeNotes?`
+Additional Notes: ${scopeNotes}`:''}
+
+INVITED VENDORS (${sel.length}):
+${vendorList}
+
+Generate TWO outputs separated by "---EMAIL---":
+
+PART 1 — FORMAL RFP DOCUMENT:
+A professional RFP document including:
+1. Project Overview
+2. Scope of Work (detailed, based on trades listed)
+3. Bid Requirements & Submission Instructions
+4. Schedule (bid date, construction start, key milestones)
+5. Technical Requirements (insurance minimums, bonding, EMR requirements, safety program)
+6. Data Room Access instructions
+7. DEI Contact & Questions Deadline
+8. Evaluation Criteria
+Format as a clean document with headers. Professional but direct tone.
+
+---EMAIL---
+
+PART 2 — EMAIL INVITATION (sent individually to each vendor):
+Subject line on first line starting with "SUBJECT: "
+Then the email body — professional, concise, under 200 words. Reference the project, bid date, data room, and that formal RFP is attached. Sign off as DEI Estimating Team.`;
+
+    try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','x-api-key':claudeApiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+            body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
+        });
+        if(!resp.ok) throw new Error(`API ${resp.status}`);
+        const data = await resp.json();
+        const text = data.content.map(c=>c.text||'').join('');
+        const parts = text.split('---EMAIL---');
+        const rfpDoc   = parts[0]?.trim()||text;
+        const emailRaw = parts[1]?.trim()||'';
+
+        // Parse subject line
+        const emailLines = emailRaw.split('
+');
+        const subjectLine = emailLines.find(l=>l.startsWith('SUBJECT:'))||'';
+        const subject = subjectLine.replace('SUBJECT:','').trim();
+        const emailBody = emailLines.filter(l=>!l.startsWith('SUBJECT:')).join('
+').trim();
+
+        document.getElementById('rfpOutput').textContent = rfpDoc;
+        document.getElementById('rfpEmailBody').textContent = emailBody;
+        if(subject) document.getElementById('rfpEmailSubject').value = subject;
+
+        showToast('RFP generated!','success');
+    } catch(e){
+        showToast('Generation error: '+e.message,'error');
+        document.getElementById('rfpOutput').textContent='Error: '+e.message;
+    } finally {
+        [btn1,btn2].forEach(b=>{ if(b){ b.disabled=false; b.textContent = b.id==='rfpGenerateBtn'?'⚡ Generate RFP':'⚡ Generate with AI'; }});
+    }
+}
+
+function copyRfp(){
+    const text = document.getElementById('rfpOutput').textContent;
+    navigator.clipboard.writeText(text).then(()=>showToast('RFP copied to clipboard','success'));
+}
+
+function copyEmail(){
+    const text = document.getElementById('rfpEmailBody').textContent;
+    navigator.clipboard.writeText(text).then(()=>showToast('Email copied to clipboard','success'));
+}
+
+function openInOutlook(){
+    const to      = document.getElementById('rfpEmailTo')?.value||'';
+    const subject = encodeURIComponent(document.getElementById('rfpEmailSubject')?.value||'RFP Invitation');
+    const body    = encodeURIComponent(document.getElementById('rfpEmailBody')?.textContent||'');
+    window.open(`mailto:${to}?subject=${subject}&body=${body}`);
+}
+
+function printRfpPdf(){
+    const projName = document.getElementById('rfp_projectName')?.value||'RFP';
+    const rfpText  = document.getElementById('rfpOutput')?.textContent||'';
+    const vendors  = rfpSelectedVendors.map(id=>{ const v=window.vendors?.find?.(x=>x.id===id); return v?v.Title:''; }).filter(Boolean);
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${projName} — RFP</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;font-size:11px;color:#0c1e2d;padding:0;line-height:1.6}
+        .cover{background:#0c1e2d;color:#fff;padding:40px 48px;position:relative}
+        .cover::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#779d36,#8fb844,transparent)}
+        .cover h1{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;margin-bottom:6px}
+        .cover h1 span{color:#8fb844}
+        .cover .sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px}
+        .cover .proj{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#fff;border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;margin-top:16px}
+        .body{padding:32px 48px}
+        .rfp-body{white-space:pre-wrap;font-size:11.5px;line-height:1.8}
+        .vendor-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:11px}
+        .vendor-table th{background:#f1f4f8;padding:6px 10px;text-align:left;font-weight:700;color:#375673;border-bottom:2px solid #e2e8f0}
+        .vendor-table td{padding:6px 10px;border-bottom:1px solid #f1f4f8}
+        .footer{margin-top:32px;border-top:1px solid #e2e8f0;padding-top:12px;font-size:9px;color:#8a9baa;display:flex;justify-content:space-between}
+        h1,h2,h3{font-family:'Barlow Condensed',sans-serif}
+        @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+    </style></head><body>
+    <div class="cover">
+        <div><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:1px;">DISTRIBUTED ENERGY <span style="color:#8fb844;">INFRASTRUCTURE</span></span></div>
+        <div class="sub">REQUEST FOR PROPOSAL — CONFIDENTIAL</div>
+        <div class="proj">${projName}</div>
+        <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.6);">Issued: ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
+    </div>
+    <div class="body">
+        ${vendors.length?`<div style="margin-bottom:24px;"><h2 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#375673;margin-bottom:10px;">Invited Vendors (${vendors.length})</h2>
+        <table class="vendor-table"><thead><tr><th>#</th><th>Company</th><th>Tier</th><th>Type</th></tr></thead><tbody>
+        ${rfpSelectedVendors.map((id,i)=>{ const v=window.vendors?.find?.(x=>x.id===id); return v?`<tr><td>${i+1}</td><td>${v.Title||''}</td><td>${v.Tier||''}</td><td>${v.VendorType||''}</td></tr>`:''; }).filter(Boolean).join('')}
+        </tbody></table></div>`:''}
+        <div class="rfp-body">${rfpText.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <div class="footer">
+            <span>© ${new Date().getFullYear()} Distributed Energy Infrastructure | 416 SE Balboa Ave, Stuart, FL 34994</span>
+            <span>distributedei.com</span>
+        </div>
+    </div>
+    <script>window.onload=()=>window.print();<\/script></body></html>`;
+    const w = window.open('','_blank');
+    w.document.write(html);
+    w.document.close();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MAP STATE POPUP — click state → vendor panel with Add to RFP
+// ══════════════════════════════════════════════════════════════════
+function openStatePopup(abbr, vendorsInState){
+    // Remove existing popup
+    document.getElementById('statePopup')?.remove();
+
+    const popup = document.createElement('div');
+    popup.id = 'statePopup';
+    popup.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.2);width:560px;max-width:92vw;max-height:80vh;display:flex;flex-direction:column;z-index:500;overflow:hidden;`;
+
+    const allSelected = vendorsInState.every(v=>rfpSelectedVendors.includes(v.id));
+
+    popup.innerHTML = `
+        <div style="background:var(--navy);color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+            <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;">${abbr} — ${vendorsInState.length} Vendor${vendorsInState.length!==1?'s':''}</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">Select vendors to add to RFP Builder</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button onclick="addToRfp(${JSON.stringify(vendorsInState.map(v=>v.id))});document.getElementById('statePopup').remove();" style="background:var(--green);color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;">+ Add All to RFP</button>
+                <button onclick="document.getElementById('statePopup').remove();" style="background:rgba(255,255,255,0.1);color:white;border:none;width:30px;height:30px;border-radius:6px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+        </div>
+        <div style="overflow-y:auto;flex:1;padding:12px;">
+            ${vendorsInState.map(v=>{
+                const contact = v.ExecName||v.field_1||'—';
+                const email   = v.ExecEmail||v.VendorEmail||'';
+                const phone   = v.ExecPhone||v.field_4||'';
+                const docsUrl = getDocsUrl(v);
+                const inRfp   = rfpSelectedVendors.includes(v.id);
+                return `<div style="border:1px solid ${inRfp?'var(--green)':'var(--border)'};background:${inRfp?'rgba(119,157,54,0.04)':'white'};border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                            <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--navy);">${esc(v.Title||'')}</span>
+                            ${tierBadge(v.Tier)} ${statusBadge(v.Status)}
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                            <span style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'};">${esc(v.VendorType||'')}</span>
+                            ${v.Entity?`<span style="font-size:10px;background:var(--bg);padding:2px 6px;border-radius:3px;color:var(--text-muted);font-weight:600;">${esc(v.Entity)}</span>`:''}
+                            ${v.EMR_Current?`<span style="font-size:11px;color:${parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--green-dark)'};font-weight:700;">EMR ${esc(v.EMR_Current)}</span>`:''}
+                            ${v.AIScore?aiScoreBadge(v.AIScore,v.AIRating):''}
+                        </div>
+                        <div style="font-size:11px;color:var(--text-muted);">👤 ${esc(contact)}${email?` · <a href="mailto:${esc(email)}" style="color:var(--navy);">${esc(email)}</a>`:''}${phone?` · ${esc(phone)}`:''}</div>
+                        ${v.Trades?`<div style="font-size:10px;color:var(--text-light);margin-top:2px;">🔧 ${esc(v.Trades)}</div>`:''}
+                        ${v.ServiceRegion?`<div style="font-size:10px;color:var(--text-light);">📍 ${esc(v.ServiceRegion.substring(0,80))}${v.ServiceRegion.length>80?'…':''}</div>`:''}
+                        ${docsUrl?`<a href="${docsUrl}" target="_blank" style="font-size:10px;color:var(--navy-light);margin-top:3px;display:inline-block;">📁 View Docs</a>`:''}
+                    </div>
+                    <button onclick="toggleRfpFromPopup('${v.id}',this)" style="flex-shrink:0;padding:6px 12px;border-radius:6px;border:1px solid ${inRfp?'var(--green)':'var(--border)'};background:${inRfp?'var(--green)':'white'};color:${inRfp?'white':'var(--navy)'};font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;white-space:nowrap;">${inRfp?'✓ Added':'+ RFP'}</button>
+                </div>`;
+            }).join('')}
+        </div>
+        <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#f8fafc;">
+            <span style="font-size:12px;color:var(--text-muted);">${rfpSelectedVendors.length} vendor${rfpSelectedVendors.length!==1?'s':''} in RFP queue</span>
+            <button onclick="document.getElementById('statePopup').remove();switchTab('rfp');" style="background:var(--navy);color:white;border:none;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Go to RFP Builder →</button>
+        </div>`;
+
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.id='stateBackdrop';
+    backdrop.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:499;';
+    backdrop.onclick=()=>{ popup.remove(); backdrop.remove(); };
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(popup);
+}
+
+function toggleRfpFromPopup(id, btn){
+    if(rfpSelectedVendors.includes(id)){
+        removeFromRfp(id);
+        btn.textContent='+ RFP';
+        btn.style.background='white'; btn.style.color='var(--navy)'; btn.style.borderColor='var(--border)';
+        btn.closest('div[style]').style.borderColor='var(--border)';
+        btn.closest('div[style]').style.background='white';
+    } else {
+        addToRfp(id);
+        btn.textContent='✓ Added';
+        btn.style.background='var(--green)'; btn.style.color='white'; btn.style.borderColor='var(--green)';
+        btn.closest('div[style]').style.borderColor='var(--green)';
+        btn.closest('div[style]').style.background='rgba(119,157,54,0.04)';
+    }
+    // Update footer count
+    const footer = document.querySelector('#statePopup div[style*="border-top"] span');
+    if(footer) footer.textContent=`${rfpSelectedVendors.length} vendor${rfpSelectedVendors.length!==1?'s':''} in RFP queue`;
+    updateRfpBadge();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FIX ServiceRegion parsing — handle all formats
+// ══════════════════════════════════════════════════════════════════
+function vendorServesState(v, abbr){
+    const region = (v.ServiceRegion||'').toUpperCase().trim();
+    if(!region) return false;
+    if(region.includes('NATIONWIDE')) return true;
+    // Split on comma, space, semicolon — check each token
+    const tokens = region.split(/[\s,;]+/).map(t=>t.trim()).filter(Boolean);
+    return tokens.includes(abbr.toUpperCase());
+}
+
+function getVendorsForStateFixed(abbr){
+    return getFilteredVendorsForMap().filter(v=>vendorServesState(v,abbr));
 }
 
 initMsal();
