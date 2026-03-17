@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEI Project Truth — Vendor Prequal</title>
+    <title>DEI Project Truth -- Vendor Prequal</title>
     <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -301,8 +301,8 @@
         </div>
         <div class="sb-spacer"></div>
         <div class="sb-user">
-            <div class="sb-user-name" id="sbUserName">—</div>
-            <div class="sb-user-email" id="sbUserEmail">—</div>
+            <div class="sb-user-name" id="sbUserName">--</div>
+            <div class="sb-user-email" id="sbUserEmail">--</div>
             <div class="sb-signout" onclick="signOut()">Sign out</div>
         </div>
     </div>
@@ -312,11 +312,11 @@
             <div class="page-header"><h2>Vendor <span>Dashboard</span></h2><div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="scoreAllPending()" id="scoreAllBtn">⚡ Score All Pending</button><button class="btn btn-secondary btn-sm" onclick="loadVendors()">↻ Refresh</button></div></div>
             <div class="cb" id="cbBanner" style="display:none"><div class="dot"></div> Connected to SharePoint list <strong style="margin-left:4px;">DEG-VendorPrequal</strong></div>
             <div class="stats-row">
-                <div class="stat-card"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Vendors</div></div>
-                <div class="stat-card green"><div class="stat-val" id="stat-approved">—</div><div class="stat-label">Approved</div></div>
-                <div class="stat-card"><div class="stat-val" id="stat-review">—</div><div class="stat-label">Under Review</div></div>
-                <div class="stat-card amber"><div class="stat-val" id="stat-pending">—</div><div class="stat-label">Pending</div></div>
-                <div class="stat-card red"><div class="stat-val" id="stat-expired">—</div><div class="stat-label">Expired / Rejected</div></div>
+                <div class="stat-card"><div class="stat-val" id="stat-total">--</div><div class="stat-label">Total Vendors</div></div>
+                <div class="stat-card green"><div class="stat-val" id="stat-approved">--</div><div class="stat-label">Approved</div></div>
+                <div class="stat-card"><div class="stat-val" id="stat-review">--</div><div class="stat-label">Under Review</div></div>
+                <div class="stat-card amber"><div class="stat-val" id="stat-pending">--</div><div class="stat-label">Pending</div></div>
+                <div class="stat-card red"><div class="stat-val" id="stat-expired">--</div><div class="stat-label">Expired / Rejected</div></div>
             </div>
             <div class="card">
                 <div class="filter-bar">
@@ -383,7 +383,7 @@
                     <div class="form-group full"><label>Address</label><input type="text" id="f_address" placeholder="Street, City, State, ZIP"></div>
                 </div>
                 <div class="form-grid" style="margin-top:16px;">
-                    <div class="form-group"><label>Expected Contract Value Range <span class="req">*</span></label><select id="f_tier"><option value="">Select tier...</option><option value="Tier 1">Tier 1 — Under $100K</option><option value="Tier 2">Tier 2 — $100K – $500K</option><option value="Tier 3">Tier 3 — Over $500K</option></select></div>
+                    <div class="form-group"><label>Expected Contract Value Range <span class="req">*</span></label><select id="f_tier"><option value="">Select tier...</option><option value="Tier 1">Tier 1 -- Under $100K</option><option value="Tier 2">Tier 2 -- $100K - $500K</option><option value="Tier 3">Tier 3 -- Over $500K</option></select></div>
                     <div class="form-group full"><label>Trade / Scope of Work <span class="req">*</span></label>
                         <div class="checkbox-group" id="f_trades">
                             <label><input type="checkbox" value="Electrical"> Electrical</label>
@@ -417,7 +417,7 @@
                         </div>
                     </div>
                     <div class="form-group"><label>Audited Financial Statements</label>
-                        <select id="f_auditedFinancials"><option value="">Select...</option><option value="Yes - 3yr">Yes — Past 3 Years</option><option value="Partial">Partial (1-2 years)</option><option value="No">No / Not Provided</option></select>
+                        <select id="f_auditedFinancials"><option value="">Select...</option><option value="Yes - 3yr">Yes -- Past 3 Years</option><option value="Partial">Partial (1-2 years)</option><option value="No">No / Not Provided</option></select>
                     </div>
                     <div class="form-group"><label>D&amp;B / DUNS Number</label><input type="text" id="f_duns" placeholder="DUNS number"></div>
                 </div>
@@ -490,7 +490,7 @@
                     <div class="form-group"><label># Drills</label><input type="number" id="f_drills" placeholder="0"></div>
                     <div class="form-group"><label># Skid Steers</label><input type="number" id="f_skidSteers" placeholder="0"></div>
                     <div class="form-group"><label># Trucks / UTVs</label><input type="number" id="f_trucks" placeholder="0"></div>
-                    <div class="form-group"><label>Office / Secured Storage</label><select id="f_officeStorage"><option value="">Select...</option><option value="Yes - owned">Yes — Owned</option><option value="Yes - leased">Yes — Leased</option><option value="No">No</option></select></div>
+                    <div class="form-group"><label>Office / Secured Storage</label><select id="f_officeStorage"><option value="">Select...</option><option value="Yes - owned">Yes -- Owned</option><option value="Yes - leased">Yes -- Leased</option><option value="No">No</option></select></div>
                 </div>
             </div>
 
@@ -499,7 +499,7 @@
                 <div class="card-title">4. Quality of Product / Services</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Product/Service Reliability</label>
-                        <select id="f_reliability"><option value="">Select...</option><option value="Excellent">Excellent — Industry leading</option><option value="Good">Good — Consistent track record</option><option value="Average">Average</option><option value="Below average">Below average / Known issues</option></select>
+                        <select id="f_reliability"><option value="">Select...</option><option value="Excellent">Excellent -- Industry leading</option><option value="Good">Good -- Consistent track record</option><option value="Average">Average</option><option value="Below average">Below average / Known issues</option></select>
                     </div>
                     <div class="form-group"><label>Known Defect Rate</label>
                         <select id="f_defectRate"><option value="">Select...</option><option value="<1%">Under 1%</option><option value="1-3%">1-3%</option><option value="3-5%">3-5%</option><option value=">5%">Over 5%</option><option value="Unknown">Unknown</option></select>
@@ -515,7 +515,7 @@
                     <div class="form-group full"><label>Automation Capabilities</label><input type="text" id="f_automation" placeholder="e.g. AI, robotic crews (Bot Crew), automated pile driving"></div>
                     <div class="form-group full"><label>Digital Platforms</label><input type="text" id="f_digitalPlatforms" placeholder="e.g. project management tools, reporting dashboards"></div>
                     <div class="form-group"><label>3D Modeling / Design Tools</label><input type="text" id="f_modeling" placeholder="e.g. ELM, AutoCAD, PVsyst"></div>
-                    <div class="form-group"><label>Calibration Certs Current</label><select id="f_calibrations"><option value="">Select...</option><option value="Yes">Yes — All current</option><option value="Partial">Some expired</option><option value="No">No / Not applicable</option></select></div>
+                    <div class="form-group"><label>Calibration Certs Current</label><select id="f_calibrations"><option value="">Select...</option><option value="Yes">Yes -- All current</option><option value="Partial">Some expired</option><option value="No">No / Not applicable</option></select></div>
                     <div class="form-group full"><label>Safety Systems / Technology</label><input type="text" id="f_safetySystems" placeholder="e.g. GPS tracking, wearable monitors, drone inspection"></div>
                 </div>
             </div>
@@ -538,7 +538,7 @@
                 <div class="card-title">6. Staffing Turnover (Past 3 Years)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Avg. Annual Turnover Rate</label>
-                        <select id="f_turnover"><option value="">Select...</option><option value="<10%">Under 10%</option><option value="10-20%">10% – 20%</option><option value="20-40%">20% – 40%</option><option value=">40%">Over 40%</option><option value="Unknown">Unknown / Not tracked</option></select>
+                        <select id="f_turnover"><option value="">Select...</option><option value="<10%">Under 10%</option><option value="10-20%">10% - 20%</option><option value="20-40%">20% - 40%</option><option value=">40%">Over 40%</option><option value="Unknown">Unknown / Not tracked</option></select>
                     </div>
                 </div>
             </div>
@@ -548,12 +548,12 @@
                 <div class="card-title">7. Safety Incidents (Past 3 Years)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Total Recordable Incidents</label>
-                        <select id="f_safetyIncidents"><option value="">Select...</option><option value="0-2">0 – 2 incidents</option><option value="3-4">3 – 4 incidents</option><option value="5+">5 or more incidents</option><option value="Not tracked">Tracking method not established</option></select>
+                        <select id="f_safetyIncidents"><option value="">Select...</option><option value="0-2">0 - 2 incidents</option><option value="3-4">3 - 4 incidents</option><option value="5+">5 or more incidents</option><option value="Not tracked">Tracking method not established</option></select>
                     </div>
                     <div class="form-group"><label>Has Written Safety Program?</label><select id="f_safetyProgram"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
                     <div class="form-group"><label>OSHA Recordable Incidents (3yr)</label><input type="number" id="f_oshaIncidents" placeholder="e.g. 0"></div>
                     <div class="form-group"><label>Dedicated Safety Personnel</label>
-                        <select id="f_safetyPersonnel"><option value="">Select...</option><option value="Dedicated Safety Supervisor">Dedicated on-site safety supervisor</option><option value="OSHA 30">Personnel with OSHA 30 certification</option><option value="OSHA 10">Personnel with OSHA 10 certification</option><option value="None">None — requires external sourcing</option></select>
+                        <select id="f_safetyPersonnel"><option value="">Select...</option><option value="Dedicated Safety Supervisor">Dedicated on-site safety supervisor</option><option value="OSHA 30">Personnel with OSHA 30 certification</option><option value="OSHA 10">Personnel with OSHA 10 certification</option><option value="None">None -- requires external sourcing</option></select>
                     </div>
                 </div>
                 <div class="form-grid" style="margin-top:16px;">
@@ -568,7 +568,7 @@
                 <div class="card-title">8. Total Recordable Incident Rate (TRIR)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>TRIR Range</label>
-                        <select id="f_trir"><option value="">Select...</option><option value="0-1.5">0 – 1.5 (Excellent)</option><option value="1.6-3.1">1.6 – 3.1 (Acceptable)</option><option value="3.2+">3.2+ (High Risk)</option><option value="Not tracked">Tracking method not established</option></select>
+                        <select id="f_trir"><option value="">Select...</option><option value="0-1.5">0 - 1.5 (Excellent)</option><option value="1.6-3.1">1.6 - 3.1 (Acceptable)</option><option value="3.2+">3.2+ (High Risk)</option><option value="Not tracked">Tracking method not established</option></select>
                     </div>
                 </div>
             </div>
@@ -578,7 +578,7 @@
                 <div class="card-title">7. Product Deployment Scale (MW)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Total MW Shipped / Deployed</label>
-                        <select id="f_mwExperience"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 – 500 MW</option><option value="101-300 MW">101 – 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
+                        <select id="f_mwExperience"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 - 500 MW</option><option value="101-300 MW">101 - 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
                     </div>
                 </div>
             </div>
@@ -588,10 +588,10 @@
                 <div class="card-title">8. Warranty of Product</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Standard Warranty Duration</label><input type="text" id="f_warrantyDuration" placeholder="e.g. 10 years, 25 years performance"></div>
-                    <div class="form-group"><label>Extended Warranty Options</label><select id="f_extWarranty"><option value="">Select...</option><option value="Available">Available — with defined plans/costs</option><option value="Case by case">Case by case</option><option value="None">Not offered</option></select></div>
-                    <div class="form-group"><label>Warranty Transferability</label><select id="f_warrantyTransfer"><option value="">Select...</option><option value="Yes">Yes — fully transferable</option><option value="Conditional">Conditional</option><option value="No">Not transferable</option></select></div>
+                    <div class="form-group"><label>Extended Warranty Options</label><select id="f_extWarranty"><option value="">Select...</option><option value="Available">Available -- with defined plans/costs</option><option value="Case by case">Case by case</option><option value="None">Not offered</option></select></div>
+                    <div class="form-group"><label>Warranty Transferability</label><select id="f_warrantyTransfer"><option value="">Select...</option><option value="Yes">Yes -- fully transferable</option><option value="Conditional">Conditional</option><option value="No">Not transferable</option></select></div>
                     <div class="form-group"><label>Avg. Warranty Service Turnaround</label><select id="f_warrantyTurnaround"><option value="">Select...</option><option value="<48 hours">Under 48 hours</option><option value="3-7 days">3-7 days</option><option value="1-2 weeks">1-2 weeks</option><option value="2+ weeks">Over 2 weeks</option></select></div>
-                    <div class="form-group full"><label>Scope of Warranty Coverage</label><input type="text" id="f_warrantyCoverage" placeholder="What's covered — defects, performance degradation, labor, shipping"></div>
+                    <div class="form-group full"><label>Scope of Warranty Coverage</label><input type="text" id="f_warrantyCoverage" placeholder="What's covered -- defects, performance degradation, labor, shipping"></div>
                     <div class="form-group full"><label>Known Exclusions</label><input type="text" id="f_warrantyExclusions" placeholder="e.g. modifications, environmental damage, improper installation"></div>
                     <div class="form-group full"><label>Parts Availability</label><input type="text" id="f_partsAvail" placeholder="Inventory levels, lead times, end-of-life support"></div>
                 </div>
@@ -602,7 +602,7 @@
                 <div class="card-title">9. BESS Experience</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Years of BESS Installation Experience</label>
-                        <select id="f_bessExperience"><option value="">Select...</option><option value=">7 years">7+ years</option><option value="5-7 years">5 – 7 years</option><option value="3-5 years">3 – 5 years</option><option value="1-2 years">1 – 2 years</option><option value="None">None</option></select>
+                        <select id="f_bessExperience"><option value="">Select...</option><option value=">7 years">7+ years</option><option value="5-7 years">5 - 7 years</option><option value="3-5 years">3 - 5 years</option><option value="1-2 years">1 - 2 years</option><option value="None">None</option></select>
                     </div>
                     <div class="form-group full"><label>BESS OEM Experience</label><input type="text" id="f_bessOEM" placeholder="e.g. Tesla Megapack, BYD, Sungrow, FlexGen"></div>
                 </div>
@@ -613,14 +613,14 @@
                 <div class="card-title">10. Project Experience (MW Installed)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Total MW Installed</label>
-                        <select id="f_mwInstalled"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 – 500 MW</option><option value="101-300 MW">101 – 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
+                        <select id="f_mwInstalled"><option value="">Select...</option><option value=">501 MW">Over 501 MW</option><option value="301-500 MW">301 - 500 MW</option><option value="101-300 MW">101 - 300 MW</option><option value="<100 MW">Under 100 MW</option></select>
                     </div>
                     <div class="form-group"><label>Largest Single Project (MW)</label><input type="text" id="f_largestProject" placeholder="e.g. 150 MW"></div>
                     <div class="form-group full"><label>Supervisor Availability</label>
-                        <select id="f_supervisorAvail"><option value="">Select...</option><option value="On-site full time">On-site superintendent for duration of project</option><option value="Intermittent">Intermittent — on-site certain days</option><option value="Remote">Remote supervision only</option></select>
+                        <select id="f_supervisorAvail"><option value="">Select...</option><option value="On-site full time">On-site superintendent for duration of project</option><option value="Intermittent">Intermittent -- on-site certain days</option><option value="Remote">Remote supervision only</option></select>
                     </div>
                     <div class="form-group full"><label>Operating Distance from Typical Sites</label>
-                        <select id="f_operatingDistance"><option value="">Select...</option><option value="<50 miles">Under 50 miles</option><option value="50-100 miles">50 – 100 miles</option><option value="100-200 miles">100 – 200 miles</option><option value=">200 miles">Over 200 miles</option></select>
+                        <select id="f_operatingDistance"><option value="">Select...</option><option value="<50 miles">Under 50 miles</option><option value="50-100 miles">50 - 100 miles</option><option value="100-200 miles">100 - 200 miles</option><option value=">200 miles">Over 200 miles</option></select>
                     </div>
                 </div>
             </div>
@@ -643,9 +643,9 @@
             <div class="card">
                 <div class="card-title">References</div>
                 <div id="refsContainer">
-                    <div class="form-grid three ref-row" data-idx="1"><div class="form-group"><label>Reference 1 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
-                    <div class="form-grid three ref-row" data-idx="2" style="margin-top:8px;"><div class="form-group"><label>Reference 2 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
-                    <div class="form-grid three ref-row" data-idx="3" style="margin-top:8px;"><div class="form-group"><label>Reference 3 — Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                    <div class="form-grid three ref-row" data-idx="1"><div class="form-group"><label>Reference 1 -- Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                    <div class="form-grid three ref-row" data-idx="2" style="margin-top:8px;"><div class="form-group"><label>Reference 2 -- Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
+                    <div class="form-grid three ref-row" data-idx="3" style="margin-top:8px;"><div class="form-group"><label>Reference 3 -- Company</label><input type="text" class="ref-company" placeholder="GC or Owner name"></div><div class="form-group"><label>Contact Name</label><input type="text" class="ref-contact" placeholder="Full name"></div><div class="form-group"><label>Phone / Email</label><input type="text" class="ref-phone" placeholder="Contact info"></div></div>
                 </div>
             </div>
 
@@ -664,7 +664,7 @@
         <div id="mapView" style="display:none;">
             <div class="page-header">
                 <h2>Coverage <span>Map</span></h2>
-                <div style="font-size:13px;color:var(--text-muted);" id="mapVendorCount">— vendors</div>
+                <div style="font-size:13px;color:var(--text-muted);" id="mapVendorCount">-- vendors</div>
             </div>
             <div class="map-controls">
                 <select id="mapFilterType" onchange="renderMap()">
@@ -728,14 +728,14 @@
                     <div class="card" style="margin-bottom:16px;">
                         <div class="card-title">Project Details</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Project Name <span class="req">*</span></label><input type="text" id="rfp_projectName" placeholder="e.g. Endicott NY Solar Farm — 85 MW"></div>
+                            <div class="form-group"><label>Project Name <span class="req">*</span></label><input type="text" id="rfp_projectName" placeholder="e.g. Endicott NY Solar Farm -- 85 MW"></div>
                             <div class="form-group"><label>Project Location <span class="req">*</span></label><input type="text" id="rfp_location" placeholder="City, State"></div>
                             <div class="form-group"><label>System Size</label><input type="text" id="rfp_systemSize" placeholder="e.g. 85 MW DC / 68 MW AC"></div>
                             <div class="form-group"><label>Bid Due Date <span class="req">*</span></label><input type="date" id="rfp_bidDate"></div>
                             <div class="form-group"><label>Construction Start</label><input type="date" id="rfp_startDate"></div>
                             <div class="form-group"><label>Estimated Contract Value</label><input type="text" id="rfp_contractValue" placeholder="e.g. $4,200,000"></div>
                             <div class="form-group full"><label>Data Room Link</label><input type="url" id="rfp_dataRoom" placeholder="https://dataroom.example.com/project-xyz"></div>
-                            <div class="form-group full"><label>Project Description</label><textarea id="rfp_description" rows="3" placeholder="Brief project overview — technology, offtaker, EPC structure, site conditions..."></textarea></div>
+                            <div class="form-group full"><label>Project Description</label><textarea id="rfp_description" rows="3" placeholder="Brief project overview -- technology, offtaker, EPC structure, site conditions..."></textarea></div>
                         </div>
                     </div>
 
@@ -802,7 +802,7 @@
                                 <input type="text" id="rfpEmailTo" placeholder="vendor@company.com" style="font-size:12px;">
                             </div>
                             <div class="form-group" style="margin-top:8px;"><label>Subject</label>
-                                <input type="text" id="rfpEmailSubject" placeholder="RFP: Project Name — Bid Invitation" style="font-size:12px;">
+                                <input type="text" id="rfpEmailSubject" placeholder="RFP: Project Name -- Bid Invitation" style="font-size:12px;">
                             </div>
                         </div>
                         <div class="rfp-output" id="rfpEmailBody" style="max-height:240px;">Email body will appear after generation...</div>
@@ -818,7 +818,7 @@
         <div id="schemaView" style="display:none;">
             <div class="page-header"><h2>SharePoint <span>List Setup</span></h2></div>
             <div class="card">
-                <div class="card-title">Vendors List — Prequal Columns</div>
+                <div class="card-title">Vendors List -- Prequal Columns</div>
                 <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Your existing <strong>Vendors</strong> list on the root SharePoint site already has base columns. The button below adds the prequal-specific columns (skips any that already exist). Existing columns are shown in gray.</p>
                 <button class="btn btn-primary" id="createListBtn" onclick="createSharePointList()">Add Prequal Columns to Vendors List</button>
                 <div style="margin-top:20px;"><table><thead><tr><th>Status</th><th>Column Name</th><th>Internal Name</th><th>Type</th><th>Required</th><th>Notes</th></tr></thead><tbody id="schemaTableBody"></tbody></table></div>
@@ -1010,7 +1010,7 @@ async function resolveListId(){
 async function createSharePointList(){
     const btn=document.getElementById('createListBtn');btn.disabled=true;btn.textContent='Adding columns...';
     try{
-        // List already exists — just add missing prequal columns
+        // List already exists -- just add missing prequal columns
         if(!listId){const d=await graphGet(`/sites/${CONFIG.siteId}/lists?$filter=displayName eq '${CONFIG.listName}'`);if(d.value&&d.value.length>0)listId=d.value[0].id;}
         if(!listId){showToast('Vendors list not found on root site.','error');btn.disabled=false;btn.textContent='Add Prequal Columns';return;}
         const newCols=LIST_COLUMNS.filter(c=>!c.existing);
@@ -1110,22 +1110,22 @@ function renderTable(){
         return null;
     };
     tb.innerHTML=filteredVendors.map(v=>{
-        const contact = v.ExecName || v.field_1 || '—';
-        const phone   = v.ExecPhone || v.field_4 || '—';
-        const email   = v.ExecEmail || v.VendorEmail || '—';
+        const contact = v.ExecName || v.field_1 || '-';
+        const phone   = v.ExecPhone || v.field_4 || '-';
+        const email   = v.ExecEmail || v.VendorEmail || '-';
         const docsUrl = getDocsUrl(v);
         const docsCell = docsUrl
             ? `<a href="${docsUrl}" target="_blank" title="View documents" style="font-size:20px;text-decoration:none;">📁</a>`
-            : '<span style="color:#ccc;">—</span>';
+            : '<span style="color:#ccc;">--</span>';
         return `<tr>
         <td><strong>${esc(v.Title||'')}</strong></td>
         <td style="font-size:12px;">${esc(contact)}</td>
         <td style="font-size:12px;">${esc(phone)}</td>
         <td style="font-size:12px;">${esc(email)}</td>
-        <td style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'}">${esc(v.VendorType||'—')}</td>
+        <td style="font-size:11px;font-weight:600;color:${v.VendorType==='Subcontractor'?'var(--navy)':'var(--green-dark)'}">${esc(v.VendorType||'-')}</td>
         <td>${tierBadge(v.Tier)}</td><td>${esc(v.Entity||'')}</td>
         <td>${statusBadge(v.Status)}</td>
-        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'—')}</td>
+        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:${v.EMR_Current&&parseFloat(v.EMR_Current)>=1?'var(--red)':'var(--navy)'}">${esc(v.EMR_Current||'-')}</td>
         <td>${aiScoreBadge(v.AIScore,v.AIRating)}</td>
         <td style="text-align:center;">${docsCell}</td>
         <td><button class="btn btn-secondary btn-sm" onclick="openDetail('${v.id}')">Review</button></td>
@@ -1145,37 +1145,37 @@ function updateStats(){
 function openDetail(id){
     const v=vendors.find(x=>x.id===id);if(!v)return;const panel=document.getElementById('detailPanel');
     const coiOk=v.COI_Expiry&&new Date(v.COI_Expiry)>new Date();
-    const coiStatus=v.COI_Expiry?(coiOk?'<span style="color:var(--green)">Active</span>':'<span style="color:var(--red)">EXPIRED</span>'):'—';
+    const coiStatus=v.COI_Expiry?(coiOk?'<span style="color:var(--green)">Active</span>':'<span style="color:var(--red)">EXPIRED</span>'):'-';
     const vals=[v.EMR_Current,v.EMR_Prior,v.EMR_2Prior].map(parseFloat).filter(n=>!isNaN(n));
-    const emrAvg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'—';
-    const ci=(l,val)=>{const h=val&&val!=='No'&&val!=='—';return `<div class="checklist-item"><span class="check ${h?'yes':'no'}">${h?'✓':'✗'}</span> ${l}</div>`;};
+    const emrAvg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):'-';
+    const ci=(l,val)=>{const h=val&&val!=='No'&&val!=='-';return `<div class="checklist-item"><span class="check ${h?'yes':'no'}">${h?'✓':'✗'}</span> ${l}</div>`;};
     panel.innerHTML=`
         <div class="dp-header"><div><h2>${esc(v.Title||'')}</h2><span style="font-size:13px;color:var(--text-light)">${esc(v.DBA||'')}</span></div><button class="dp-close" onclick="closeDetail()">✕</button></div>
         <div style="display:flex;gap:8px;margin-bottom:16px;">${tierBadge(v.Tier)} ${statusBadge(v.Status)}<span style="font-size:12px;color:var(--text-light);align-self:center;margin-left:auto;">ID: ${v.id}</span></div>
         <div class="dp-section"><h4>Contacts</h4><div class="dp-grid">
-            <div class="dp-field"><label>Exec Name</label><span>${esc(v.ExecName||v.field_1||'—')}</span></div>
-            <div class="dp-field"><label>Exec Email</label><span>${esc(v.ExecEmail||v.VendorEmail||'—')}</span></div>
-            <div class="dp-field"><label>Exec Phone</label><span>${esc(v.ExecPhone||v.field_4||'—')}</span></div>
-            <div class="dp-field"><label>Ops Name</label><span>${esc(v.OpsName||'—')}</span></div>
-            <div class="dp-field"><label>Ops Email</label><span>${esc(v.OpsEmail||'—')}</span></div>
-            <div class="dp-field"><label>Ops Phone</label><span>${esc(v.OpsPhone||'—')}</span></div>
-            <div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>${esc(v.Address1||v.field_2||'—')}</span></div>
+            <div class="dp-field"><label>Exec Name</label><span>${esc(v.ExecName||v.field_1||'-')}</span></div>
+            <div class="dp-field"><label>Exec Email</label><span>${esc(v.ExecEmail||v.VendorEmail||'-')}</span></div>
+            <div class="dp-field"><label>Exec Phone</label><span>${esc(v.ExecPhone||v.field_4||'-')}</span></div>
+            <div class="dp-field"><label>Ops Name</label><span>${esc(v.OpsName||'-')}</span></div>
+            <div class="dp-field"><label>Ops Email</label><span>${esc(v.OpsEmail||'-')}</span></div>
+            <div class="dp-field"><label>Ops Phone</label><span>${esc(v.OpsPhone||'-')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Address</label><span>${esc(v.Address1||v.field_2||'-')}</span></div>
         </div></div>
         ${(()=>{ const du=getDocsUrl(v); return du?`<div class="dp-section"><h4>Vendor Documents</h4><a href="${du}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">📁 Open Document Folder in SharePoint</a></div>`:''; })()}
         <div class="dp-section"><h4>Scope</h4><div class="dp-grid">
             <div class="dp-field"><label>Entity</label><span>${esc(v.Entity||'')}</span></div>
-            <div class="dp-field"><label>Years in Business</label><span>${v.YearsInBusiness||'—'}</span></div>
+            <div class="dp-field"><label>Years in Business</label><span>${v.YearsInBusiness||'-'}</span></div>
             <div class="dp-field" style="grid-column:1/-1"><label>Trades</label><span>${esc(v.Trades||'')}</span></div>
-            <div class="dp-field" style="grid-column:1/-1"><label>Licenses</label><span>${esc(v.Licenses||'—')}</span></div>
-            <div class="dp-field" style="grid-column:1/-1"><label>OEM Certs</label><span>${esc(v.OEMCerts||'—')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>Licenses</label><span>${esc(v.Licenses||'-')}</span></div>
+            <div class="dp-field" style="grid-column:1/-1"><label>OEM Certs</label><span>${esc(v.OEMCerts||'-')}</span></div>
         </div></div>
         <div class="dp-section"><h4>Insurance &amp; Safety</h4><div class="dp-grid">
-            <div class="dp-field"><label>GL Limit</label><span>${esc(v.GL_Limit||'—')}</span></div>
-            <div class="dp-field"><label>WC Carrier</label><span>${esc(v.WC_Carrier||'—')}</span></div>
+            <div class="dp-field"><label>GL Limit</label><span>${esc(v.GL_Limit||'-')}</span></div>
+            <div class="dp-field"><label>WC Carrier</label><span>${esc(v.WC_Carrier||'-')}</span></div>
             <div class="dp-field"><label>COI Expiry</label><span>${formatDate(v.COI_Expiry)} ${coiStatus}</span></div>
-            <div class="dp-field"><label>EMR (3yr avg)</label><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:${emrAvg!=='—'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)'}">${emrAvg}</span></div>
-            <div class="dp-field"><label>EMR Current</label><span>${esc(v.EMR_Current||'—')}</span></div>
-            <div class="dp-field"><label>EMR Prior</label><span>${esc(v.EMR_Prior||'—')}</span></div>
+            <div class="dp-field"><label>EMR (3yr avg)</label><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:${emrAvg!=='-'&&parseFloat(emrAvg)>=1?'var(--red)':'var(--green)'}">${emrAvg}</span></div>
+            <div class="dp-field"><label>EMR Current</label><span>${esc(v.EMR_Current||'-')}</span></div>
+            <div class="dp-field"><label>EMR Prior</label><span>${esc(v.EMR_Prior||'-')}</span></div>
         </div></div>
         <div class="dp-section"><h4>Prequal Checklist</h4>
             ${ci('W-9 / EIN on file',v.EIN)}
@@ -1198,7 +1198,7 @@ function openDetail(id){
                 </div>
                 <div class="score-bar-wrap">
                     <div class="score-bar"><div class="score-bar-fill" style="width:${v.AIScore}%;background:${v.AIScore>=70?'var(--green)':v.AIScore>=40?'var(--amber)':'var(--red)'}"></div></div>
-                    <div class="score-bar-labels"><span>0 — Fail</span><span>40 — Conditional</span><span>70 — Pass</span><span>100</span></div>
+                    <div class="score-bar-labels"><span>0 -- Fail</span><span>40 -- Conditional</span><span>70 -- Pass</span><span>100</span></div>
                 </div>
                 ${v.AIAnalysis?`<div class="ai-analysis">${esc(v.AIAnalysis)}</div>`:''}
                 <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="scoreVendor('${v.id}')">⚡ Re-Score</button>
@@ -1242,7 +1242,7 @@ function getDocsUrl(v){
 function val(id){return document.getElementById(id)?.value?.trim()||'';}
 function numVal(id){const n=parseFloat(val(id));return isNaN(n)?null:n;}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function formatDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
+function formatDate(d){if(!d)return'-';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
 function statusBadge(s){const m={'Approved':'approved','Pending':'pending','Under Review':'review','Rejected':'rejected','Expired':'expired'};return `<span class="badge badge-${m[s]||'pending'}">${esc(s||'Pending')}</span>`;}
 function tierBadge(t){const n=t==='Tier 1'?'1':t==='Tier 2'?'2':'3';return `<span class="badge-tier badge-tier-${n}">${esc(t||'')}</span>`;}
 function clearForm(){document.querySelectorAll('#formView input,#formView select,#formView textarea').forEach(e=>{if(e.type==='checkbox')e.checked=false;else e.value='';});document.querySelectorAll('.section-vendor,.section-sub').forEach(el=>el.style.display='none');}
@@ -1262,10 +1262,10 @@ function showToast(m,t=''){const e=document.getElementById('toast');e.textConten
 let claudeApiKey = sessionStorage.getItem('claudeApiKey') || '';
 
 function aiScoreBadge(score, rating) {
-    if (!score && !rating) return '<span class="score-badge none">—</span>';
+    if (!score && !rating) return '<span class="score-badge none">--</span>';
     const r = (rating || '').toLowerCase();
     const cls = r === 'pass' ? 'pass' : r === 'conditional' ? 'conditional' : r === 'fail' ? 'fail' : 'none';
-    return `<span class="score-badge ${cls}">${score || '—'} ${rating || ''}</span>`;
+    return `<span class="score-badge ${cls}">${score || '-'} ${rating || ''}</span>`;
 }
 
 function openApiKeyModal() {
@@ -1472,7 +1472,7 @@ async function scoreVendor(id) {
             AIAnalysis: result.analysis
         });
 
-        showToast(`${v.Title}: ${result.score}/100 — ${result.rating}`, 'success');
+        showToast(`${v.Title}: ${result.score}/100 -- ${result.rating}`, 'success');
         await loadVendors();
 
         // Re-open detail panel with updated data
@@ -1636,10 +1636,10 @@ async function initMap(){
             const vs = getVendorsForState(abbr);
             if(vs.length){
                 tooltip.style.display='block';
-                tooltip.innerHTML=`<strong>${abbr}</strong> — ${vs.length} vendor${vs.length>1?'s':''}<br><span style="opacity:0.75;font-size:10px;">${vs.map(v=>v.Title).slice(0,4).join('<br>')}${vs.length>4?`<br>+${vs.length-4} more`:''}</span>`;
+                tooltip.innerHTML=`<strong>${abbr}</strong> -- ${vs.length} vendor${vs.length>1?'s':''}<br><span style="opacity:0.75;font-size:10px;">${vs.map(v=>v.Title).slice(0,4).join('<br>')}${vs.length>4?`<br>+${vs.length-4} more`:''}</span>`;
             } else {
                 tooltip.style.display='block';
-                tooltip.innerHTML=`<strong>${abbr}</strong> — No coverage`;
+                tooltip.innerHTML=`<strong>${abbr}</strong> -- No coverage`;
             }
             d3.select(this).attr('stroke-width', 2).attr('stroke','var(--navy)');
         })
@@ -1705,7 +1705,7 @@ function updateMapColors(fipsMap, counts){
     // Update label colors
     d3.selectAll('text').each(function(){
         const el = d3.select(this);
-        // Get abbr from nearby path — approximate by centroid match
+        // Get abbr from nearby path -- approximate by centroid match
         // Just update all labels based on count
     });
 }
@@ -1732,7 +1732,7 @@ function renderMapSidebar(){
 
     const header = mapSelectedState
         ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-            <span>${mapSelectedState} — ${vendorsToShow.length} Vendor${vendorsToShow.length!==1?'s':''}</span>
+            <span>${mapSelectedState} -- ${vendorsToShow.length} Vendor${vendorsToShow.length!==1?'s':''}</span>
             <span style="font-weight:400;cursor:pointer;color:var(--text-light);font-size:18px;" onclick="mapSelectedState=null;renderMap();">✕</span>
            </div>` : '';
 
@@ -1755,7 +1755,7 @@ function renderMapSidebar(){
 
 function renderMap(){
     if(!mapInitialized){
-        initMap(); // async — will call renderMapSidebar when done
+        initMap(); // async -- will call renderMapSidebar when done
     } else {
         const counts = buildStateCounts();
         updateMapColors(null, counts);
@@ -1817,7 +1817,7 @@ function renderRfpRoster(){
     }
     el.innerHTML = sel.map(v=>{
         const docsUrl = getDocsUrl(v);
-        const contact = v.ExecName||v.field_1||'—';
+        const contact = v.ExecName||v.field_1||'-';
         const email   = v.ExecEmail||v.VendorEmail||'';
         const phone   = v.ExecPhone||v.field_4||'';
         return `<div class="rfp-vendor-row selected" id="rfprow-${v.id}">
@@ -1887,8 +1887,7 @@ async function generateRfp(){
     document.getElementById('rfpOutput').textContent='Generating RFP...';
     document.getElementById('rfpEmailBody').textContent='Generating email draft...';
 
-    const vendorList = sel.map((v,i)=>`${i+1}. ${v.Title} (${v.VendorType||''}, ${v.Tier||''}, EMR: ${v.EMR_Current||'N/A'}, AI Score: ${v.AIScore||'N/A'})`).join('
-');
+    const vendorList = sel.map((v,i)=>`${i+1}. ${v.Title} (${v.VendorType||''}, ${v.Tier||''}, EMR: ${v.EMR_Current||'N/A'}, AI Score: ${v.AIScore||'N/A'})`).join('\n');
 
     const prompt = `You are drafting a professional RFP (Request for Proposal) package on behalf of Distributed Energy Infrastructure (DEI), a commercial solar and battery storage EPC company based in Stuart, FL.
 
@@ -1912,7 +1911,7 @@ ${vendorList}
 
 Generate TWO outputs separated by "---EMAIL---":
 
-PART 1 — FORMAL RFP DOCUMENT:
+PART 1 -- FORMAL RFP DOCUMENT:
 A professional RFP document including:
 1. Project Overview
 2. Scope of Work (detailed, based on trades listed)
@@ -1926,9 +1925,9 @@ Format as a clean document with headers. Professional but direct tone.
 
 ---EMAIL---
 
-PART 2 — EMAIL INVITATION (sent individually to each vendor):
+PART 2 -- EMAIL INVITATION (sent individually to each vendor):
 Subject line on first line starting with "SUBJECT: "
-Then the email body — professional, concise, under 200 words. Reference the project, bid date, data room, and that formal RFP is attached. Sign off as DEI Estimating Team.`;
+Then the email body -- professional, concise, under 200 words. Reference the project, bid date, data room, and that formal RFP is attached. Sign off as DEI Estimating Team.`;
 
     try {
         const resp = await fetch('https://api.anthropic.com/v1/messages',{
@@ -1944,12 +1943,10 @@ Then the email body — professional, concise, under 200 words. Reference the pr
         const emailRaw = parts[1]?.trim()||'';
 
         // Parse subject line
-        const emailLines = emailRaw.split('
-');
+        const emailLines = emailRaw.split('\n');
         const subjectLine = emailLines.find(l=>l.startsWith('SUBJECT:'))||'';
         const subject = subjectLine.replace('SUBJECT:','').trim();
-        const emailBody = emailLines.filter(l=>!l.startsWith('SUBJECT:')).join('
-').trim();
+        const emailBody = emailLines.filter(l=>!l.startsWith('SUBJECT:')).join('\n').trim();
 
         document.getElementById('rfpOutput').textContent = rfpDoc;
         document.getElementById('rfpEmailBody').textContent = emailBody;
@@ -1985,7 +1982,7 @@ function printRfpPdf(){
     const projName = document.getElementById('rfp_projectName')?.value||'RFP';
     const rfpText  = document.getElementById('rfpOutput')?.textContent||'';
     const vendors  = rfpSelectedVendors.map(id=>{ const v=window.vendors?.find?.(x=>x.id===id); return v?v.Title:''; }).filter(Boolean);
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${projName} — RFP</title>
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${projName} -- RFP</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
@@ -2007,7 +2004,7 @@ function printRfpPdf(){
     </style></head><body>
     <div class="cover">
         <div><span style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;letter-spacing:1px;">DISTRIBUTED ENERGY <span style="color:#8fb844;">INFRASTRUCTURE</span></span></div>
-        <div class="sub">REQUEST FOR PROPOSAL — CONFIDENTIAL</div>
+        <div class="sub">REQUEST FOR PROPOSAL -- CONFIDENTIAL</div>
         <div class="proj">${projName}</div>
         <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.6);">Issued: ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
     </div>
@@ -2029,7 +2026,7 @@ function printRfpPdf(){
 }
 
 // ══════════════════════════════════════════════════════════════════
-// MAP STATE POPUP — click state → vendor panel with Add to RFP
+// MAP STATE POPUP -- click state → vendor panel with Add to RFP
 // ══════════════════════════════════════════════════════════════════
 function openStatePopup(abbr, vendorsInState){
     // Remove existing popup
@@ -2044,7 +2041,7 @@ function openStatePopup(abbr, vendorsInState){
     popup.innerHTML = `
         <div style="background:var(--navy);color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
             <div>
-                <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;">${abbr} — ${vendorsInState.length} Vendor${vendorsInState.length!==1?'s':''}</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px;">${abbr} -- ${vendorsInState.length} Vendor${vendorsInState.length!==1?'s':''}</div>
                 <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">Select vendors to add to RFP Builder</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
@@ -2054,7 +2051,7 @@ function openStatePopup(abbr, vendorsInState){
         </div>
         <div style="overflow-y:auto;flex:1;padding:12px;">
             ${vendorsInState.map(v=>{
-                const contact = v.ExecName||v.field_1||'—';
+                const contact = v.ExecName||v.field_1||'-';
                 const email   = v.ExecEmail||v.VendorEmail||'';
                 const phone   = v.ExecPhone||v.field_4||'';
                 const docsUrl = getDocsUrl(v);
@@ -2116,13 +2113,13 @@ function toggleRfpFromPopup(id, btn){
 }
 
 // ══════════════════════════════════════════════════════════════════
-// FIX ServiceRegion parsing — handle all formats
+// FIX ServiceRegion parsing -- handle all formats
 // ══════════════════════════════════════════════════════════════════
 function vendorServesState(v, abbr){
     const region = (v.ServiceRegion||'').toUpperCase().trim();
     if(!region) return false;
     if(region.includes('NATIONWIDE')) return true;
-    // Split on comma, space, semicolon — check each token
+    // Split on comma, space, semicolon -- check each token
     const tokens = region.split(/[\s,;]+/).map(t=>t.trim()).filter(Boolean);
     return tokens.includes(abbr.toUpperCase());
 }
