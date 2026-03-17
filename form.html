@@ -67,6 +67,8 @@
         .contact-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px}
         .contact-block-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
         .footer-bar{background:var(--navy);padding:16px 24px;text-align:center;color:rgba(255,255,255,0.3);font-size:11px;margin-top:0}
+        .upload-progress{margin-top:8px;font-size:11px;color:var(--text-muted);display:none}
+        .upload-progress.show{display:block}
         @media(max-width:640px){.form-grid,.form-grid.three{grid-template-columns:1fr}}
     </style>
 </head>
@@ -200,7 +202,7 @@
         </div>
     </div>
 
-    <!-- DEFAULTS / BANKRUPTCY -->
+    <!-- LEGAL -->
     <div class="card"><div class="card-title">Legal &amp; Compliance History</div>
         <div class="form-grid">
             <div class="form-group full"><label>Any defaults, bankruptcy filings, or court cases involving the company or any executives in the last 7 years? <span class="req">*</span></label>
@@ -232,12 +234,12 @@
 
     <div class="card section-sub"><div class="card-title">Project Experience (MW)</div><div class="form-grid"><div class="form-group"><label>Total MW Installed</label><select id="f_mwInstalled"><option value="">Select...</option><option value=">501 MW">&gt;501 MW</option><option value="301-500 MW">301-500 MW</option><option value="101-300 MW">101-300 MW</option><option value="<100 MW">&lt;100 MW</option></select></div><div class="form-group"><label>Largest Project</label><input type="text" id="f_largestProject" placeholder="e.g. 150 MW"></div><div class="form-group"><label>Supervisor Availability</label><select id="f_supervisorAvail"><option value="">Select...</option><option value="On-site full time">On-site full time</option><option value="Intermittent">Intermittent</option><option value="Remote">Remote</option></select></div><div class="form-group"><label>Operating Distance</label><select id="f_operatingDistance"><option value="">Select...</option><option value="<50 miles">&lt;50 mi</option><option value="50-100 miles">50-100 mi</option><option value="100-200 miles">100-200 mi</option><option value=">200 miles">&gt;200 mi</option></select></div></div></div>
 
-    <!-- STAFFING (kept, turnover removed) -->
+    <!-- STAFFING -->
     <div class="card"><div class="card-title">Staffing</div><div class="form-grid"><div class="form-group"><label>Workforce Composition</label><select id="f_workforceComp"><option value="">Select...</option><option value="All permanent">All permanent</option><option value="Mostly permanent">Mostly permanent</option><option value="Mix">Mix</option><option value="Mostly temp">Mostly temp</option></select></div><div class="form-group"><label>Crew Size</label><input type="number" id="f_crewSize" placeholder="e.g. 45"></div><div class="form-group"><label># Permanent</label><input type="number" id="f_permanentEmp"></div><div class="form-group"><label># Partners/Subs</label><input type="number" id="f_partnerCount"></div></div></div>
 
     <!-- DOCUMENT UPLOADS -->
     <div class="card"><div class="card-title">Required Documents</div>
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Upload the following documents (PDF, DOC, DOCX, JPG, PNG — max 5MB each).</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Upload the following documents (PDF, DOC, DOCX, JPG, PNG — max 10MB each). All files are stored securely in the DEG document system.</p>
         <div class="form-grid">
             <div class="form-group">
                 <label>W-9 <span class="req">*</span></label>
@@ -249,19 +251,37 @@
                 </label>
             </div>
             <div class="form-group">
-                <label>Sample Insurance Certificate <span class="req">*</span></label>
+                <label>Certificate of Insurance (COI) <span class="req">*</span></label>
                 <label class="file-upload" for="f_fileCOI">
                     <input type="file" id="f_fileCOI" accept=".pdf,.doc,.docx,.jpg,.png" onchange="showFileName(this)">
-                    <div class="file-icon">📄</div>
+                    <div class="file-icon">🛡️</div>
                     <div class="file-label">Click to upload COI</div>
                     <div class="file-name" id="fn_fileCOI"></div>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Business License(s)</label>
+                <label class="file-upload" for="f_fileLicense">
+                    <input type="file" id="f_fileLicense" accept=".pdf,.doc,.docx,.jpg,.png" multiple onchange="showFileName(this)">
+                    <div class="file-icon">📋</div>
+                    <div class="file-label">Click to upload license(s) — multiple OK</div>
+                    <div class="file-name" id="fn_fileLicense"></div>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>OEM Certifications</label>
+                <label class="file-upload" for="f_fileOEM">
+                    <input type="file" id="f_fileOEM" accept=".pdf,.doc,.docx,.jpg,.png" multiple onchange="showFileName(this)">
+                    <div class="file-icon">🏆</div>
+                    <div class="file-label">Click to upload OEM cert(s) — multiple OK</div>
+                    <div class="file-name" id="fn_fileOEM"></div>
                 </label>
             </div>
             <div class="form-group">
                 <label>Executed NDA <span id="ndaReqLabel"></span></label>
                 <label class="file-upload" for="f_fileNDA">
                     <input type="file" id="f_fileNDA" accept=".pdf,.doc,.docx,.jpg,.png" onchange="showFileName(this)">
-                    <div class="file-icon">📄</div>
+                    <div class="file-icon">✍️</div>
                     <div class="file-label">Click to upload signed NDA</div>
                     <div class="file-name" id="fn_fileNDA"></div>
                 </label>
@@ -270,12 +290,13 @@
                 <label>OSHA 300 Logs (3 Years)</label>
                 <label class="file-upload" for="f_fileOSHA">
                     <input type="file" id="f_fileOSHA" accept=".pdf,.doc,.docx,.jpg,.png" multiple onchange="showFileName(this)">
-                    <div class="file-icon">📄</div>
-                    <div class="file-label">Click to upload OSHA 300 logs (multiple files OK)</div>
+                    <div class="file-icon">⚠️</div>
+                    <div class="file-label">Click to upload OSHA 300 logs — multiple OK</div>
                     <div class="file-name" id="fn_fileOSHA"></div>
                 </label>
             </div>
         </div>
+        <div class="upload-progress" id="uploadProgress"></div>
     </div>
 
     <!-- REFERENCES -->
@@ -308,11 +329,65 @@ function toggleType(){const v=val('f_vendorType');document.querySelectorAll('.se
 function toggleNda(){const v=val('f_ndaStatus');document.getElementById('ndaDateBlock').classList.toggle('show',v==='Yes');document.getElementById('ndaReqLabel').innerHTML=v==='No'?'<span class="req">*</span>':'';}
 function toggleLegal(){document.getElementById('legalDetailsBlock').classList.toggle('show',val('f_legalIssues')==='Yes');}
 function gc(id){const v=[];document.querySelectorAll(`#${id} input:checked`).forEach(c=>v.push(c.value));return v.join(', ');}
-function showFileName(input){const el=document.getElementById(input.id.replace('f_file','fn_file'));if(!el)return;if(input.files.length>1)el.textContent=input.files.length+' files selected';else if(input.files.length===1)el.textContent=input.files[0].name;else el.textContent='';}
 
-function fileToBase64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve({name:file.name,type:file.type,size:file.size,data:r.result.split(',')[1]});r.onerror=reject;r.readAsDataURL(file);});}
+function showFileName(input){
+    const el=document.getElementById(input.id.replace('f_file','fn_file'));
+    if(!el)return;
+    if(input.files.length>1)el.textContent=input.files.length+' files selected';
+    else if(input.files.length===1)el.textContent=input.files[0].name;
+    else el.textContent='';
+}
 
-async function getFileData(id){const input=document.getElementById(id);if(!input.files||!input.files.length)return null;if(input.files.length===1)return await fileToBase64(input.files[0]);const files=[];for(const f of input.files)files.push(await fileToBase64(f));return files;}
+// ─── FILE ENCODING ───────────────────────────────────────────────
+// Converts a single File object to { label, name, mimeType, data }
+function encodeFile(file, label){
+    return new Promise((resolve, reject)=>{
+        const reader = new FileReader();
+        reader.onload = ()=> resolve({
+            label: label,                        // e.g. "W9", "COI", "BusinessLicense"
+            name:  file.name,                    // original filename
+            mimeType: file.type || 'application/octet-stream',
+            data:  reader.result.split(',')[1]   // pure base64, no prefix
+        });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Encodes all files from a given input element under a label prefix
+async function encodeFilesFromInput(inputId, label){
+    const input = document.getElementById(inputId);
+    if(!input || !input.files || !input.files.length) return [];
+    const results = [];
+    for(const file of input.files){
+        // For multi-file inputs, append index if >1 file
+        const fileLabel = input.files.length > 1 ? `${label}_${results.length+1}` : label;
+        results.push(await encodeFile(file, fileLabel));
+    }
+    return results;
+}
+
+// Build the full attachments array from all upload inputs
+async function buildAttachments(progressEl){
+    const inputs = [
+        { id:'f_fileW9',      label:'W9' },
+        { id:'f_fileCOI',     label:'COI' },
+        { id:'f_fileLicense', label:'BusinessLicense' },
+        { id:'f_fileOEM',     label:'OEMCertification' },
+        { id:'f_fileNDA',     label:'NDA' },
+        { id:'f_fileOSHA',    label:'OSHA300' }
+    ];
+    const attachments = [];
+    let done = 0;
+    for(const {id, label} of inputs){
+        const files = await encodeFilesFromInput(id, label);
+        attachments.push(...files);
+        done++;
+        if(progressEl) progressEl.textContent = `Encoding files... ${done}/${inputs.length}`;
+    }
+    return attachments;
+}
+// ─────────────────────────────────────────────────────────────────
 
 async function submitForm(){
     const vt=val('f_vendorType'),cn=val('f_companyName'),ti=val('f_tier'),en=val('f_entity');
@@ -336,7 +411,6 @@ async function submitForm(){
     if(!val('f_coiExpiry')){showError('Enter COI expiration date.');return;}
     if(!val('f_legalIssues')){showError('Answer the legal/compliance question.');return;}
     if(val('f_legalIssues')==='Yes'&&!val('f_legalDetails')){showError('Provide details about legal issues.');return;}
-
     if(isSub){
         if(!val('f_emrCurrent')){showError('Enter current year EMR.');return;}
         if(!val('f_safetyProgram')){showError('Indicate if you have a safety program.');return;}
@@ -345,82 +419,134 @@ async function submitForm(){
         if(!val('f_safetyProgramV')){showError('Indicate if you have a safety program.');return;}
     }
 
-    // File validation
+    // Required file validation
     if(!document.getElementById('f_fileW9').files.length){showError('Upload your W-9.');return;}
-    if(!document.getElementById('f_fileCOI').files.length){showError('Upload your insurance certificate.');return;}
+    if(!document.getElementById('f_fileCOI').files.length){showError('Upload your insurance certificate (COI).');return;}
     if(val('f_ndaStatus')==='No'&&!document.getElementById('f_fileNDA').files.length){showError('Upload executed NDA (download template above if needed).');return;}
 
-    // Check file sizes (4MB max each)
-    const maxSize=5*1024*1024;
-    const fileInputs=['f_fileW9','f_fileCOI','f_fileNDA','f_fileOSHA'];
-    for(const fid of fileInputs){const inp=document.getElementById(fid);if(inp&&inp.files)for(const f of inp.files)if(f.size>maxSize){showError(`File "${f.name}" exceeds 5MB limit.`);return;}}
+    // File size check — 10MB per file
+    const maxSize = 10*1024*1024;
+    const allInputIds = ['f_fileW9','f_fileCOI','f_fileLicense','f_fileOEM','f_fileNDA','f_fileOSHA'];
+    for(const fid of allInputIds){
+        const inp=document.getElementById(fid);
+        if(inp&&inp.files) for(const f of inp.files) if(f.size>maxSize){showError(`File "${f.name}" exceeds 10MB limit.`);return;}
+    }
 
-    const refs=[];document.querySelectorAll('.ref-row').forEach(r=>{const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();if(c)refs.push(`${c} | ${n} | ${p}`);});
+    const refs=[];
+    document.querySelectorAll('.ref-row').forEach(r=>{
+        const c=r.querySelector('.ref-company').value.trim(),n=r.querySelector('.ref-contact').value.trim(),p=r.querySelector('.ref-phone').value.trim();
+        if(c)refs.push(`${c} | ${n} | ${p}`);
+    });
     if(refs.length<2){showError('Provide at least 2 trade references.');return;}
 
-    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Uploading documents...';
+    const btn=document.getElementById('submitBtn');
+    const progressEl=document.getElementById('uploadProgress');
+    btn.disabled=true;
+    progressEl.classList.add('show');
+    progressEl.textContent='Encoding files...';
 
-    // Collect file data
-    const fileW9=await getFileData('f_fileW9');
-    const fileCOI=await getFileData('f_fileCOI');
-    const fileNDA=await getFileData('f_fileNDA');
-    const fileOSHA=await getFileData('f_fileOSHA');
+    // Build structured attachments array
+    let attachments = [];
+    try{
+        attachments = await buildAttachments(progressEl);
+    }catch(e){
+        showError('Error reading files: '+e.message);
+        btn.disabled=false; btn.textContent='Submit Prequalification';
+        progressEl.classList.remove('show');
+        return;
+    }
 
     btn.textContent='Submitting...';
+    progressEl.textContent=`Ready — ${attachments.length} file(s) attached. Sending...`;
 
     const p={
-        Title:cn,VendorType:vt,Entity:en,DBA:val('f_dba'),
+        // Core
+        Title:cn, VendorType:vt, Entity:en, DBA:val('f_dba'),
         YearEstablished:parseInt(val('f_yearsInBusiness'))||0,
-        Website:val('f_website'),CoreFunctions:val('f_coreFunctions'),
+        Website:val('f_website'), CoreFunctions:val('f_coreFunctions'),
         Address1:val('f_address'),
         // Contacts
-        ExecName:val('f_execName'),ExecEmail:val('f_execEmail'),ExecPhone:val('f_execPhone'),
-        OpsName:val('f_opsName'),OpsEmail:val('f_opsEmail'),OpsPhone:val('f_opsPhone'),
+        ExecName:val('f_execName'), ExecEmail:val('f_execEmail'), ExecPhone:val('f_execPhone'),
+        OpsName:val('f_opsName'),   OpsEmail:val('f_opsEmail'),   OpsPhone:val('f_opsPhone'),
         SalesName:val('f_salesName'),SalesEmail:val('f_salesEmail'),SalesPhone:val('f_salesPhone'),
-        // For backward compat with dashboard
-        Contact:val('f_execName'),VendorEmail:val('f_execEmail'),Phone:val('f_execPhone'),
+        // Dashboard backward-compat aliases
+        Contact:val('f_execName'), VendorEmail:val('f_execEmail'), Phone:val('f_execPhone'),
         // Scope
-        Tier:ti,Trades:gc('f_trades'),ServiceRegion:gc('f_states'),
-        Licenses:val('f_licenses'),OEMCerts:val('f_oemCerts'),
+        Tier:ti, Trades:gc('f_trades'), ServiceRegion:gc('f_states'),
+        Licenses:val('f_licenses'), OEMCerts:val('f_oemCerts'),
         // NDA
-        NDAStatus:val('f_ndaStatus'),NDADate:val('f_ndaDate')||null,
+        NDAStatus:val('f_ndaStatus'), NDADate:val('f_ndaDate')||null,
         // Financial
-        EIN:val('f_ein'),Revenue:val('f_revenue'),DUNS:val('f_duns'),
+        EIN:val('f_ein'), Revenue:val('f_revenue'), DUNS:val('f_duns'),
         AuditedFinancials:gc('f_auditedYears'),
-        GL_Limit:val('f_glLimit'),ProfLiability:val('f_profLiability'),
-        BondCapacity:val('f_bondCapacity'),WC_Carrier:val('f_wcCarrier'),
+        GL_Limit:val('f_glLimit'), ProfLiability:val('f_profLiability'),
+        BondCapacity:val('f_bondCapacity'), WC_Carrier:val('f_wcCarrier'),
         COI_Expiry:val('f_coiExpiry')||null,
         BankRef:`${val('f_bankName')} | ${val('f_bankEmail')} | ${val('f_bankPhone')}`,
+        BankEmail:val('f_bankEmail'), BankPhone:val('f_bankPhone'),
         // Legal
-        LegalIssues:val('f_legalIssues'),LegalDetails:val('f_legalDetails'),
+        LegalIssues:val('f_legalIssues'), LegalDetails:val('f_legalDetails'),
         // Staffing
-        WorkforceComp:val('f_workforceComp'),CrewSize:parseInt(val('f_crewSize'))||0,
-        PermanentEmp:parseInt(val('f_permanentEmp'))||0,PartnerCount:parseInt(val('f_partnerCount'))||0,
+        WorkforceComp:val('f_workforceComp'),
+        CrewSize:parseInt(val('f_crewSize'))||0,
+        PermanentEmp:parseInt(val('f_permanentEmp'))||0,
+        PartnerCount:parseInt(val('f_partnerCount'))||0,
         // References
-        Ref1:refs[0]||'',Ref2:refs[1]||'',Ref3:refs[2]||'',Notes:val('f_notes'),
-        Status:'Pending',SubmittedDate:new Date().toISOString().split('T')[0],SubmittedBy:'Vendor Self-Submit',
-        // Files (base64)
-        File_W9:fileW9,File_COI:fileCOI,File_NDA:fileNDA,File_OSHA:fileOSHA
+        Ref1:refs[0]||'', Ref2:refs[1]||'', Ref3:refs[2]||'',
+        Notes:val('f_notes'),
+        // Meta
+        Status:'Pending',
+        SubmittedDate:new Date().toISOString().split('T')[0],
+        SubmittedBy:'Vendor Self-Submit',
+        // ── STRUCTURED FILE ATTACHMENTS ──────────────────────────
+        // Each item: { label, name, mimeType, data }
+        // label values: W9 | COI | BusinessLicense | OEMCertification | NDA | OSHA300
+        // Power Automate loops this array → SharePoint Create File per item
+        // Folder: Vendor Documents / {Title} / {label}_{name}
+        attachments: attachments
     };
 
     // Type-specific fields
-    if(isSub)Object.assign(p,{SafetyIncidents:val('f_safetyIncidents'),SafetyProgram:val('f_safetyProgram'),OSHA_Incidents:parseInt(val('f_oshaIncidents'))||0,SafetyPersonnel:val('f_safetyPersonnel'),EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior'),TRIR:val('f_trir'),BESSExperience:val('f_bessExperience'),BESSOEM:val('f_bessOEM'),MWInstalled:val('f_mwInstalled'),LargestProject:val('f_largestProject'),SupervisorAvail:val('f_supervisorAvail'),OperatingDistance:val('f_operatingDistance')});
-    else Object.assign(p,{ContImprovement:val('f_contImprovement'),TechAdvancement:val('f_techAdvancement'),RandD:val('f_rAndD'),IndustryLeadership:val('f_industryLeadership'),CustomSolutions:val('f_customSolutions'),CostOptimization:val('f_costOptimization'),Reliability:val('f_reliability'),DefectRate:val('f_defectRate'),QualityCerts:val('f_qualityCerts'),MWExperience:val('f_mwExperience'),WarrantyDuration:val('f_warrantyDuration'),ExtWarranty:val('f_extWarranty'),WarrantyTransfer:val('f_warrantyTransfer'),WarrantyTurnaround:val('f_warrantyTurnaround'),WarrantyCoverage:val('f_warrantyCoverage'),WarrantyExclusions:val('f_warrantyExclusions'),PartsAvail:val('f_partsAvail'),SafetyProgram:val('f_safetyProgramV'),OSHA_Incidents:parseInt(val('f_oshaIncidentsV'))||0,EMR_Current:val('f_emrCurrentV'),EMR_Prior:val('f_emrPriorV'),EMR_2Prior:val('f_emr2PriorV')});
+    if(isSub){
+        Object.assign(p,{
+            SafetyIncidents:val('f_safetyIncidents'),SafetyProgram:val('f_safetyProgram'),
+            OSHA_Incidents:parseInt(val('f_oshaIncidents'))||0,SafetyPersonnel:val('f_safetyPersonnel'),
+            EMR_Current:val('f_emrCurrent'),EMR_Prior:val('f_emrPrior'),EMR_2Prior:val('f_emr2Prior'),
+            TRIR:val('f_trir'),BESSExperience:val('f_bessExperience'),BESSOEM:val('f_bessOEM'),
+            MWInstalled:val('f_mwInstalled'),LargestProject:val('f_largestProject'),
+            SupervisorAvail:val('f_supervisorAvail'),OperatingDistance:val('f_operatingDistance')
+        });
+    }else{
+        Object.assign(p,{
+            ContImprovement:val('f_contImprovement'),TechAdvancement:val('f_techAdvancement'),
+            RandD:val('f_rAndD'),IndustryLeadership:val('f_industryLeadership'),
+            CustomSolutions:val('f_customSolutions'),CostOptimization:val('f_costOptimization'),
+            Reliability:val('f_reliability'),DefectRate:val('f_defectRate'),
+            QualityCerts:val('f_qualityCerts'),MWExperience:val('f_mwExperience'),
+            WarrantyDuration:val('f_warrantyDuration'),ExtWarranty:val('f_extWarranty'),
+            WarrantyTransfer:val('f_warrantyTransfer'),WarrantyTurnaround:val('f_warrantyTurnaround'),
+            WarrantyCoverage:val('f_warrantyCoverage'),WarrantyExclusions:val('f_warrantyExclusions'),
+            PartsAvail:val('f_partsAvail'),SafetyProgram:val('f_safetyProgramV'),
+            OSHA_Incidents:parseInt(val('f_oshaIncidentsV'))||0,
+            EMR_Current:val('f_emrCurrentV'),EMR_Prior:val('f_emrPriorV'),EMR_2Prior:val('f_emr2PriorV')
+        });
+    }
 
     const body=JSON.stringify(p);
-    console.log('Submitting payload, length:',body.length);
+    console.log('Submitting — attachments:',attachments.length,'payload bytes:',body.length);
 
     try{
         await fetch(WEBHOOK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:body});
-        console.log('Fetch completed');
         document.getElementById('formContainer').style.display='none';
         document.getElementById('successScreen').classList.add('show');
     }catch(e){
         console.error('Fetch failed:',e);
         showError('Submission failed: '+e.message);
-        btn.disabled=false;btn.textContent='Submit Prequalification';
+        btn.disabled=false; btn.textContent='Submit Prequalification';
+        progressEl.classList.remove('show');
     }
 }
+
 function val(id){return document.getElementById(id)?.value?.trim()||'';}
 function showError(m){const e=document.getElementById('errorBanner');e.textContent=m;e.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});}
 </script>
