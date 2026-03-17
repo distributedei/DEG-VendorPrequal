@@ -678,9 +678,9 @@
                 <select id="mapFilterEntity" onchange="renderMap()"><option value="">All Entities</option><option value="DEI">DEI</option><option value="DER">DER</option></select>
                 <input type="text" id="mapFilterSearch" placeholder="Search company, trade, city..." oninput="renderMap()" style="width:220px;">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;height:calc(100vh - 220px);">
+            <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;height:620px;">
                 <div style="border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;">
-                    <div id="leafletMap" style="width:100%;height:100%;"></div>
+                    <div id="leafletMap" style="width:100%;height:600px;min-height:400px;"></div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);">
                     <div style="background:var(--navy);color:white;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;">
@@ -1269,7 +1269,15 @@ function switchTab(t){
     document.getElementById('mapView').style.display=t==='map'?'block':'none';
     document.getElementById('rfpView').style.display=t==='rfp'?'block':'none';
     if(t==='dashboard'&&listId)loadVendors();
-    if(t==='map'){ setTimeout(function(){ if(listId&&!vendors.length){ loadVendors().then(function(){ renderMap(); }); } else { renderMap(); } }, 50); }
+    if(t==='map'){
+        // Map div must be visible before Leaflet init — wait a frame
+        requestAnimationFrame(function(){
+            requestAnimationFrame(function(){
+                if(listId&&!vendors.length){ loadVendors().then(function(){ renderMap(); }); }
+                else { renderMap(); }
+            });
+        });
+    }
     if(t==='rfp')renderRfpRoster();
 }
 
@@ -1702,7 +1710,10 @@ function clearMapFilter(){ renderMapSidebar(); }
 
 function renderMap(){
     initMap();
-    if(leafletMap) setTimeout(function(){leafletMap.invalidateSize();placeVendorMarkers();},150);
+    if(leafletMap){
+        leafletMap.invalidateSize();
+        setTimeout(function(){leafletMap.invalidateSize();placeVendorMarkers();},200);
+    }
 }
 
 // ══════════════════════════════════════════════════════════════════
