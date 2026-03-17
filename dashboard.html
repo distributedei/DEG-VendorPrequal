@@ -1629,7 +1629,19 @@ async function initMap(){
 
     const counts = buildStateCounts();
     console.log('State counts:', JSON.stringify(counts));
-    console.log('Vendors loaded:', vendors.length, 'Sample region:', vendors[0]?.ServiceRegion);
+    console.log('Vendors loaded:', vendors.length);
+    if(vendors.length > 0){
+        const v0 = vendors[0];
+        // Find any field that looks like a region/state field
+        const regionKeys = Object.keys(v0).filter(k => 
+            k.toLowerCase().includes('region') || 
+            k.toLowerCase().includes('state') || 
+            k.toLowerCase().includes('service') ||
+            (typeof v0[k] === 'string' && v0[k].match(/^[A-Z]{2}(,\s*[A-Z]{2})*$/))
+        );
+        console.log('Possible region fields:', regionKeys, regionKeys.map(k=>v0[k]));
+        console.log('ALL vendor fields:', Object.keys(v0).join(', '));
+    }
 
     const g = svg.append('g').attr('class','states-group');
 
