@@ -1605,17 +1605,31 @@ async function initMap(){
 
     const tooltip = document.getElementById('mapTooltip');
 
-    // Build FIPS → abbr lookup
-    // Build FIPS → abbr from already-fetched TopoJSON
+    // Hardcoded FIPS → state abbreviation (us-atlas numeric IDs)
+    const FIPS_TO_ABBR = {
+        '01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT',
+        '10':'DE','11':'DC','12':'FL','13':'GA','15':'HI','16':'ID','17':'IL',
+        '18':'IN','19':'IA','20':'KS','21':'KY','22':'LA','23':'ME','24':'MD',
+        '25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT','31':'NE',
+        '32':'NV','33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND',
+        '39':'OH','40':'OK','41':'OR','42':'PA','44':'RI','45':'SC','46':'SD',
+        '47':'TN','48':'TX','49':'UT','50':'VT','51':'VA','53':'WA','54':'WV',
+        '55':'WI','56':'WY'
+    };
+    // Build fipsMap from geometry IDs (stored as numbers or zero-padded strings)
     const fipsMap = {};
     us.objects.states.geometries.forEach(g=>{
-        const name = g.properties?.name || '';
-        const abbr = STATE_ABBR[name];
+        const id = String(g.id).padStart(2,'0');
+        const abbr = FIPS_TO_ABBR[id];
         if(abbr) fipsMap[g.id] = abbr;
     });
-    window._fipsMap = fipsMap; // store globally for updateMapColors
+    window._fipsMap = fipsMap;
+    console.log('FIPS map built:', Object.keys(fipsMap).length, 'states');
+    console.log('Sample:', JSON.stringify(Object.entries(fipsMap).slice(0,5)));
 
     const counts = buildStateCounts();
+    console.log('State counts:', JSON.stringify(counts));
+    console.log('Vendors loaded:', vendors.length, 'Sample region:', vendors[0]?.ServiceRegion);
 
     const g = svg.append('g').attr('class','states-group');
 
@@ -1624,8 +1638,9 @@ async function initMap(){
         .join('path')
         .attr('d', d3PathGen)
         .attr('class','state-path')
-        .attr('id', d=> `state-${fipsMap[d.id]||d.id}`)
+        .attr('id', d=> { const a=fipsMap[d.id]||String(d.id); return 'state-'+a; })
         .attr('data-abbr', d=> fipsMap[d.id]||'')
+        .attr('data-fips', d=> String(d.id).padStart(2,'0'))
         .attr('fill', d=> getStateFill(fipsMap[d.id], counts))
         .attr('stroke','#fff')
         .attr('stroke-width', 1.2)
@@ -1662,11 +1677,11 @@ async function initMap(){
         });
 
     // State labels
+    const TINY_STATES = ['RI','CT','DE','DC','MA','NJ','NH','VT','MD'];
     g.selectAll('text')
         .data(topoStates.filter(d=>{
             const abbr = fipsMap[d.id]||'';
-            // Skip tiny states for labels
-            return !['RI','CT','DE','DC','MA','NJ','NH','VT','MD'].includes(abbr);
+            return abbr && !TINY_STATES.includes(abbr);
         }))
         .join('text')
         .attr('x', d=>{ const c=d3PathGen.centroid(d); return c[0]||0; })
